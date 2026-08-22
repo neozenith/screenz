@@ -1,0 +1,5 @@
+.claude/
+.agents/
+.codex/
+.*_cache/
+tmp/
