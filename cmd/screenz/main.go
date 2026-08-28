@@ -6,9 +6,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/joshpeak/screenz/internal/cli"
+	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/mac"
 )
 
@@ -17,10 +20,20 @@ func main() { os.Exit(run()) }
 func run() int {
 	home, _ := os.UserHomeDir()
 	return cli.Run(os.Args[1:], os.Stdout, os.Stderr, cli.Deps{
-		Getenv: os.Getenv,
-		Home:   home,
-		Sys:    sysInfo,
+		Getenv:   os.Getenv,
+		Home:     home,
+		Sys:      sysInfo,
+		Snapshot: snapshot,
 	})
+}
+
+// snapshot gathers and resolves the live window and display state. A 1 s
+// AX messaging timeout keeps one hung app from stalling the sweep.
+func snapshot() (discover.Snapshot, error) {
+	if m := mac.Missing(); len(m) > 0 {
+		return discover.Snapshot{}, fmt.Errorf("cannot bind macOS symbols: %s", strings.Join(m, ", "))
+	}
+	return discover.Build(mac.Snapshot(1.0)), nil
 }
 
 // sysInfo gathers the doctor report from the live bridge. When symbols are

@@ -7,6 +7,8 @@ package cli
 import (
 	"fmt"
 	"io"
+
+	"github.com/joshpeak/screenz/internal/discover"
 )
 
 // SysInfo is the machine report a doctor run needs, gathered impurely by
@@ -21,9 +23,10 @@ type SysInfo struct {
 
 // Deps carries every impure dependency a command may need.
 type Deps struct {
-	Getenv func(string) string
-	Home   string
-	Sys    func(prompt bool) SysInfo
+	Getenv   func(string) string
+	Home     string
+	Sys      func(prompt bool) SysInfo
+	Snapshot func() (discover.Snapshot, error)
 }
 
 // Run dispatches the first positional to its command handler and returns the
@@ -36,6 +39,8 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 	switch cmd {
 	case "doctor":
 		return runDoctor(args[1:], stdout, stderr, d)
+	case "status":
+		return runStatus(args[1:], stdout, stderr, d)
 	case "-h", "--help", "help":
 		usage(stdout)
 		return 0
@@ -55,6 +60,7 @@ func usage(w io.Writer) {
 
 Commands:
   doctor    Check the Accessibility grant, displays, and symbol bindings.
+  status    Show windows grouped by application and connected displays.
 
 Run 'screenz <command> --help' for command flags.
 `)

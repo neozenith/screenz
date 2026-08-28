@@ -5,13 +5,19 @@ package mac
 // CGPoint, CGSize and CGRect are all-float structs: on darwin/arm64 a CGRect
 // is a homogeneous floating-point aggregate returned in d0–d3, which purego's
 // struct-return path handles (verified exact in the spike, ADR1.1).
-type CGPoint struct{ X, Y float64 }
+type CGPoint struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+}
 
-type CGSize struct{ W, H float64 }
+type CGSize struct {
+	W float64 `json:"w"`
+	H float64 `json:"h"`
+}
 
 type CGRect struct {
-	Origin CGPoint
-	Size   CGSize
+	Origin CGPoint `json:"origin"`
+	Size   CGSize  `json:"size"`
 }
 
 // NSToAX converts a bottom-left-origin AppKit rect into top-left-origin

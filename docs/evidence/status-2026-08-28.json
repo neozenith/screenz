@@ -1,0 +1,655 @@
+{
+  "schema": 1,
+  "displays": [
+    {
+      "index": 1,
+      "id": 2,
+      "uuid": "977271E6-5E58-4A81-AEDA-509487D2649E",
+      "name": "PHL 329P1",
+      "serial": 197,
+      "vendor": 16652,
+      "model": 2393,
+      "main": false,
+      "built_in": false,
+      "scale": 2,
+      "frame": {
+        "origin": {
+          "x": -1920,
+          "y": -98
+        },
+        "size": {
+          "w": 1920,
+          "h": 1080
+        }
+      },
+      "visible_frame": {
+        "origin": {
+          "x": -1857,
+          "y": -98
+        },
+        "size": {
+          "w": 1857,
+          "h": 1080
+        }
+      },
+      "pixel_w": 3840,
+      "pixel_h": 2160
+    },
+    {
+      "index": 2,
+      "id": 1,
+      "uuid": "37D8832A-2D66-02CA-B9F7-8F30A301B230",
+      "name": "Built-in Retina Display",
+      "serial": 4251086178,
+      "vendor": 1552,
+      "model": 41057,
+      "main": true,
+      "built_in": true,
+      "scale": 2,
+      "frame": {
+        "origin": {
+          "x": 0,
+          "y": 0
+        },
+        "size": {
+          "w": 1512,
+          "h": 982
+        }
+      },
+      "visible_frame": {
+        "origin": {
+          "x": 0,
+          "y": 33
+        },
+        "size": {
+          "w": 1512,
+          "h": 949
+        }
+      },
+      "pixel_w": 3024,
+      "pixel_h": 1964
+    },
+    {
+      "index": 3,
+      "id": 3,
+      "uuid": "D9AD2B4E-9B92-4F29-B8D3-741CF5331C43",
+      "name": "LG FULL HD",
+      "serial": 0,
+      "vendor": 7789,
+      "model": 23519,
+      "main": false,
+      "built_in": false,
+      "scale": 1,
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 0
+        },
+        "size": {
+          "w": 1920,
+          "h": 1080
+        }
+      },
+      "visible_frame": {
+        "origin": {
+          "x": 1512,
+          "y": 0
+        },
+        "size": {
+          "w": 1920,
+          "h": 1080
+        }
+      },
+      "pixel_w": 1920,
+      "pixel_h": 1080
+    }
+  ],
+  "windows": [
+    {
+      "id": 16682,
+      "pid": 17049,
+      "bundle": "com.electron.realtimeboard",
+      "app": "Miro",
+      "title": "Miro",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": -1855,
+          "y": -68
+        },
+        "size": {
+          "w": 1855,
+          "h": 1050
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 155,
+      "pid": 18941,
+      "bundle": "com.google.Chrome",
+      "app": "Google Chrome",
+      "title": "onyx-data-platfrom/dbt-dataverse/pytests/macros at main · V2-Digital/onyx-data-platfrom - Google Chrome",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": -1855,
+          "y": -68
+        },
+        "size": {
+          "w": 1855,
+          "h": 1050
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 113,
+      "pid": 18951,
+      "bundle": "com.tinyspeck.slackmacgap",
+      "app": "Slack",
+      "title": "squad-onyx-delivery-team (Channel) - v2.ai - 6 new items - Slack",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": -1855,
+          "y": -68
+        },
+        "size": {
+          "w": 1855,
+          "h": 1050
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 114,
+      "pid": 18957,
+      "bundle": "com.googlecode.iterm2",
+      "app": "iTerm2",
+      "title": "jpeak@MBP-H72D46Y71R:~/clients/onedigital/nike",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 60,
+          "y": 33
+        },
+        "size": {
+          "w": 1452,
+          "h": 949
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 90,
+      "pid": 18960,
+      "bundle": "com.apple.iCal",
+      "app": "Calendar",
+      "title": "Calendar",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 62,
+          "y": 33
+        },
+        "size": {
+          "w": 1450,
+          "h": 949
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 17703,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "tmp",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": -1738,
+          "y": -38
+        },
+        "size": {
+          "w": 920,
+          "h": 436
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 52,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "Desktop",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": -1767,
+          "y": -67
+        },
+        "size": {
+          "w": 1488,
+          "h": 1049
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 11287,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "Downloads",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 465,
+          "y": 99
+        },
+        "size": {
+          "w": 920,
+          "h": 436
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 53,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "Desktop",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 551,
+          "y": 33
+        },
+        "size": {
+          "w": 920,
+          "h": 599
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 9068,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "pr-previews",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 216,
+          "y": 133
+        },
+        "size": {
+          "w": 920,
+          "h": 436
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 51,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "Desktop",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 158,
+          "y": 75
+        },
+        "size": {
+          "w": 920,
+          "h": 436
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 48,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "Desktop",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 330,
+          "y": 62
+        },
+        "size": {
+          "w": 920,
+          "h": 436
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 0,
+      "pid": 18986,
+      "bundle": "com.apple.finder",
+      "app": "Finder",
+      "title": "",
+      "role": "AXScrollArea",
+      "subrole": "",
+      "state": "offscreen",
+      "frame": {
+        "origin": {
+          "x": -1920,
+          "y": -98
+        },
+        "size": {
+          "w": 5352,
+          "h": 1178
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 176,
+      "pid": 19142,
+      "bundle": "com.spotify.client",
+      "app": "Spotify",
+      "title": "Spotify Premium",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 62,
+          "y": 33
+        },
+        "size": {
+          "w": 1450,
+          "h": 949
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 203,
+      "pid": 19601,
+      "bundle": "com.apple.Passwords",
+      "app": "Passwords",
+      "title": "Passwords",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 337,
+          "y": 243
+        },
+        "size": {
+          "w": 900,
+          "h": 530
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 11777,
+      "pid": 22396,
+      "bundle": "com.microsoft.edgemac",
+      "app": "Microsoft Edge",
+      "title": "xharness eval report - Microsoft Edge - Wesfarmers",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": -1855,
+          "y": -68
+        },
+        "size": {
+          "w": 1855,
+          "h": 1050
+        }
+      },
+      "display_index": 1
+    },
+    {
+      "id": 12594,
+      "pid": 28173,
+      "bundle": "com.microsoft.Outlook",
+      "app": "Microsoft Outlook",
+      "title": "Calendar",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 0,
+          "y": 33
+        },
+        "size": {
+          "w": 1512,
+          "h": 949
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 567,
+      "pid": 45168,
+      "bundle": "com.openai.codex",
+      "app": "ChatGPT",
+      "title": "ChatGPT",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 79
+        },
+        "size": {
+          "w": 1920,
+          "h": 952
+        }
+      },
+      "display_index": 3
+    },
+    {
+      "id": 14919,
+      "pid": 45168,
+      "bundle": "com.openai.codex",
+      "app": "ChatGPT",
+      "title": "",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 520,
+          "y": 170
+        },
+        "size": {
+          "w": 597,
+          "h": 178
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 3143,
+      "pid": 95247,
+      "bundle": "com.microsoft.teams2",
+      "app": "Microsoft Teams",
+      "title": "Chat | AMC POC Q\u0026A | Wesfarmers Limited | JPeak@wesfarmers.com.au | Microsoft Teams",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 62,
+          "y": 33
+        },
+        "size": {
+          "w": 1450,
+          "h": 949
+        }
+      },
+      "display_index": 2
+    },
+    {
+      "id": 14734,
+      "pid": 95326,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": "BRAZE-CAPABILITIES-GUIDE.md — nike",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "display_index": 3
+    },
+    {
+      "id": 14737,
+      "pid": 95326,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": "history.py — pytest-xharness-eval",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "display_index": 3
+    },
+    {
+      "id": 14738,
+      "pid": 95326,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": ".gitignore — screenz",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "display_index": 3
+    },
+    {
+      "id": 14735,
+      "pid": 95326,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": "Preview DATA-MODEL.md — agentic-dotfiles",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "display_index": 3
+    },
+    {
+      "id": 14736,
+      "pid": 95326,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": "Preview BRAZE.md — adv-web",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "display_index": 3
+    },
+    {
+      "id": 14733,
+      "pid": 95326,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": "aliases_common.sh (Working Tree) (aliases_common.sh) — dotfiles",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "display_index": 3
+    }
+  ]
+}
