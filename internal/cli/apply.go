@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"text/tabwriter"
 
 	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/mac"
@@ -114,9 +113,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 		}
 	}
 
-	info := d.Sys(false)
-	if !info.Trusted {
-		fmt.Fprint(stderr, grantInstruction(info.HostAppName, info.HostAppBundle))
+	if !requireTrusted(d, stderr) {
 		return 1
 	}
 	snap, err := d.Snapshot()
@@ -164,7 +161,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 			Unmatched int            `json:"unmatched"`
 		}{1, results, p.Skipped, p.Unmatched})
 	} else {
-		tw := tabwriter.NewWriter(stdout, 2, 4, 2, ' ', 0)
+		tw := newTabwriter(stdout)
 		fmt.Fprintln(tw, "#\tRULE\tAPP\tTITLE\tWID\tFROM\tTO\tTARGET\tACTUAL\tRESULT")
 		for i, r := range results {
 			result := r.Result
@@ -204,7 +201,7 @@ func printPlan(p plan.Plan, snap discover.Snapshot, jsonOut bool, stdout io.Writ
 		}{1, true, snap.Displays, p})
 		return
 	}
-	tw := tabwriter.NewWriter(stdout, 2, 4, 2, ' ', 0)
+	tw := newTabwriter(stdout)
 	fmt.Fprintln(tw, "#\tRULE\tAPP\tTITLE\tWID\tFROM\tTO\tTARGET\tCHANGE")
 	for i, a := range p.Actions {
 		fmt.Fprintf(tw, "%d\t%d\t%s\t%s\t%d\t%d\t%d\t%s\t%s\n",

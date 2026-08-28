@@ -27,11 +27,11 @@ func officeSnap() discover.Snapshot {
 				Frame: rect(3432, 0, 1920, 1080), VisibleFrame: rect(3432, 25, 1920, 1055)},
 		},
 		Windows: []discover.Window{
-			{ID: 1, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "beta — b.go", State: "normal", DisplayIndex: 1, Frame: rect(100, 100, 800, 600)},
-			{ID: 2, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "alpha — a.go", State: "normal", DisplayIndex: 3, Frame: rect(3432, 100, 800, 600)},
-			{ID: 3, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "gamma — g.go", State: "minimized", DisplayIndex: 1, Frame: rect(0, 0, 800, 600)},
-			{ID: 4, PID: 700, Bundle: "com.google.Chrome", App: "Google Chrome", Title: "Work — Inbox", State: "normal", DisplayIndex: 1, Frame: rect(59, 33, 900, 900)},
-			{ID: 5, PID: 700, Bundle: "com.google.Chrome", App: "Google Chrome", Title: "Personal — News", State: "normal", DisplayIndex: 1, Frame: rect(200, 33, 900, 900)},
+			{ID: 1, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "beta — b.go", State: discover.StateNormal, DisplayIndex: 1, Frame: rect(100, 100, 800, 600)},
+			{ID: 2, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "alpha — a.go", State: discover.StateNormal, DisplayIndex: 3, Frame: rect(3432, 100, 800, 600)},
+			{ID: 3, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "gamma — g.go", State: discover.StateMinimized, DisplayIndex: 1, Frame: rect(0, 0, 800, 600)},
+			{ID: 4, PID: 700, Bundle: "com.google.Chrome", App: "Google Chrome", Title: "Work — Inbox", State: discover.StateNormal, DisplayIndex: 1, Frame: rect(59, 33, 900, 900)},
+			{ID: 5, PID: 700, Bundle: "com.google.Chrome", App: "Google Chrome", Title: "Personal — News", State: discover.StateNormal, DisplayIndex: 1, Frame: rect(200, 33, 900, 900)},
 		},
 	}
 }
@@ -174,7 +174,7 @@ func TestFirstPlacesOneWindowOnly(t *testing.T) {
 func TestChangeNoneWhenAlreadyPlaced(t *testing.T) {
 	snap := officeSnap()
 	snap.Windows = []discover.Window{
-		{ID: 9, PID: 1, Bundle: "b", App: "A", Title: "t", State: "normal", DisplayIndex: 2,
+		{ID: 9, PID: 1, Bundle: "b", App: "A", Title: "t", State: discover.StateNormal, DisplayIndex: 2,
 			Frame: rect(1512, 25, 1920, 1055)},
 	}
 	rs := rules(t, "--match", "bundle=b", "--display", "index=2", "--region", "maximize")

@@ -58,15 +58,24 @@ func Template(name string) string {
 }
 
 // WriteTemplate writes the init template for a new profile. An existing
-// file is refused unless force is set.
+// file is refused unless force is set — enforced by O_EXCL at open, not a
+// separate exists pre-check.
 func WriteTemplate(path, name string, force bool) error {
-	if !force {
-		if _, err := os.Stat(path); err == nil {
-			return fmt.Errorf("%s already exists (use --force to overwrite)", path)
-		}
-	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile(path, []byte(Template(name)), 0o644)
+	flags := os.O_WRONLY | os.O_CREATE | os.O_TRUNC
+	if !force {
+		flags = os.O_WRONLY | os.O_CREATE | os.O_EXCL
+	}
+	f, err := os.OpenFile(path, flags, 0o644)
+	if err != nil {
+		if os.IsExist(err) {
+			return fmt.Errorf("%s already exists (use --force to overwrite)", path)
+		}
+		return err
+	}
+	defer f.Close()
+	_, err = f.WriteString(Template(name))
+	return err
 }

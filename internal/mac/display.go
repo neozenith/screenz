@@ -7,7 +7,6 @@ var (
 	cgGetActiveDisplayList                 func(max uint32, ids *uint32, count *uint32) int32
 	cgDisplayBounds                        func(id uint32) CGRect
 	cgDisplayIsBuiltin                     func(id uint32) uint32
-	cgDisplayIsMain                        func(id uint32) uint32
 	cgDisplaySerialNumber                  func(id uint32) uint32
 	cgDisplayVendorNumber                  func(id uint32) uint32
 	cgDisplayModelNumber                   func(id uint32) uint32

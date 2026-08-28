@@ -26,7 +26,8 @@ func NSToAX(r CGRect, primaryHeight float64) CGRect {
 	return CGRect{CGPoint{r.Origin.X, primaryHeight - (r.Origin.Y + r.Size.H)}, r.Size}
 }
 
-// AXToNS is the inverse flip.
+// AXToNS is the inverse flip — the flip is an involution, so it is the
+// same operation under a name that reads correctly at call sites.
 func AXToNS(r CGRect, primaryHeight float64) CGRect {
-	return CGRect{CGPoint{r.Origin.X, primaryHeight - (r.Origin.Y + r.Size.H)}, r.Size}
+	return NSToAX(r, primaryHeight)
 }

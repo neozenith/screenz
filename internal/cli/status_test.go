@@ -25,11 +25,11 @@ func officeSnapshot() discover.Snapshot {
 				PixelW:       3840, PixelH: 2160},
 		},
 		Windows: []discover.Window{
-			{ID: 9001, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "repo — main.go", State: "normal", DisplayIndex: 2,
+			{ID: 9001, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "repo — main.go", State: discover.StateNormal, DisplayIndex: 2,
 				Frame: mac.CGRect{Origin: mac.CGPoint{X: 1512, Y: 25}, Size: mac.CGSize{W: 1920, H: 1055}}},
-			{ID: 0, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "notes — todo.md", State: "offscreen", DisplayIndex: 2,
+			{ID: 0, PID: 500, Bundle: "com.microsoft.VSCode", App: "Code", Title: "notes — todo.md", State: discover.StateOffscreen, DisplayIndex: 2,
 				Frame: mac.CGRect{Origin: mac.CGPoint{X: 1512, Y: 25}, Size: mac.CGSize{W: 1920, H: 1055}}},
-			{ID: 9010, PID: 700, Bundle: "com.google.Chrome", App: "Google Chrome", Title: "Work — Inbox", State: "normal", DisplayIndex: 1,
+			{ID: 9010, PID: 700, Bundle: "com.google.Chrome", App: "Google Chrome", Title: "Work — Inbox", State: discover.StateNormal, DisplayIndex: 1,
 				Frame: mac.CGRect{Origin: mac.CGPoint{X: 59, Y: 33}, Size: mac.CGSize{W: 1200, H: 900}}},
 		},
 	}

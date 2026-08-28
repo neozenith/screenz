@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"text/tabwriter"
 
 	"github.com/joshpeak/screenz/internal/discover"
 )
@@ -44,11 +43,7 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 		return 2
 	}
 
-	// Every command that reads windows needs AX; fail loudly before doing
-	// anything that would silently report an empty world (ADR1.2).
-	info := d.Sys(false)
-	if !info.Trusted {
-		fmt.Fprint(stderr, grantInstruction(info.HostAppName, info.HostAppBundle))
+	if !requireTrusted(d, stderr) {
 		return 1
 	}
 	snap, err := d.Snapshot()
@@ -64,7 +59,7 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 		return 0
 	}
 
-	tw := tabwriter.NewWriter(stdout, 2, 4, 2, ' ', 0)
+	tw := newTabwriter(stdout)
 	fmt.Fprintln(tw, "APP\tBUNDLE\tWID\tTITLE\tDISPLAY\tSTATE\tX,Y,W,H")
 	for _, g := range discover.GroupByBundle(snap.Windows) {
 		for _, w := range g.Windows {
@@ -76,7 +71,7 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	tw.Flush()
 
 	fmt.Fprintln(stdout)
-	tw = tabwriter.NewWriter(stdout, 2, 4, 2, ' ', 0)
+	tw = newTabwriter(stdout)
 	fmt.Fprintln(tw, "INDEX\tNAME\tUUID\tPX\tPT\tVISIBLE\tMAIN\tBUILTIN")
 	for _, disp := range snap.Displays {
 		fmt.Fprintf(tw, "%d\t%s\t%s\t%dx%d\t%.0fx%.0f\t%.0f,%.0f,%.0f,%.0f\t%v\t%v\n",

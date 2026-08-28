@@ -286,6 +286,10 @@ func TestWriteNewAndTemplateErrors(t *testing.T) {
 	if err := WriteTemplate(path, "p", true); err != nil {
 		t.Errorf("force overwrite failed: %v", err)
 	}
+	// A non-exists open failure (target is a directory) surfaces as-is.
+	if err := WriteTemplate(asDir, "p", true); err == nil || strings.Contains(err.Error(), "already exists") {
+		t.Errorf("directory target: err = %v", err)
+	}
 }
 
 // Pins every scalar and display encoding branch: numeric tolerance, uuid /

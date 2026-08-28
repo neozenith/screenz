@@ -329,7 +329,7 @@ func (p *Profile) Resolved(extra []*rule.Rule) ([]*rule.Rule, error) {
 			spec, ok := p.Displays[r.Display.Alias]
 			if !ok {
 				return nil, fmt.Errorf("rule %d: display alias %q is not defined in profile %q (known: %s)",
-					i+1, r.Display.Alias, p.Name, strings.Join(p.aliases(), ", "))
+					i+1, r.Display.Alias, p.Name, strings.Join(p.Aliases(), ", "))
 			}
 			r2 := *r
 			r2.Display = spec
@@ -340,7 +340,8 @@ func (p *Profile) Resolved(extra []*rule.Rule) ([]*rule.Rule, error) {
 	return out, nil
 }
 
-func (p *Profile) aliases() []string {
+// Aliases lists the profile's display aliases, sorted.
+func (p *Profile) Aliases() []string {
 	out := make([]string, 0, len(p.Displays))
 	for a := range p.Displays {
 		out = append(out, a)

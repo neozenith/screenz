@@ -7,6 +7,7 @@ package cli
 import (
 	"fmt"
 	"io"
+	"text/tabwriter"
 
 	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/layout"
@@ -27,11 +28,13 @@ type SysInfo struct {
 	MissingSymbols []string `json:"missing_symbols,omitempty"`
 }
 
-// Deps carries every impure dependency a command may need.
+// Deps carries every impure dependency a command may need. Sys(full)
+// gathers the whole doctor report (and asks with the TCC prompt) when full;
+// otherwise just the grant check plus the host app when untrusted.
 type Deps struct {
 	Getenv   func(string) string
 	Home     string
-	Sys      func(prompt bool) SysInfo
+	Sys      func(full bool) SysInfo
 	Snapshot func() (discover.Snapshot, error)
 	Displays func() ([]discover.Display, error)
 	Place    func(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) place.Result
@@ -68,6 +71,21 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 		usage(stderr)
 		return 2
 	}
+}
+
+func newTabwriter(w io.Writer) *tabwriter.Writer {
+	return tabwriter.NewWriter(w, 2, 4, 2, ' ', 0)
+}
+
+// requireTrusted enforces ADR1.2 for every AX-reading command: fail loudly
+// with the grant instruction instead of silently reporting an empty world.
+func requireTrusted(d Deps, stderr io.Writer) bool {
+	info := d.Sys(false)
+	if !info.Trusted {
+		fmt.Fprint(stderr, grantInstruction(info.HostAppName, info.HostAppBundle))
+		return false
+	}
+	return true
 }
 
 func usage(w io.Writer) {

@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"text/tabwriter"
 
 	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/profile"
@@ -123,7 +122,7 @@ func runProfileStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 			continue
 		}
 		st.Rules = len(p.Rules)
-		for _, alias := range sortedAliases(p) {
+		for _, alias := range p.Aliases() {
 			spec := p.Displays[alias]
 			as := aliasStatus{Alias: alias, Spec: spec.String()}
 			var matches []discover.Display
@@ -159,7 +158,7 @@ func runProfileStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 		fmt.Fprintf(stdout, "no profiles in %s\n", dir)
 		return 0
 	}
-	tw := tabwriter.NewWriter(stdout, 2, 4, 2, ' ', 0)
+	tw := newTabwriter(stdout)
 	fmt.Fprintln(tw, "PROFILE\tRULES\tALIAS\tRESOLVES\tDETAIL")
 	for _, st := range statuses {
 		if st.Err != "" {
@@ -180,15 +179,6 @@ func runProfileStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 	tw.Flush()
 	return 0
-}
-
-func sortedAliases(p *profile.Profile) []string {
-	out := make([]string, 0, len(p.Displays))
-	for a := range p.Displays {
-		out = append(out, a)
-	}
-	sort.Strings(out)
-	return out
 }
 
 func runProfileInit(args []string, stdout, stderr io.Writer, d Deps) int {
@@ -258,13 +248,16 @@ func runProfileSave(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 
 	path := profile.Path(d.Getenv, d.Home, name)
-	_, statErr := os.Stat(path)
 	var err error
-	switch {
-	case statErr == nil && !*force:
-		err = profile.Append(path, rules.Rules)
-	default:
+	if *force {
 		err = profile.WriteNew(path, name, rules.Rules)
+	} else {
+		// Append reads the file itself; a missing profile falls through to
+		// a fresh write instead of a separate exists pre-check.
+		err = profile.Append(path, rules.Rules)
+		if errors.Is(err, os.ErrNotExist) {
+			err = profile.WriteNew(path, name, rules.Rules)
+		}
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "screenz profile save: %v\n", err)

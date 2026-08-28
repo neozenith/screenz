@@ -1,6 +1,10 @@
 package discover
 
-import "github.com/joshpeak/screenz/internal/mac"
+import (
+	"math"
+
+	"github.com/joshpeak/screenz/internal/mac"
+)
 
 // Window states (ADR2.2): windows the tool cannot act on are reported with
 // a state instead of being hidden — "moved 9 of 10" must never look like
@@ -134,10 +138,7 @@ func matchCG(rows []mac.CGWindowRaw, free []bool, pid int64, frame mac.CGRect) i
 	return -1
 }
 
-func near(a, b float64) bool {
-	d := a - b
-	return d >= -1 && d <= 1
-}
+func near(a, b float64) bool { return math.Abs(a-b) <= 1 }
 
 // assignDisplay picks the display fully containing the frame, else the one
 // with the largest intersection (lower index wins ties); 0 when none

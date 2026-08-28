@@ -84,7 +84,6 @@ func Load() {
 		register(&cgGetActiveDisplayList, libCG, "CGGetActiveDisplayList")
 		register(&cgDisplayBounds, libCG, "CGDisplayBounds")
 		register(&cgDisplayIsBuiltin, libCG, "CGDisplayIsBuiltin")
-		register(&cgDisplayIsMain, libCG, "CGDisplayIsMain")
 		register(&cgDisplaySerialNumber, libCG, "CGDisplaySerialNumber")
 		register(&cgDisplayVendorNumber, libCG, "CGDisplayVendorNumber")
 		register(&cgDisplayModelNumber, libCG, "CGDisplayModelNumber")

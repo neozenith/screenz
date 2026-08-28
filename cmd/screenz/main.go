@@ -50,19 +50,28 @@ func displays() ([]discover.Display, error) {
 	return discover.BuildDisplays(mac.Displays(), screens, primaryH, mac.WindowList()), nil
 }
 
-// sysInfo gathers the doctor report from the live bridge. When symbols are
-// missing the bound functions may be nil, so it stops at the report.
-func sysInfo(prompt bool) cli.SysInfo {
+// sysInfo gathers the machine report from the live bridge. When symbols
+// are missing the bound functions may be nil, so it stops at the report.
+// Only doctor (full=true, which also asks with the TCC prompt) needs the
+// display names, OS version and quarantine state; status and apply only
+// check the grant, so the host-app walk runs only when the grant is
+// missing and its name is needed for the error message.
+func sysInfo(full bool) cli.SysInfo {
 	info := cli.SysInfo{MissingSymbols: mac.Missing()}
 	if len(info.MissingSymbols) > 0 {
 		return info
 	}
-	if prompt {
+	if full {
 		info.Trusted = mac.TrustedWithPrompt()
 	} else {
 		info.Trusted = mac.Trusted()
 	}
-	info.HostAppName, info.HostAppBundle = mac.HostApp()
+	if full || !info.Trusted {
+		info.HostAppName, info.HostAppBundle = mac.HostApp()
+	}
+	if !full {
+		return info
+	}
 	screens, _ := mac.Screens()
 	for _, s := range screens {
 		info.DisplayNames = append(info.DisplayNames, s.Name)

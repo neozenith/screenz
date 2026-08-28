@@ -65,9 +65,6 @@ func TrustedWithPrompt() bool {
 	return axIsProcessTrustedWithOptions(CFRef(opts))
 }
 
-// Release frees the underlying AX reference.
-func (e AXElement) Release() { Release(e.ref) }
-
 // AXApp creates the AX application element for a pid with a messaging
 // timeout, so one hung app cannot stall a 16-window apply for the 6 s
 // default per call (negative measure; Rectangle sets the same timeout).
