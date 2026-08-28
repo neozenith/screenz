@@ -1,0 +1,20 @@
+$ bin/screenz apply --dry-run \
+    --match bundle=com.microsoft.VSCode        --display index=1 --region maximize \
+    --match 'app="Google Chrome" title=/Work/' --display index=2 --region left-half \
+    --match bundle=com.microsoft.edgemac       --display index=2 --region right-half
+#  RULE  APP             TITLE                                                            WID    FROM  TO  TARGET               CHANGE
+1  1     Code            replay.py — pytest-xharness-eval                                 14737  3     1   -1859,-68,1859,1050  move
+2  1     Code            .gitignore — screenz                                             14738  3     1   -1859,-68,1859,1050  move
+3  1     Code            BRAZE-CAPABILITIES-GUIDE.md — nike                               14734  3     1   -1859,-68,1859,1050  move
+4  1     Code            Preview DATA-MODEL.md — agentic-dotfiles                         14735  3     1   -1859,-68,1859,1050  move
+5  1     Code            Preview BRAZE.md — adv-web                                       14736  3     1   -1859,-68,1859,1050  move
+6  1     Code            aliases_common.sh (Working Tree) (aliases_common.sh) — dotfiles  14733  3     1   -1859,-68,1859,1050  move
+7  3     Microsoft Edge  Page not found · GitHub - Microsoft Edge - Wesfarmers            11777  1     2   756,33,756,949       move
+
+7 to move, 0 skipped, 20 windows matched no rule
+exit: 0
+
+$ bin/screenz apply --display index=1 --match bundle=com.microsoft.VSCode --region maximize
+screenz apply: invalid value "index=1" for flag -display: --display given before any --match
+run 'screenz apply --help' for usage
+exit: 2

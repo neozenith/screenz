@@ -37,7 +37,7 @@ func spikeRaw() ([]mac.DisplayRaw, []mac.ScreenRaw, float64) {
 
 func TestBuildDisplaysJoinsAndOrders(t *testing.T) {
 	displays, screens, primaryH := spikeRaw()
-	got := BuildDisplays(displays, screens, primaryH)
+	got := BuildDisplays(displays, screens, primaryH, nil)
 	if len(got) != 3 {
 		t.Fatalf("got %d displays", len(got))
 	}
@@ -73,10 +73,49 @@ func TestBuildDisplaysJoinsAndOrders(t *testing.T) {
 	}
 }
 
+// Real layer-24 menu bar rows captured on this machine (2026-08-28): macOS
+// 26 reserved a 30 pt strip on both externals while NSScreen.visibleFrame
+// reported the full 1080 pt height — the carve restores the truth.
+func TestCarveMenuBarFromWindowServerRows(t *testing.T) {
+	frame := mac.CGRect{Origin: mac.CGPoint{X: -1920, Y: -98}, Size: mac.CGSize{W: 1920, H: 1080}}
+	visLying := mac.CGRect{Origin: mac.CGPoint{X: -1857, Y: -98}, Size: mac.CGSize{W: 1857, H: 1080}}
+	rows := []mac.CGWindowRaw{
+		{Layer: 24, OwnerName: "Window Server", Bounds: mac.CGRect{Origin: mac.CGPoint{X: -1920, Y: -98}, Size: mac.CGSize{W: 1920, H: 30}}},
+		{Layer: 25, OwnerName: "Control Centre", Bounds: mac.CGRect{Origin: mac.CGPoint{X: -145, Y: -98}, Size: mac.CGSize{W: 145, H: 30}}},
+		{Layer: 0, OwnerName: "Code", Bounds: frame},
+	}
+	got := carveMenuBar(visLying, frame, rows)
+	want := mac.CGRect{Origin: mac.CGPoint{X: -1857, Y: -68}, Size: mac.CGSize{W: 1857, H: 1050}}
+	if got != want {
+		t.Fatalf("carve = %+v, want %+v", got, want)
+	}
+	// A visibleFrame that already excludes the strip (the built-in) is
+	// untouched, as is one with no strip row at all.
+	builtinFrame := mac.CGRect{Origin: mac.CGPoint{}, Size: mac.CGSize{W: 1512, H: 982}}
+	builtinVis := mac.CGRect{Origin: mac.CGPoint{X: 59, Y: 33}, Size: mac.CGSize{W: 1453, H: 949}}
+	builtinRows := []mac.CGWindowRaw{
+		{Layer: 24, OwnerName: "Window Server", Bounds: mac.CGRect{Origin: mac.CGPoint{}, Size: mac.CGSize{W: 1512, H: 33}}},
+	}
+	if got := carveMenuBar(builtinVis, builtinFrame, builtinRows); got != builtinVis {
+		t.Fatalf("built-in carve changed a correct visibleFrame: %+v", got)
+	}
+	if got := carveMenuBar(visLying, frame, nil); got != visLying {
+		t.Fatalf("no rows must be a no-op: %+v", got)
+	}
+	// A partial-width or tall layer-24 row is not a menu bar.
+	oddRows := []mac.CGWindowRaw{
+		{Layer: 24, Bounds: mac.CGRect{Origin: mac.CGPoint{X: -1920, Y: -98}, Size: mac.CGSize{W: 500, H: 30}}},
+		{Layer: 24, Bounds: mac.CGRect{Origin: mac.CGPoint{X: -1920, Y: -98}, Size: mac.CGSize{W: 1920, H: 400}}},
+	}
+	if got := carveMenuBar(visLying, frame, oddRows); got != visLying {
+		t.Fatalf("odd rows must be ignored: %+v", got)
+	}
+}
+
 func TestBuildDisplaysWithoutScreenJoin(t *testing.T) {
 	displays := []mac.DisplayRaw{{ID: 7, UUID: "u7",
 		Bounds: mac.CGRect{Origin: mac.CGPoint{X: 0, Y: 0}, Size: mac.CGSize{W: 100, H: 100}}}}
-	got := BuildDisplays(displays, nil, 100)
+	got := BuildDisplays(displays, nil, 100, nil)
 	if got[0].Name != "" || got[0].Scale != 0 {
 		t.Errorf("unjoined display should keep zero screen fields: %+v", got[0])
 	}
@@ -88,7 +127,7 @@ func TestBuildDisplaysOrdersByRowThenX(t *testing.T) {
 		{ID: 2, UUID: "b", Bounds: mac.CGRect{Origin: mac.CGPoint{X: 900, Y: 0}, Size: mac.CGSize{W: 100, H: 100}}},
 		{ID: 3, UUID: "c", Bounds: mac.CGRect{Origin: mac.CGPoint{X: 0, Y: 0}, Size: mac.CGSize{W: 100, H: 100}}},
 	}
-	got := BuildDisplays(displays, nil, 100)
+	got := BuildDisplays(displays, nil, 100, nil)
 	order := []uint32{3, 2, 1} // top row left-to-right, then the lower row
 	for i, want := range order {
 		if got[i].ID != want {
@@ -217,7 +256,7 @@ func TestMatchCGRejectsWrongPIDAndFarFrames(t *testing.T) {
 
 func TestAssignDisplayLargestIntersection(t *testing.T) {
 	displays, screens, primaryH := spikeRaw()
-	built := BuildDisplays(displays, screens, primaryH)
+	built := BuildDisplays(displays, screens, primaryH, nil)
 	// Straddles the boundary at x=1512: 400 pt on the built-in, 800 pt on
 	// LU28R55 (1) — the bigger half wins.
 	straddle := mac.CGRect{Origin: mac.CGPoint{X: 1112, Y: 100}, Size: mac.CGSize{W: 1200, H: 500}}

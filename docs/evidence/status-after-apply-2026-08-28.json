@@ -152,7 +152,7 @@
       "pid": 18951,
       "bundle": "com.tinyspeck.slackmacgap",
       "app": "Slack",
-      "title": "squad-onyx-delivery-team (Channel) - v2.ai - 7 new items - Slack",
+      "title": "! squad-onyx-delivery-team (Channel) - v2.ai - 6 new items - Slack",
       "role": "AXWindow",
       "subrole": "AXStandardWindow",
       "state": "normal",
@@ -551,21 +551,21 @@
       "pid": 95326,
       "bundle": "com.microsoft.VSCode",
       "app": "Code",
-      "title": "replay.py — pytest-xharness-eval",
+      "title": "report.py — pytest-xharness-eval",
       "role": "AXWindow",
       "subrole": "AXStandardWindow",
       "state": "normal",
       "frame": {
         "origin": {
-          "x": 1512,
-          "y": 30
+          "x": -1859,
+          "y": -68
         },
         "size": {
-          "w": 1920,
+          "w": 1859,
           "h": 1050
         }
       },
-      "display_index": 3
+      "display_index": 1
     },
     {
       "id": 14738,
@@ -578,15 +578,15 @@
       "state": "normal",
       "frame": {
         "origin": {
-          "x": 1512,
-          "y": 30
+          "x": -1859,
+          "y": -68
         },
         "size": {
-          "w": 1920,
+          "w": 1859,
           "h": 1050
         }
       },
-      "display_index": 3
+      "display_index": 1
     },
     {
       "id": 14734,
@@ -599,15 +599,15 @@
       "state": "normal",
       "frame": {
         "origin": {
-          "x": 1512,
-          "y": 30
+          "x": -1859,
+          "y": -68
         },
         "size": {
-          "w": 1920,
+          "w": 1859,
           "h": 1050
         }
       },
-      "display_index": 3
+      "display_index": 1
     },
     {
       "id": 14735,
@@ -620,15 +620,15 @@
       "state": "normal",
       "frame": {
         "origin": {
-          "x": 1512,
-          "y": 30
+          "x": -1859,
+          "y": -68
         },
         "size": {
-          "w": 1920,
+          "w": 1859,
           "h": 1050
         }
       },
-      "display_index": 3
+      "display_index": 1
     },
     {
       "id": 14736,
@@ -641,15 +641,15 @@
       "state": "normal",
       "frame": {
         "origin": {
-          "x": 1512,
-          "y": 30
+          "x": -1859,
+          "y": -68
         },
         "size": {
-          "w": 1920,
+          "w": 1859,
           "h": 1050
         }
       },
-      "display_index": 3
+      "display_index": 1
     },
     {
       "id": 14733,
@@ -662,15 +662,15 @@
       "state": "normal",
       "frame": {
         "origin": {
-          "x": 1512,
-          "y": 30
+          "x": -1859,
+          "y": -68
         },
         "size": {
-          "w": 1920,
+          "w": 1859,
           "h": 1050
         }
       },
-      "display_index": 3
+      "display_index": 1
     }
   ]
 }

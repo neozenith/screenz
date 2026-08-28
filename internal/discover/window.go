@@ -59,7 +59,7 @@ func (s Snapshot) AppEl(pid int64) mac.AXElement { return s.appEls[pid] }
 
 // Build resolves a raw mac snapshot into displays and windows.
 func Build(raw mac.SnapshotRaw) Snapshot {
-	displays := BuildDisplays(raw.Displays, raw.Screens, raw.PrimaryH)
+	displays := BuildDisplays(raw.Displays, raw.Screens, raw.PrimaryH, raw.CGWindows)
 	snap := Snapshot{Displays: displays, appEls: map[int64]mac.AXElement{}}
 
 	// Greedily consume layer-0 CG rows so two identical AX frames of the

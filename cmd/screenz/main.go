@@ -13,6 +13,7 @@ import (
 	"github.com/joshpeak/screenz/internal/cli"
 	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/joshpeak/screenz/internal/place"
 )
 
 func main() { os.Exit(run()) }
@@ -24,6 +25,7 @@ func run() int {
 		Home:     home,
 		Sys:      sysInfo,
 		Snapshot: snapshot,
+		Place:    place.Place,
 	})
 }
 

@@ -9,6 +9,9 @@ import (
 	"io"
 
 	"github.com/joshpeak/screenz/internal/discover"
+	"github.com/joshpeak/screenz/internal/layout"
+	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/joshpeak/screenz/internal/place"
 )
 
 // SysInfo is the machine report a doctor run needs, gathered impurely by
@@ -27,6 +30,7 @@ type Deps struct {
 	Home     string
 	Sys      func(prompt bool) SysInfo
 	Snapshot func() (discover.Snapshot, error)
+	Place    func(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) place.Result
 }
 
 // Run dispatches the first positional to its command handler and returns the
@@ -41,6 +45,8 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 		return runDoctor(args[1:], stdout, stderr, d)
 	case "status":
 		return runStatus(args[1:], stdout, stderr, d)
+	case "apply":
+		return runApply(args[1:], stdout, stderr, d)
 	case "-h", "--help", "help":
 		usage(stdout)
 		return 0
@@ -61,6 +67,7 @@ func usage(w io.Writer) {
 Commands:
   doctor    Check the Accessibility grant, displays, and symbol bindings.
   status    Show windows grouped by application and connected displays.
+  apply     Move groups of windows by rules, verifying every frame.
 
 Run 'screenz <command> --help' for command flags.
 `)

@@ -1,0 +1,420 @@
+{
+  "schema": 1,
+  "actions": [
+    {
+      "window": {
+        "id": 14737,
+        "pid": 95326,
+        "bundle": "com.microsoft.VSCode",
+        "app": "Code",
+        "title": "report.py — pytest-xharness-eval",
+        "role": "AXWindow",
+        "subrole": "AXStandardWindow",
+        "state": "normal",
+        "frame": {
+          "origin": {
+            "x": -1859,
+            "y": -68
+          },
+          "size": {
+            "w": 1859,
+            "h": 1050
+          }
+        },
+        "display_index": 1
+      },
+      "rule": 1,
+      "from": 1,
+      "to": 1,
+      "target": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "change": "none",
+      "requested": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "before": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "actual": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "attempts": 1,
+      "result": "ok"
+    },
+    {
+      "window": {
+        "id": 14738,
+        "pid": 95326,
+        "bundle": "com.microsoft.VSCode",
+        "app": "Code",
+        "title": ".gitignore — screenz",
+        "role": "AXWindow",
+        "subrole": "AXStandardWindow",
+        "state": "normal",
+        "frame": {
+          "origin": {
+            "x": -1859,
+            "y": -68
+          },
+          "size": {
+            "w": 1859,
+            "h": 1050
+          }
+        },
+        "display_index": 1
+      },
+      "rule": 1,
+      "from": 1,
+      "to": 1,
+      "target": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "change": "none",
+      "requested": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "before": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "actual": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "attempts": 1,
+      "result": "ok"
+    },
+    {
+      "window": {
+        "id": 14734,
+        "pid": 95326,
+        "bundle": "com.microsoft.VSCode",
+        "app": "Code",
+        "title": "BRAZE-CAPABILITIES-GUIDE.md — nike",
+        "role": "AXWindow",
+        "subrole": "AXStandardWindow",
+        "state": "normal",
+        "frame": {
+          "origin": {
+            "x": -1859,
+            "y": -68
+          },
+          "size": {
+            "w": 1859,
+            "h": 1050
+          }
+        },
+        "display_index": 1
+      },
+      "rule": 1,
+      "from": 1,
+      "to": 1,
+      "target": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "change": "none",
+      "requested": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "before": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "actual": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "attempts": 1,
+      "result": "ok"
+    },
+    {
+      "window": {
+        "id": 14735,
+        "pid": 95326,
+        "bundle": "com.microsoft.VSCode",
+        "app": "Code",
+        "title": "Preview DATA-MODEL.md — agentic-dotfiles",
+        "role": "AXWindow",
+        "subrole": "AXStandardWindow",
+        "state": "normal",
+        "frame": {
+          "origin": {
+            "x": -1859,
+            "y": -68
+          },
+          "size": {
+            "w": 1859,
+            "h": 1050
+          }
+        },
+        "display_index": 1
+      },
+      "rule": 1,
+      "from": 1,
+      "to": 1,
+      "target": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "change": "none",
+      "requested": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "before": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "actual": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "attempts": 1,
+      "result": "ok"
+    },
+    {
+      "window": {
+        "id": 14736,
+        "pid": 95326,
+        "bundle": "com.microsoft.VSCode",
+        "app": "Code",
+        "title": "Preview BRAZE.md — adv-web",
+        "role": "AXWindow",
+        "subrole": "AXStandardWindow",
+        "state": "normal",
+        "frame": {
+          "origin": {
+            "x": -1859,
+            "y": -68
+          },
+          "size": {
+            "w": 1859,
+            "h": 1050
+          }
+        },
+        "display_index": 1
+      },
+      "rule": 1,
+      "from": 1,
+      "to": 1,
+      "target": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "change": "none",
+      "requested": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "before": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "actual": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "attempts": 1,
+      "result": "ok"
+    },
+    {
+      "window": {
+        "id": 14733,
+        "pid": 95326,
+        "bundle": "com.microsoft.VSCode",
+        "app": "Code",
+        "title": "aliases_common.sh (Working Tree) (aliases_common.sh) — dotfiles",
+        "role": "AXWindow",
+        "subrole": "AXStandardWindow",
+        "state": "normal",
+        "frame": {
+          "origin": {
+            "x": -1859,
+            "y": -68
+          },
+          "size": {
+            "w": 1859,
+            "h": 1050
+          }
+        },
+        "display_index": 1
+      },
+      "rule": 1,
+      "from": 1,
+      "to": 1,
+      "target": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "change": "none",
+      "requested": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "before": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "actual": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "attempts": 1,
+      "result": "ok"
+    }
+  ],
+  "unmatched": 21
+}
