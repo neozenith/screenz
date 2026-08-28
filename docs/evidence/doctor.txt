@@ -1,0 +1,8 @@
+accessibility: trusted
+host app: Code (com.microsoft.VSCode)
+displays: 3
+  - Built-in Retina Display
+  - PHL 329P1
+  - LG FULL HD
+profile dir: /Users/jpeak/.config/screenz
+symbols: ok
