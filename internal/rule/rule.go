@@ -29,10 +29,15 @@ func (m Matcher) IsSet() bool { return m.raw != "" }
 func (m Matcher) String() string { return m.raw }
 
 // Value returns the YAML spelling of the matcher: a regex keeps its
-// /slashes/, a literal drops CLI quoting (YAML has its own quoting layer).
+// /slashes/, a literal drops CLI quoting (YAML has its own quoting layer)
+// — except a slash-leading literal, which keeps grammar quotes so a
+// reload cannot reinterpret it as a regex.
 func (m Matcher) Value() string {
 	if m.re != nil {
 		return m.raw
+	}
+	if strings.HasPrefix(m.literal, "/") {
+		return `"` + m.literal + `"`
 	}
 	return m.literal
 }
@@ -94,6 +99,10 @@ type Term struct {
 	Value Matcher
 }
 
+// swallowedTerm spots a known grammar key opening a new term inside what
+// the last-slash rule captured as one regex body.
+var swallowedTerm = regexp.MustCompile(` (bundle|app|title|index|name|uuid|serial|built-in|main)=`)
+
 // parseTerms tokenizes the shared term-list grammar: space-separated
 // key=value terms where a value is a bare word, a "quoted string", or a
 // /regex/ terminated at the last slash of the input (ADR4.2).
@@ -126,8 +135,22 @@ func parseTerms(s string) ([]Term, error) {
 			raw = s[i : i+j+2]
 			i += j + 2
 		case i < n && s[i] == '/':
-			last := strings.LastIndexByte(s, '/')
-			if last <= i {
+			// The pattern ends at the last slash (ADR4.2) — but only a
+			// slash outside quoted regions can terminate it, so a later
+			// "quoted/value" cannot capture the terminator.
+			last := -1
+			inQuote := false
+			for k := i + 1; k < n; k++ {
+				switch s[k] {
+				case '"':
+					inQuote = !inQuote
+				case '/':
+					if !inQuote {
+						last = k
+					}
+				}
+			}
+			if last < 0 {
 				return nil, fmt.Errorf("unterminated regex in %q", s)
 			}
 			end := last + 1
@@ -138,6 +161,12 @@ func parseTerms(s string) ([]Term, error) {
 				return nil, fmt.Errorf("regex in %q must end its term", s)
 			}
 			raw = s[i:end]
+			// Two regex terms in one list would silently merge under the
+			// last-slash rule; detect a swallowed sibling term and fail
+			// loudly instead of matching the wrong windows.
+			if swallowedTerm.MatchString(raw) {
+				return nil, fmt.Errorf("ambiguous regex termination in %q: the pattern swallows a later term (put the regex term last, or use only one regex per list)", raw)
+			}
 			i = end
 		default:
 			j := strings.IndexByte(s[i:], ' ')

@@ -16,6 +16,7 @@ const (
 	StateSheet     = "sheet"
 	StateDialog    = "dialog"
 	StateOffscreen = "offscreen"
+	StateUnknown   = "unknown" // AX frame read failed; Frame is not real
 )
 
 // Window is one AX window resolved against the CG window list and displays.
@@ -103,12 +104,15 @@ func Build(raw mac.SnapshotRaw) Snapshot {
 	return snap
 }
 
-// classify decides the window state (ADR2.2). Priority: minimized and
-// hidden are definite AX facts; sheet and dialog come from the role and
-// subrole; a window absent from the on-screen CG list sits on another
-// Space (or is genuinely off screen).
+// classify decides the window state (ADR2.2). Priority: a failed frame
+// read poisons everything downstream (display assignment, CG matching), so
+// it wins; minimized and hidden are definite AX facts; sheet and dialog
+// come from the role and subrole; a window absent from the on-screen CG
+// list sits on another Space (or is genuinely off screen).
 func classify(w mac.WindowRaw, appHidden, onScreen bool) string {
 	switch {
+	case !w.FrameOK:
+		return StateUnknown
 	case w.Minimized:
 		return StateMinimized
 	case appHidden:

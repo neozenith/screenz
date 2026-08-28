@@ -121,6 +121,12 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 		fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 		return 1
 	}
+	// An application whose AX enumeration failed contributed no windows,
+	// so matching ran against an incomplete world — "moved 9 of 10" must
+	// never look like success (ADR2.2), and neither may "never saw 10".
+	for _, e := range snap.AppErrs {
+		fmt.Fprintf(stderr, "screenz apply: cannot enumerate %s (pid %d): %s\n", e.App, e.PID, e.Err)
+	}
 	p, err := plan.Build(ruleSet, snap)
 	if err != nil {
 		fmt.Fprintf(stderr, "screenz apply: %v\n", err)
@@ -130,6 +136,10 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	if *dryRun {
 		printPlan(p, snap, *jsonOut, stdout)
 		return 0
+	}
+	if len(snap.AppErrs) > 0 {
+		fmt.Fprintln(stderr, "screenz apply: refusing to run against an incompletely enumerated window set")
+		return 1
 	}
 
 	results := make([]actionResult, 0, len(p.Actions))
@@ -177,8 +187,14 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 				s.Rule, s.Window.App, s.Window.Title, s.Window.ID, s.Window.DisplayIndex, s.Reason)
 		}
 		tw.Flush()
-		fmt.Fprintf(stdout, "\n%d moved, %d skipped, %d windows matched no rule\n",
-			len(results), len(p.Skipped), p.Unmatched)
+		moved := 0
+		for _, r := range results {
+			if r.Result == "ok" {
+				moved++
+			}
+		}
+		fmt.Fprintf(stdout, "\n%d moved, %d failed, %d skipped, %d windows matched no rule\n",
+			moved, len(results)-moved, len(p.Skipped), p.Unmatched)
 	}
 
 	if failed {
@@ -198,7 +214,8 @@ func printPlan(p plan.Plan, snap discover.Snapshot, jsonOut bool, stdout io.Writ
 			DryRun   bool               `json:"dry_run"`
 			Displays []discover.Display `json:"displays"`
 			Plan     plan.Plan          `json:"plan"`
-		}{1, true, snap.Displays, p})
+			AppErrs  []discover.AppErr  `json:"app_errors,omitempty"`
+		}{1, true, snap.Displays, p, snap.AppErrs})
 		return
 	}
 	tw := newTabwriter(stdout)

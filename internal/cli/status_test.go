@@ -100,6 +100,18 @@ func TestStatusUntrustedExits1(t *testing.T) {
 	}
 }
 
+func TestStatusMissingSymbolsIsNotAGrantProblem(t *testing.T) {
+	d := snapDeps(officeSnapshot(), nil)
+	d.Sys = func(bool) SysInfo { return SysInfo{MissingSymbols: []string{"CGDisplayBounds"}} }
+	code, _, errOut := run(t, []string{"status"}, d)
+	if code != 1 {
+		t.Fatalf("exit = %d, want 1", code)
+	}
+	if !strings.Contains(errOut, "cannot bind macOS symbols") || strings.Contains(errOut, "Accessibility is NOT granted") {
+		t.Errorf("wrong diagnosis:\n%s", errOut)
+	}
+}
+
 func TestStatusSnapshotError(t *testing.T) {
 	code, _, errOut := run(t, []string{"status"}, snapDeps(discover.Snapshot{}, errors.New("cannot bind macOS symbols: X")))
 	if code != 1 {

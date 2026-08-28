@@ -33,8 +33,10 @@ func ParseTolerance(s string) (Tolerance, error) {
 		num = rest
 	}
 	v, err := strconv.ParseFloat(num, 64)
-	if err != nil || v < 0 {
-		return Tolerance{}, fmt.Errorf("tolerance %q: want a non-negative number of points or N%%", s)
+	// ParseFloat accepts "Inf" and "NaN"; an infinite tolerance would
+	// silently switch verification off, which ADR3.1 forbids.
+	if err != nil || v < 0 || math.IsInf(v, 0) || math.IsNaN(v) {
+		return Tolerance{}, fmt.Errorf("tolerance %q: want a non-negative finite number of points or N%%", s)
 	}
 	t.Value = v
 	return t, nil

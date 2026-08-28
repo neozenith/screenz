@@ -183,9 +183,14 @@ func TestProfileSaveUsageAndIOErrors(t *testing.T) {
 	if code, out, _ := run(t, []string{"profile", "save", "--help"}, d); code != 0 || !strings.Contains(out, "usage:") {
 		t.Fatalf("bare help exit=%d", code)
 	}
+	// Saving alias rules into a NEW profile is refused (no displays map).
+	code, _, errOut := run(t, []string{"profile", "save", "fresh", "--match", "bundle=a", "--display", "laptop", "--region", "maximize"}, d)
+	if code != 1 || !strings.Contains(errOut, `alias "laptop"`) {
+		t.Fatalf("alias to new profile: exit=%d stderr=%q", code, errOut)
+	}
 	// Corrupt existing file: append fails with exit 1.
 	writeProfile(t, home, "broken", "version: 1\nname: broken\ncolor: red\nrules: []\n")
-	code, _, errOut := run(t, []string{"profile", "save", "broken", "--match", "bundle=a", "--display", "index=1", "--region", "maximize"}, d)
+	code, _, errOut = run(t, []string{"profile", "save", "broken", "--match", "bundle=a", "--display", "index=1", "--region", "maximize"}, d)
 	if code != 1 || !strings.Contains(errOut, "parse") {
 		t.Fatalf("exit=%d stderr=%q", code, errOut)
 	}
@@ -272,6 +277,19 @@ func TestProfileStatusJSONAndEdgeCases(t *testing.T) {
 	d.Displays = func() ([]discover.Display, error) { return nil, errStub("no displays") }
 	if code, _, errOut := run(t, []string{"profile", "status"}, d); code != 1 || !strings.Contains(errOut, "no displays") {
 		t.Fatal("displays error not surfaced")
+	}
+}
+
+func TestProfileStatusReadDirError(t *testing.T) {
+	d, home := profDeps(t)
+	// Make the profiles path a file: ReadDir fails with ENOTDIR, which
+	// must surface instead of masquerading as "no profiles".
+	if err := os.WriteFile(filepath.Join(home, "profiles"), []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	code, _, errOut := run(t, []string{"profile", "status"}, d)
+	if code != 1 || !strings.Contains(errOut, "profile status:") {
+		t.Fatalf("exit=%d stderr=%q", code, errOut)
 	}
 }
 

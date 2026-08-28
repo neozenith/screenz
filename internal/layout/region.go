@@ -40,15 +40,6 @@ var namedRegions = map[string]span{
 	"bottom-right":     {0.5, 0.5, 1, 1},
 }
 
-// Names lists the named regions for help text, sorted by the caller.
-func Names() []string {
-	out := make([]string, 0, len(namedRegions))
-	for k := range namedRegions {
-		out = append(out, k)
-	}
-	return out
-}
-
 // ParseRegion parses a region literal: a name from the catalogue,
 // grid=CxR, or unit=x,y,w,h.
 func ParseRegion(s string) (Region, error) {

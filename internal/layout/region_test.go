@@ -1,8 +1,6 @@
 package layout
 
 import (
-	"sort"
-	"strings"
 	"testing"
 
 	"github.com/joshpeak/screenz/internal/mac"
@@ -162,17 +160,6 @@ func TestRegionString(t *testing.T) {
 	}
 }
 
-func TestNames(t *testing.T) {
-	names := Names()
-	sort.Strings(names)
-	if len(names) != 14 {
-		t.Fatalf("got %d names: %s", len(names), strings.Join(names, ","))
-	}
-	if names[0] != "bottom-half" || names[len(names)-1] != "top-right" {
-		t.Errorf("unexpected catalogue: %v", names)
-	}
-}
-
 func TestParseTolerance(t *testing.T) {
 	cases := []struct {
 		in      string
@@ -186,6 +173,11 @@ func TestParseTolerance(t *testing.T) {
 		{"-1", Tolerance{}, true},
 		{"abc", Tolerance{}, true},
 		{"%", Tolerance{}, true},
+		// Inf/NaN parse as floats but would switch verification off.
+		{"Inf", Tolerance{}, true},
+		{"+Inf", Tolerance{}, true},
+		{"Inf%", Tolerance{}, true},
+		{"NaN", Tolerance{}, true},
 	}
 	for _, tc := range cases {
 		got, err := ParseTolerance(tc.in)

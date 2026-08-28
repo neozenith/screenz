@@ -137,7 +137,7 @@ func TestBuildDisplaysOrdersByRowThenX(t *testing.T) {
 }
 
 func window(pos mac.CGPoint, size mac.CGSize, title string) mac.WindowRaw {
-	return mac.WindowRaw{Title: title, Role: "AXWindow", Subrole: "AXStandardWindow", Pos: pos, Size: size}
+	return mac.WindowRaw{Title: title, Role: "AXWindow", Subrole: "AXStandardWindow", FrameOK: true, Pos: pos, Size: size}
 }
 
 func TestBuildResolvesWindows(t *testing.T) {
@@ -223,6 +223,9 @@ func TestClassifyStates(t *testing.T) {
 		{"dialog", func(w *mac.WindowRaw) { w.Subrole = "AXDialog" }, false, true, StateDialog},
 		{"offscreen", func(w *mac.WindowRaw) {}, false, false, StateOffscreen},
 		{"normal", func(w *mac.WindowRaw) {}, false, true, StateNormal},
+		// A failed frame read wins over every other classification: the
+		// zero-valued frame must never be mistaken for a real one.
+		{"unknown wins", func(w *mac.WindowRaw) { w.FrameOK = false; w.Minimized = true }, true, true, StateUnknown},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

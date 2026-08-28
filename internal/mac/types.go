@@ -58,13 +58,16 @@ type AppRaw struct {
 }
 
 // WindowRaw is one AX window with the attributes discovery needs. El stays
-// alive for later placement in the same process.
+// alive for later placement in the same process. FrameOK is false when the
+// AXPosition/AXSize read failed — Pos/Size are then zero values that must
+// not be mistaken for a real frame.
 type WindowRaw struct {
 	El        AXElement
 	Title     string
 	Role      string
 	Subrole   string
 	Minimized bool
+	FrameOK   bool
 	Pos       CGPoint
 	Size      CGSize
 }

@@ -103,7 +103,11 @@ func runProfileStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	if fs.NArg() == 1 {
 		paths = []string{filepath.Join(dir, fs.Arg(0)+".yaml")}
 	} else {
-		entries, _ := os.ReadDir(dir)
+		entries, err := os.ReadDir(dir)
+		if err != nil && !os.IsNotExist(err) {
+			fmt.Fprintf(stderr, "screenz profile status: %v\n", err)
+			return 1
+		}
 		for _, e := range entries {
 			if strings.HasSuffix(e.Name(), ".yaml") {
 				paths = append(paths, filepath.Join(dir, e.Name()))

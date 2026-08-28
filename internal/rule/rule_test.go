@@ -28,6 +28,9 @@ func TestParseSelectorAndMatch(t *testing.T) {
 		// Last-slash termination: slashes inside the pattern need no escaping.
 		{`title=/repo/main/`, win("b", "a", "x repo/main y"), true},
 		{`title=/repo/main/`, win("b", "a", "repo main"), false},
+		// A later quoted value containing '/' cannot capture the terminator.
+		{`title=/Work/ app="A/B"`, win("b", "A/B", "Work — Inbox"), true},
+		{`title=/Work/ app="A/B"`, win("b", "Other", "Work — Inbox"), false},
 		{`app=Code title=screenz`, win("b", "Code", "screenz"), true},
 	}
 	for _, tc := range cases {
@@ -54,6 +57,9 @@ func TestParseSelectorErrors(t *testing.T) {
 		"", "   ", "bundle", "=x", "state=normal", "title=/unterminated",
 		`title="unterminated`, "title=/a/x", "title=/a/ix", "title=",
 		"a b=c", `title=/(?=lookahead)/`, "bundle=a title=/a/ x",
+		// Two regex terms would silently merge under the last-slash rule;
+		// the parser must fail loudly instead of matching wrong windows.
+		`app=/Chrome/ title=/Work/`,
 	} {
 		if _, err := ParseSelector(bad); err == nil {
 			t.Errorf("ParseSelector(%q) accepted", bad)
@@ -82,6 +88,12 @@ func TestParseMatcherDirect(t *testing.T) {
 	re, _ := ParseMatcher(`/Work/i`)
 	if re.Value() != "/Work/i" {
 		t.Errorf("regex Value() = %q", re.Value())
+	}
+	// A slash-leading literal keeps grammar quotes in its YAML spelling so
+	// a reload cannot reinterpret it as a regex.
+	slash, _ := ParseMatcher(`"/foo"`)
+	if slash.Value() != `"/foo"` {
+		t.Errorf("slash literal Value() = %q", slash.Value())
 	}
 	if !m.IsSet() || (Matcher{}).IsSet() {
 		t.Error("IsSet wrong")

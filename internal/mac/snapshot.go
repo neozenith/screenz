@@ -49,8 +49,10 @@ func Snapshot(timeoutSeconds float32) SnapshotRaw {
 				Subrole: w.String("AXSubrole"),
 			}
 			raw.Minimized, _ = w.Bool("AXMinimized")
-			raw.Pos, _ = w.Point("AXPosition")
-			raw.Size, _ = w.Size("AXSize")
+			var posOK, sizeOK bool
+			raw.Pos, posOK = w.Point("AXPosition")
+			raw.Size, sizeOK = w.Size("AXSize")
+			raw.FrameOK = posOK && sizeOK
 			aw.Windows = append(aw.Windows, raw)
 		}
 		snap.Apps = append(snap.Apps, aw)

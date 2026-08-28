@@ -55,7 +55,7 @@ COVEREXCLUDE := -e /cmd/screenz -e /internal/mac -e /internal/place
 
 .DEFAULT_GOAL := help
 
-.PHONY: all bootstrap build build-all check clean coverage dist fmt help install itest prepare race release test tidy vet
+.PHONY: all bootstrap build build-all check clean coverage dist fmt fmt-check help install itest prepare race release test tidy vet
 
 all: check build ## Run all confidence checks and build the local binary.
 
@@ -79,6 +79,12 @@ bootstrap: $(GO) | prepare ## Download and verify the host's pinned project-loca
 fmt: | prepare $(GO) ## Format all Go source files.
 	$(GO) fmt $(PKGS)
 
+# `go fmt` rewrites files, which silently *passes* unformatted code in CI;
+# the check tier must fail on it instead.
+fmt-check: | prepare $(GO) ## Fail when any Go source file is unformatted.
+	@unformatted="$$($(TMP_ROOT)/.go-toolchain/bin/gofmt -l cmd internal)"; \
+	if [ -n "$$unformatted" ]; then echo "unformatted files:" >&2; echo "$$unformatted" >&2; exit 1; fi
+
 tidy: | prepare $(GO) ## Resolve dependencies and update go.mod and go.sum.
 	$(GO) mod tidy
 
@@ -96,7 +102,7 @@ coverage: | prepare $(GO) ## Run tests and require 100 percent statement coverag
 vet: | prepare $(GO) ## Run Go's static analysis checks.
 	$(GO) vet $(PKGS)
 
-check: fmt vet race coverage ## Format, vet, race-test, and verify full coverage.
+check: fmt-check vet race coverage ## Verify formatting, vet, race-test, and full coverage.
 
 itest: | prepare $(GO) ## Run the real-window integration tier (fails, never skips, without the Accessibility grant).
 	$(GO) test -tags integration -count=1 ./internal/mac/... ./internal/place/... ./internal/discover/...

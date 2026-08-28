@@ -27,18 +27,28 @@ import (
 //
 // It never activates the application (ADR3.2) — activation exists for a
 // single focused window and would strobe focus across a 16-window apply.
-func Place(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) Result {
-	res := Result{Requested: target}
+func Place(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) (res Result) {
+	res = Result{Requested: target}
 	res.Before.Origin, _ = win.Point("AXPosition")
 	res.Before.Size, _ = win.Size("AXSize")
 
 	if eui, ok := app.Bool("AXEnhancedUserInterface"); ok && eui {
 		app.SetBool("AXEnhancedUserInterface", false)
-		defer app.SetBool("AXEnhancedUserInterface", true)
+		// A failed restore would leave the app's enhanced-UI mode
+		// disabled permanently; record it instead of discarding the code.
+		defer func() {
+			if rc := app.SetBool("AXEnhancedUserInterface", true); rc != 0 {
+				if res.Err != "" {
+					res.Err += "; "
+				}
+				res.Err += "restore AXEnhancedUserInterface: " + mac.AXErrorString(rc)
+			}
+		}()
 	}
 
 	for attempt := 1; attempt <= 3; attempt++ {
 		res.Attempts = attempt
+		res.Err = "" // only the final attempt's errors describe the result
 		if attempt == 3 {
 			time.Sleep(25 * time.Millisecond)
 		}

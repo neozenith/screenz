@@ -348,6 +348,51 @@ rules:
 	}
 }
 
+// A slash-leading literal must survive the save/load round trip as a
+// literal, not come back as a regex.
+func TestSlashLeadingLiteralRoundTrips(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "p.yaml")
+	rules := parseRules(t, "--match", `title="/foo"`, "--display", "index=1", "--region", "maximize")
+	if err := WriteNew(path, "p", rules); err != nil {
+		t.Fatal(err)
+	}
+	p, err := Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := p.Rules[0].Match
+	if !m.Matches(mkWin("b", "a", "/foo")) {
+		t.Fatalf("literal /foo lost: %+v", m)
+	}
+	if m.Matches(mkWin("b", "a", "xx/fooyy")) {
+		t.Fatal("reloaded as regex instead of exact literal")
+	}
+}
+
+// WriteNew writes no displays map, so alias rules must be rejected loudly
+// instead of producing a profile that can never apply.
+func TestWriteNewRejectsAliasRules(t *testing.T) {
+	rules := parseRules(t, "--match", "bundle=a", "--display", "laptop", "--region", "maximize")
+	err := WriteNew(filepath.Join(t.TempDir(), "p.yaml"), "p", rules)
+	if err == nil || !strings.Contains(err.Error(), `alias "laptop"`) {
+		t.Fatalf("err = %v", err)
+	}
+}
+
+func TestWriteFileAtomicErrors(t *testing.T) {
+	dir := t.TempDir()
+	locked := filepath.Join(dir, "locked")
+	if err := os.Mkdir(locked, 0o555); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chmod(locked, 0o755) })
+	rules := parseRules(t, "--match", "bundle=a", "--display", "index=1", "--region", "maximize")
+	if err := WriteNew(filepath.Join(locked, "p.yaml"), "p", rules); err == nil {
+		t.Fatal("write into a read-only directory accepted")
+	}
+}
+
 func TestPath(t *testing.T) {
 	env := func(k string) string {
 		if k == "SCREENZ_HOME" {

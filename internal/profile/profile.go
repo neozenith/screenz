@@ -114,9 +114,11 @@ func (s scalar) MarshalYAML() (any, error) {
 	return string(s), nil
 }
 
-// cliValue quotes a YAML literal for the CLI term grammar when needed.
+// cliValue quotes a YAML literal for the CLI term grammar when needed. A
+// value already carrying grammar quotes (a slash-leading literal saved by
+// Matcher.Value) or spelled as a regex passes through untouched.
 func cliValue(v string) string {
-	if strings.HasPrefix(v, "/") || !strings.Contains(v, " ") {
+	if strings.HasPrefix(v, `"`) || strings.HasPrefix(v, "/") || !strings.Contains(v, " ") {
 		return v
 	}
 	return `"` + v + `"`
@@ -373,11 +375,29 @@ func Append(path string, rules []*rule.Rule) error {
 	// Marshal cannot fail for these types (every custom marshaler is
 	// error-free), so the error is not a reachable branch.
 	out, _ := yaml.MarshalWithOptions(py, yaml.WithComment(cm), yaml.IndentSequence(true))
-	return os.WriteFile(path, out, 0o644)
+	return writeFileAtomic(path, out)
 }
 
-// WriteNew creates a profile file holding exactly the given rules.
+// writeFileAtomic writes via a sibling temp file and rename so an
+// interrupted save can never leave a truncated profile — profiles carry
+// hand-written comments, so losing one is expensive.
+func writeFileAtomic(path string, data []byte) error {
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, path)
+}
+
+// WriteNew creates a profile file holding exactly the given rules. It
+// writes no displays map, so a rule addressing an alias would produce a
+// profile that always fails to apply — reject it here instead.
 func WriteNew(path, name string, rules []*rule.Rule) error {
+	for i, r := range rules {
+		if r.Display.Alias != "" {
+			return fmt.Errorf("rule %d: display alias %q cannot be saved into a new profile (it has no displays map); use inline display terms, or add the alias under displays: in the profile file first", i+1, r.Display.Alias)
+		}
+	}
 	py := profileYAML{Version: 1, Name: name}
 	for _, r := range rules {
 		py.Rules = append(py.Rules, yamlFromRule(r))
@@ -392,5 +412,5 @@ func WriteNew(path, name string, rules []*rule.Rule) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile(path, out, 0o644)
+	return writeFileAtomic(path, out)
 }

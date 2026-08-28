@@ -53,7 +53,7 @@ func TestApplyExecutesAndReports(t *testing.T) {
 		"RULE", "APP", "TITLE", "WID", "FROM", "TO", "TARGET", "ACTUAL", "RESULT",
 		"repo — main.go", "1512,25,960,1055", "ok",
 		"skipped: offscreen", // the other-Space window is reported, not hidden
-		"1 moved, 1 skipped, 1 windows matched no rule",
+		"1 moved, 0 failed, 1 skipped, 1 windows matched no rule",
 	} {
 		if !strings.Contains(out, want) {
 			t.Errorf("stdout missing %q\n%s", want, out)
@@ -68,6 +68,9 @@ func TestApplyClampedExits1(t *testing.T) {
 	}
 	if !strings.Contains(out, "clamped") {
 		t.Errorf("stdout missing clamped row:\n%s", out)
+	}
+	if !strings.Contains(out, "0 moved, 1 failed") {
+		t.Errorf("summary must not count a failed placement as moved:\n%s", out)
 	}
 }
 
@@ -110,6 +113,78 @@ func TestApplyJSON(t *testing.T) {
 	}
 	if len(rep.Skipped) != 1 || rep.Skipped[0].Reason != "offscreen" || rep.Unmatched != 1 {
 		t.Errorf("skipped/unmatched wrong: %+v", rep)
+	}
+}
+
+// The --json output is the machine-readable contract automation uses to
+// detect failed placements — assert the failure shapes, not just success.
+func TestApplyJSONFailureShapes(t *testing.T) {
+	var rep struct {
+		Actions []struct {
+			Result    string     `json:"result"`
+			Err       string     `json:"err"`
+			Requested mac.CGRect `json:"requested"`
+			Actual    mac.CGRect `json:"actual"`
+			Attempts  int        `json:"attempts"`
+		} `json:"actions"`
+	}
+	code, out, _ := run(t, append([]string{"apply", "--json"}, vscodeRule...), applyDeps("clamped"))
+	if code != 1 {
+		t.Fatalf("clamped: exit = %d, want 1", code)
+	}
+	if err := json.Unmarshal([]byte(out), &rep); err != nil {
+		t.Fatalf("clamped: not JSON: %v\n%s", err, out)
+	}
+	if rep.Actions[0].Result != "clamped" || rep.Actions[0].Attempts != 3 {
+		t.Errorf("clamped action: %+v", rep.Actions[0])
+	}
+	if rep.Actions[0].Actual == rep.Actions[0].Requested {
+		t.Error("clamped action must show the divergent actual frame")
+	}
+
+	code, out, _ = run(t, append([]string{"apply", "--json"}, vscodeRule...), applyDeps("error"))
+	if code != 1 {
+		t.Fatalf("error: exit = %d, want 1", code)
+	}
+	if err := json.Unmarshal([]byte(out), &rep); err != nil {
+		t.Fatalf("error: not JSON: %v\n%s", err, out)
+	}
+	if rep.Actions[0].Result != "error" || !strings.Contains(rep.Actions[0].Err, "AXError -25204") {
+		t.Errorf("error action: %+v", rep.Actions[0])
+	}
+}
+
+// An app whose AX enumeration failed means matching ran against an
+// incomplete world: apply must refuse, and the dry-run must warn.
+func TestApplyRefusesOnAppErrs(t *testing.T) {
+	snap := officeSnapshot()
+	snap.AppErrs = []discover.AppErr{{PID: 88, App: "Hung", Bundle: "com.hung.app", Err: "AXWindows: cannot complete"}}
+	d := applyDeps("ok")
+	d.Snapshot = func() (discover.Snapshot, error) { return snap, nil }
+
+	code, _, errOut := run(t, append([]string{"apply"}, vscodeRule...), d)
+	if code != 1 {
+		t.Fatalf("exit = %d, want 1", code)
+	}
+	for _, want := range []string{"cannot enumerate Hung (pid 88)", "incompletely enumerated"} {
+		if !strings.Contains(errOut, want) {
+			t.Errorf("stderr missing %q:\n%s", want, errOut)
+		}
+	}
+
+	// Dry-run still previews but warns and reports the app errors in JSON.
+	code, out, errOut := run(t, append([]string{"apply", "--dry-run", "--json"}, vscodeRule...), d)
+	if code != 0 {
+		t.Fatalf("dry-run exit = %d, want 0", code)
+	}
+	if !strings.Contains(errOut, "cannot enumerate Hung") {
+		t.Errorf("dry-run stderr missing warning:\n%s", errOut)
+	}
+	var plan struct {
+		AppErrs []discover.AppErr `json:"app_errors"`
+	}
+	if err := json.Unmarshal([]byte(out), &plan); err != nil || len(plan.AppErrs) != 1 {
+		t.Errorf("dry-run JSON missing app_errors: %v %s", err, out)
 	}
 }
 

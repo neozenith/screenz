@@ -7,6 +7,7 @@ package cli
 import (
 	"fmt"
 	"io"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/joshpeak/screenz/internal/discover"
@@ -79,8 +80,14 @@ func newTabwriter(w io.Writer) *tabwriter.Writer {
 
 // requireTrusted enforces ADR1.2 for every AX-reading command: fail loudly
 // with the grant instruction instead of silently reporting an empty world.
+// A machine that could not bind symbols is a different failure — naming
+// the grant there would send the user to System Settings for nothing.
 func requireTrusted(d Deps, stderr io.Writer) bool {
 	info := d.Sys(false)
+	if len(info.MissingSymbols) > 0 {
+		fmt.Fprintf(stderr, "screenz: cannot bind macOS symbols (run 'screenz doctor'): %s\n", strings.Join(info.MissingSymbols, ", "))
+		return false
+	}
 	if !info.Trusted {
 		fmt.Fprint(stderr, grantInstruction(info.HostAppName, info.HostAppBundle))
 		return false

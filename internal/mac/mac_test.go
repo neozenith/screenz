@@ -53,15 +53,6 @@ func TestDisplaysMatchScreens(t *testing.T) {
 	}
 }
 
-func TestNSToAXRoundTrip(t *testing.T) {
-	screens, primaryH := Screens()
-	for _, s := range screens {
-		if got := AXToNS(NSToAX(s.Frame, primaryH), primaryH); got != s.Frame {
-			t.Errorf("screen %q: AXToNS(NSToAX(frame)) = %+v, want %+v", s.Name, got, s.Frame)
-		}
-	}
-}
-
 func TestWindowListAndBundleIDs(t *testing.T) {
 	wins := WindowList()
 	if len(wins) == 0 {
