@@ -83,7 +83,7 @@ vet: | prepare $(GO) ## Run Go's static analysis checks.
 check: fmt vet race coverage ## Format, vet, race-test, and verify full coverage.
 
 itest: | prepare $(GO) ## Run the real-window integration tier (fails, never skips, without the Accessibility grant).
-	$(GO) test -tags integration -count=1 ./internal/mac/... ./internal/discover/...
+	$(GO) test -tags integration -count=1 ./internal/mac/... ./internal/place/... ./internal/discover/...
 
 build: | prepare $(GO) ## Build a CGO-free executable in bin/.
 	mkdir -p $(dir $(BINARY))
