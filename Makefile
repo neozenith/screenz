@@ -31,6 +31,22 @@ export GOTMPDIR := $(TMPDIR)
 
 BINARY := $(PROJECT_ROOT)/bin/screenz
 COVERAGE := $(TMP_ROOT)/coverage.out
+DIST := dist
+
+# Release identity, injected with the goreleaser variable names (G6).
+VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo none)
+DATE := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+BUILT_BY ?= make
+LDFLAGS := -s -w \
+	-X github.com/joshpeak/screenz/internal/cli.version=$(VERSION) \
+	-X github.com/joshpeak/screenz/internal/cli.commit=$(COMMIT) \
+	-X github.com/joshpeak/screenz/internal/cli.date=$(DATE) \
+	-X github.com/joshpeak/screenz/internal/cli.builtBy=$(BUILT_BY)
+
+# cmd/screenz is darwin-only by build tag (G6); on a linux runner the check
+# tiers cover the pure packages, which build and test everywhere.
+PKGS := $(if $(filter darwin,$(GO_OS)),./...,./internal/...)
 
 # Coverage gate scope: every package except cmd/screenz and the two packages
 # that talk to the real window server (internal/mac, internal/place) — those
@@ -61,24 +77,24 @@ help: ## List the documented Make targets.
 bootstrap: $(GO) | prepare ## Download and verify the host's pinned project-local Go toolchain.
 
 fmt: | prepare $(GO) ## Format all Go source files.
-	$(GO) fmt ./...
+	$(GO) fmt $(PKGS)
 
 tidy: | prepare $(GO) ## Resolve dependencies and update go.mod and go.sum.
 	$(GO) mod tidy
 
 test: | prepare $(GO) ## Run the unit test suite.
-	$(GO) test ./...
+	$(GO) test $(PKGS)
 
 race: | prepare $(GO) ## Run the unit tests with the race detector.
-	$(GO) test -race ./...
+	$(GO) test -race $(PKGS)
 
 coverage: | prepare $(GO) ## Run tests and require 100 percent statement coverage.
-	$(GO) test -covermode=atomic -coverprofile=$(COVERAGE) $$($(GO) list ./... | grep -v $(COVEREXCLUDE))
+	$(GO) test -covermode=atomic -coverprofile=$(COVERAGE) $$($(GO) list $(PKGS) | grep -v $(COVEREXCLUDE))
 	$(GO) tool cover -func=$(COVERAGE)
 	@test "$$($(GO) tool cover -func=$(COVERAGE) | awk '/^total:/ {print $$3}')" = "100.0%"
 
 vet: | prepare $(GO) ## Run Go's static analysis checks.
-	$(GO) vet ./...
+	$(GO) vet $(PKGS)
 
 check: fmt vet race coverage ## Format, vet, race-test, and verify full coverage.
 
@@ -89,10 +105,30 @@ build: | prepare $(GO) ## Build a CGO-free executable in bin/.
 	mkdir -p $(dir $(BINARY))
 	CGO_ENABLED=0 $(GO) build -trimpath -o $(BINARY) ./cmd/screenz
 
+build-all: | prepare $(GO) ## Cross-build CGO-free darwin binaries for both architectures.
+	mkdir -p $(dir $(BINARY))
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 $(GO) build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY)-darwin-arm64 ./cmd/screenz
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(GO) build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY)-darwin-amd64 ./cmd/screenz
+
+dist: build-all ## Tar both binaries and write dist/checksums.txt.
+	rm -rf $(DIST)
+	mkdir -p $(DIST)
+	for arch in arm64 amd64; do \
+		cp $(BINARY)-darwin-$$arch $(DIST)/screenz; \
+		tar -czf $(DIST)/screenz_$(VERSION)_darwin_$$arch.tar.gz -C $(DIST) screenz; \
+		rm $(DIST)/screenz; \
+	done
+	cd $(DIST) && $(SHA256SUM) *.tar.gz > checksums.txt
+
+release: ## Tag VERSION=vX.Y.Z and push; the release workflow builds and uploads.
+	@echo "$(VERSION)" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+' || (echo "usage: make release VERSION=vX.Y.Z" >&2; exit 1)
+	git tag $(VERSION)
+	git push origin $(VERSION)
+
 install: | prepare $(GO) ## Install the CGO-free executable into the project-local GOPATH.
 	CGO_ENABLED=0 $(GO) install ./cmd/screenz
 
-clean: ## Remove the project-local tmp/ tree and the local build.
+clean: ## Remove the project-local tmp/ tree, dist/ and the local build.
 	-chmod -R u+w $(TMP_ROOT) 2>/dev/null
-	rm -rf $(TMP_ROOT)
-	rm -f $(BINARY)
+	rm -rf $(TMP_ROOT) $(DIST)
+	rm -f $(BINARY) $(BINARY)-darwin-arm64 $(BINARY)-darwin-amd64

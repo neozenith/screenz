@@ -19,23 +19,6 @@ var (
 	cgRectMakeWithDictionaryRepresentation func(d CFRef, out *CGRect) bool
 )
 
-// DisplayRaw is one CoreGraphics display as reported by the window server.
-// Bounds is in global points with a top-left origin. PixelW/PixelH come from
-// the current display mode because CGDisplayPixelsWide returns points on
-// Retina panels (spike fact).
-type DisplayRaw struct {
-	ID      uint32
-	Main    bool
-	BuiltIn bool
-	UUID    string
-	Vendor  uint32
-	Model   uint32
-	Serial  uint32
-	PixelW  uint64
-	PixelH  uint64
-	Bounds  CGRect
-}
-
 // Displays enumerates the active CoreGraphics displays.
 func Displays() []DisplayRaw {
 	Load()

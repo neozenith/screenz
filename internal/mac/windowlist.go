@@ -14,16 +14,6 @@ const (
 	kCGWindowListExcludeDesktopElements = 1 << 4
 )
 
-// CGWindowRaw is one row of CGWindowListCopyWindowInfo. Titles are omitted
-// without the Screen Recording grant, so titles always come from AX instead.
-type CGWindowRaw struct {
-	Number    int64
-	OwnerPID  int64
-	OwnerName string
-	Layer     int64
-	Bounds    CGRect
-}
-
 // WindowList returns the on-screen CG window rows (all layers; callers
 // filter on Layer == 0 for ordinary windows).
 func WindowList() []CGWindowRaw {
@@ -74,13 +64,6 @@ func BundleID(pid int64) string {
 		return ""
 	}
 	return nsStringToGo(objc.Send[objc.ID](app, selBundleIdentifier))
-}
-
-// AppRaw is one running application with the regular activation policy.
-type AppRaw struct {
-	PID    int64
-	Bundle string
-	Name   string
 }
 
 // RunningApps lists NSWorkspace's regular-activation-policy applications, so

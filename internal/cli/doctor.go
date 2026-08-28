@@ -12,12 +12,37 @@ import (
 
 type doctorReport struct {
 	Schema        int      `json:"schema"`
+	Version       string   `json:"version"`
 	Accessibility string   `json:"accessibility"`
 	HostAppName   string   `json:"host_app_name"`
 	HostAppBundle string   `json:"host_app_bundle"`
+	OSVersion     string   `json:"os_version"`
+	Executable    string   `json:"executable"`
+	Quarantined   bool     `json:"quarantined"`
+	Warnings      []string `json:"warnings,omitempty"`
 	Displays      []string `json:"displays"`
 	ProfileDir    string   `json:"profile_dir"`
 	Missing       []string `json:"missing_symbols,omitempty"`
+}
+
+// osWarnings derives the platform caveats G6 documents: the macOS 13 floor,
+// and the ≥ 26.1 behavior where a path-based TCC grant is enforced but
+// hidden from System Settings, and a quarantined binary (browser download)
+// that Gatekeeper will block.
+func osWarnings(info SysInfo) []string {
+	var out []string
+	if major, minor, ok := osVersionParts(info.OSVersion); ok {
+		if major < 13 {
+			out = append(out, fmt.Sprintf("macOS %s is below the supported floor (13+)", info.OSVersion))
+		}
+		if major > 26 || (major == 26 && minor >= 1) {
+			out = append(out, "macOS >= 26.1 can enforce the Accessibility grant while hiding it from System Settings; if doctor says untrusted after granting, run: tccutil reset Accessibility "+orWord(info.HostAppBundle, "<terminal-bundle-id>")+" and grant again")
+		}
+	}
+	if info.Quarantined {
+		out = append(out, "binary is quarantined (browser download); clear it with: xattr -d com.apple.quarantine "+info.ExePath)
+	}
+	return out
 }
 
 const doctorHelp = `usage: screenz doctor [--json]
@@ -50,9 +75,14 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 	info := d.Sys(true)
 	rep := doctorReport{
 		Schema:        1,
+		Version:       version,
 		Accessibility: "untrusted",
 		HostAppName:   info.HostAppName,
 		HostAppBundle: info.HostAppBundle,
+		OSVersion:     info.OSVersion,
+		Executable:    info.ExePath,
+		Quarantined:   info.Quarantined,
+		Warnings:      osWarnings(info),
 		Displays:      info.DisplayNames,
 		ProfileDir:    profile.Dir(d.Getenv, d.Home),
 		Missing:       info.MissingSymbols,
@@ -66,12 +96,15 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 		enc.SetIndent("", "  ")
 		_ = enc.Encode(rep)
 	} else {
+		fmt.Fprintf(stdout, "screenz: %s\n", rep.Version)
+		fmt.Fprintf(stdout, "macos: %s\n", rep.OSVersion)
 		fmt.Fprintf(stdout, "accessibility: %s\n", rep.Accessibility)
 		host := "unknown"
 		if rep.HostAppName != "" {
 			host = fmt.Sprintf("%s (%s)", rep.HostAppName, rep.HostAppBundle)
 		}
 		fmt.Fprintf(stdout, "host app: %s\n", host)
+		fmt.Fprintf(stdout, "binary: %s\n", orWord(rep.Executable, "unknown"))
 		fmt.Fprintf(stdout, "displays: %d\n", len(rep.Displays))
 		for _, name := range rep.Displays {
 			fmt.Fprintf(stdout, "  - %s\n", name)
@@ -84,6 +117,9 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 			for _, s := range rep.Missing {
 				fmt.Fprintf(stdout, "  - %s\n", s)
 			}
+		}
+		for _, w := range rep.Warnings {
+			fmt.Fprintf(stdout, "warning: %s\n", w)
 		}
 	}
 

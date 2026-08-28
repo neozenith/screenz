@@ -65,9 +65,6 @@ func TrustedWithPrompt() bool {
 	return axIsProcessTrustedWithOptions(CFRef(opts))
 }
 
-// AXElement is one owned AX object reference (application or window).
-type AXElement struct{ ref CFRef }
-
 // Release frees the underlying AX reference.
 func (e AXElement) Release() { Release(e.ref) }
 

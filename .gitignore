@@ -3,3 +3,5 @@
 .codex/
 .*_cache/
 tmp/
+bin/
+dist/

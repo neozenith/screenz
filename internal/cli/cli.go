@@ -21,6 +21,9 @@ type SysInfo struct {
 	HostAppName    string   `json:"host_app_name"`
 	HostAppBundle  string   `json:"host_app_bundle"`
 	DisplayNames   []string `json:"display_names"`
+	OSVersion      string   `json:"os_version"`
+	ExePath        string   `json:"exe_path"`
+	Quarantined    bool     `json:"quarantined"`
 	MissingSymbols []string `json:"missing_symbols,omitempty"`
 }
 
@@ -50,6 +53,9 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 		return runApply(args[1:], stdout, stderr, d)
 	case "profile":
 		return runProfile(args[1:], stdout, stderr, d)
+	case "version", "--version":
+		printVersion(stdout)
+		return 0
 	case "-h", "--help", "help":
 		usage(stdout)
 		return 0
@@ -72,6 +78,7 @@ Commands:
   status    Show windows grouped by application and connected displays.
   apply     Move groups of windows by rules or a profile, verifying every frame.
   profile   Manage named rule-set profiles (status, init, save).
+  version   Print the release version (also --version).
 
 Run 'screenz <command> --help' for command flags.
 `)

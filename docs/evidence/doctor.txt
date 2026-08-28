@@ -1,8 +1,12 @@
+screenz: dev
+macos: 26.6.2
 accessibility: trusted
 host app: Code (com.microsoft.VSCode)
+binary: /Users/jpeak/play/screenz/bin/screenz
 displays: 3
   - Built-in Retina Display
-  - PHL 329P1
-  - LG FULL HD
+  - LU28R55 (1)
+  - LU28R55 (2)
 profile dir: /Users/jpeak/.config/screenz
 symbols: ok
+warning: macOS >= 26.1 can enforce the Accessibility grant while hiding it from System Settings; if doctor says untrusted after granting, run: tccutil reset Accessibility com.microsoft.VSCode and grant again

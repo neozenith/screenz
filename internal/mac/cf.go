@@ -4,9 +4,6 @@ package mac
 
 import "unsafe"
 
-// CFRef is any CFTypeRef (also used for toll-free-bridged NSObject ids).
-type CFRef uintptr
-
 const (
 	kCFStringEncodingUTF8 = 0x08000100
 	kCFNumberSInt64Type   = 4

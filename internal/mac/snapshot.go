@@ -4,36 +4,6 @@ package mac
 
 import "sort"
 
-// WindowRaw is one AX window with the attributes discovery needs. El stays
-// alive for later placement in the same process.
-type WindowRaw struct {
-	El        AXElement
-	Title     string
-	Role      string
-	Subrole   string
-	Minimized bool
-	Pos       CGPoint
-	Size      CGSize
-}
-
-// AppWindows is one application's AX enumeration result.
-type AppWindows struct {
-	App     AppRaw
-	AppEl   AXElement
-	Hidden  bool
-	Err     string
-	Windows []WindowRaw
-}
-
-// SnapshotRaw is everything the pure discovery layer needs from the OS.
-type SnapshotRaw struct {
-	Displays  []DisplayRaw
-	Screens   []ScreenRaw
-	PrimaryH  float64
-	Apps      []AppWindows
-	CGWindows []CGWindowRaw
-}
-
 // Snapshot gathers displays, screens and every application's AX windows.
 // The pid set is the union of NSWorkspace's regular applications and the
 // CG window list's layer-0 owners, so hidden apps and other-Space windows

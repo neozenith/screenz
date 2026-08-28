@@ -1,5 +1,3 @@
-//go:build darwin
-
 package mac
 
 // CGPoint, CGSize and CGRect are all-float structs: on darwin/arm64 a CGRect

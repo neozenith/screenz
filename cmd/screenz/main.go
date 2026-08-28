@@ -14,6 +14,7 @@ import (
 	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/mac"
 	"github.com/joshpeak/screenz/internal/place"
+	"golang.org/x/sys/unix"
 )
 
 func main() { os.Exit(run()) }
@@ -65,6 +66,14 @@ func sysInfo(prompt bool) cli.SysInfo {
 	screens, _ := mac.Screens()
 	for _, s := range screens {
 		info.DisplayNames = append(info.DisplayNames, s.Name)
+	}
+	info.OSVersion, _ = unix.Sysctl("kern.osproductversion")
+	if exe, err := os.Executable(); err == nil {
+		info.ExePath = exe
+		// Getxattr returns the attribute size when present; ENOATTR when not.
+		if n, err := unix.Getxattr(exe, "com.apple.quarantine", nil); err == nil && n >= 0 {
+			info.Quarantined = true
+		}
 	}
 	return info
 }

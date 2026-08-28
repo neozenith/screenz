@@ -26,17 +26,6 @@ func nsString(s string) objc.ID {
 // any raw char* handling (keeps `go vet`'s unsafeptr check clean).
 func nsStringToGo(id objc.ID) string { return goString(CFRef(id)) }
 
-// ScreenRaw is one NSScreen. Frame and VisibleFrame keep AppKit's
-// bottom-left origin; discover flips them with NSToAX. VisibleFrame is the
-// usable area — the menu bar and Dock are already carved out.
-type ScreenRaw struct {
-	ID           uint32 // deviceDescription[NSScreenNumber], joins DisplayRaw.ID
-	Name         string
-	Scale        float64
-	Frame        CGRect
-	VisibleFrame CGRect
-}
-
 // Screens enumerates NSScreen.screens and returns the primary screen height
 // (screens[0].frame height) — the anchor for every NS→AX coordinate flip.
 func Screens() ([]ScreenRaw, float64) {
