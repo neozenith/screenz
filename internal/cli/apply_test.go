@@ -169,8 +169,8 @@ func TestApplyUsageErrors(t *testing.T) {
 		want string
 	}{
 		{"bad flag", []string{"apply", "--nope"}, "flag provided but not defined"},
-		{"positional", []string{"apply", "office", "--match", "bundle=a"}, "unexpected argument"},
-		{"no rules", []string{"apply"}, "no rules given"},
+		{"two positionals", []string{"apply", "office", "extra"}, "unexpected argument"},
+		{"no rules", []string{"apply"}, "no profile or rules given"},
 		{"missing region", []string{"apply", "--match", "bundle=a", "--display", "index=1"}, "missing --region"},
 		{"sibling before match", []string{"apply", "--display", "index=1"}, "--display given before any --match"},
 		{"bad selector", []string{"apply", "--match", "state=weird"}, `selector key "state"`},

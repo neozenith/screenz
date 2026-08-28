@@ -1,0 +1,22 @@
+# screenz profile "laptop-only" — written by: screenz profile save laptop-only
+# Apply with:   screenz apply laptop-only
+# Preview with: screenz apply --dry-run laptop-only
+version: 1
+name: laptop-only
+rules:
+  - match:
+      bundle: com.microsoft.VSCode
+    display:
+      built-in: true
+    region: maximize
+  - match:
+      app: Google Chrome
+    display:
+      built-in: true
+    region: left-half
+  - match:
+      bundle: com.tinyspeck.slackmacgap
+    display:
+      built-in: true
+    region: right-half
+    each: false

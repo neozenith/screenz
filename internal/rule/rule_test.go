@@ -75,6 +75,14 @@ func TestParseMatcherDirect(t *testing.T) {
 	if err != nil || !m.Match("quoted value") || m.Match("other") {
 		t.Errorf("quoted matcher wrong: %v %+v", err, m)
 	}
+	// Value(): the YAML spelling drops CLI quoting, regexes keep slashes.
+	if m.Value() != "quoted value" {
+		t.Errorf("Value() = %q", m.Value())
+	}
+	re, _ := ParseMatcher(`/Work/i`)
+	if re.Value() != "/Work/i" {
+		t.Errorf("regex Value() = %q", re.Value())
+	}
 	if !m.IsSet() || (Matcher{}).IsSet() {
 		t.Error("IsSet wrong")
 	}

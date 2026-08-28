@@ -28,6 +28,15 @@ func (m Matcher) IsSet() bool { return m.raw != "" }
 // String returns the original literal (lossless for profile save).
 func (m Matcher) String() string { return m.raw }
 
+// Value returns the YAML spelling of the matcher: a regex keeps its
+// /slashes/, a literal drops CLI quoting (YAML has its own quoting layer).
+func (m Matcher) Value() string {
+	if m.re != nil {
+		return m.raw
+	}
+	return m.literal
+}
+
 // Match reports whether the field satisfies the matcher.
 func (m Matcher) Match(s string) bool {
 	if m.re != nil {

@@ -6,17 +6,21 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/joshpeak/screenz/internal/discover"
 	"github.com/joshpeak/screenz/internal/mac"
 	"github.com/joshpeak/screenz/internal/plan"
+	"github.com/joshpeak/screenz/internal/profile"
 	"github.com/joshpeak/screenz/internal/rule"
 )
 
-const applyHelp = `usage: screenz apply [--dry-run] [--json] <rule flags...>
+const applyHelp = `usage: screenz apply [PROFILE] [--dry-run] [--json] [rule flags...]
 
-Apply placement rules to the live window set in one invocation. Every
+Apply placement rules to the live window set in one invocation. With a
+PROFILE name, the profile's rules run first and any inline rule flags are
+appended after them; display aliases resolve through the profile. Every
 --match opens a new rule; --display, --region, --gap, --tolerance, --first
 and --order bind to the most recent rule (ADR4.1). A window is placed by
 the FIRST rule it matches. Display selectors resolve against connected
@@ -56,6 +60,11 @@ type actionResult struct {
 }
 
 func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
+	name := ""
+	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+		name = args[0]
+		args = args[1:]
+	}
 	fs := flag.NewFlagSet("apply", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	dryRun := fs.Bool("dry-run", false, "print the plan only")
@@ -72,18 +81,37 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 		return 2
 	}
 	if fs.NArg() > 0 {
-		fmt.Fprintf(stderr, "screenz apply: unexpected argument %q\n", fs.Arg(0))
-		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
-		return 2
-	}
-	if len(rules.Rules) == 0 {
-		fmt.Fprintln(stderr, "screenz apply: no rules given (start one with --match)")
-		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
-		return 2
+		if name != "" || fs.NArg() > 1 {
+			fmt.Fprintf(stderr, "screenz apply: unexpected argument %q\n", fs.Arg(0))
+			fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
+			return 2
+		}
+		name = fs.Arg(0)
 	}
 	if err := rules.Validate(); err != nil {
 		fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 		return 2
+	}
+	if name == "" && len(rules.Rules) == 0 {
+		fmt.Fprintln(stderr, "screenz apply: no profile or rules given (start a rule with --match)")
+		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
+		return 2
+	}
+
+	ruleSet := rules.Rules
+	if name != "" {
+		prof, err := profile.Load(profile.Path(d.Getenv, d.Home, name))
+		if err != nil {
+			fmt.Fprintf(stderr, "screenz apply: %v\n", err)
+			return 1
+		}
+		// Profile rules first, inline rules appended after (G5); an
+		// unresolved alias exits before any window moves.
+		ruleSet, err = prof.Resolved(rules.Rules)
+		if err != nil {
+			fmt.Fprintf(stderr, "screenz apply: %v\n", err)
+			return 1
+		}
 	}
 
 	info := d.Sys(false)
@@ -96,7 +124,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 		fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 		return 1
 	}
-	p, err := plan.Build(rules.Rules, snap)
+	p, err := plan.Build(ruleSet, snap)
 	if err != nil {
 		fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 		return 1

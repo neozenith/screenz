@@ -30,6 +30,7 @@ type Deps struct {
 	Home     string
 	Sys      func(prompt bool) SysInfo
 	Snapshot func() (discover.Snapshot, error)
+	Displays func() ([]discover.Display, error)
 	Place    func(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) place.Result
 }
 
@@ -47,6 +48,8 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 		return runStatus(args[1:], stdout, stderr, d)
 	case "apply":
 		return runApply(args[1:], stdout, stderr, d)
+	case "profile":
+		return runProfile(args[1:], stdout, stderr, d)
 	case "-h", "--help", "help":
 		usage(stdout)
 		return 0
@@ -67,7 +70,8 @@ func usage(w io.Writer) {
 Commands:
   doctor    Check the Accessibility grant, displays, and symbol bindings.
   status    Show windows grouped by application and connected displays.
-  apply     Move groups of windows by rules, verifying every frame.
+  apply     Move groups of windows by rules or a profile, verifying every frame.
+  profile   Manage named rule-set profiles (status, init, save).
 
 Run 'screenz <command> --help' for command flags.
 `)

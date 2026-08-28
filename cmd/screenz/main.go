@@ -25,6 +25,7 @@ func run() int {
 		Home:     home,
 		Sys:      sysInfo,
 		Snapshot: snapshot,
+		Displays: displays,
 		Place:    place.Place,
 	})
 }
@@ -36,6 +37,16 @@ func snapshot() (discover.Snapshot, error) {
 		return discover.Snapshot{}, fmt.Errorf("cannot bind macOS symbols: %s", strings.Join(m, ", "))
 	}
 	return discover.Build(mac.Snapshot(1.0)), nil
+}
+
+// displays resolves just the connected displays — no Accessibility needed,
+// so profile status works before the grant exists.
+func displays() ([]discover.Display, error) {
+	if m := mac.Missing(); len(m) > 0 {
+		return nil, fmt.Errorf("cannot bind macOS symbols: %s", strings.Join(m, ", "))
+	}
+	screens, primaryH := mac.Screens()
+	return discover.BuildDisplays(mac.Displays(), screens, primaryH, mac.WindowList()), nil
 }
 
 // sysInfo gathers the doctor report from the live bridge. When symbols are

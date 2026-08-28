@@ -1,0 +1,20 @@
+$ screenz profile save office --match bundle=com.spotify.client --display laptop --region bottom-half --gap 8
+saved 1 rule(s) to /private/tmp/claude-502/-Users-jpeak-play-screenz/b11f702a-9915-4898-8920-0decd91fc3e7/scratchpad/home2/profiles/office.yaml
+
+$ diff -u examples/profiles/office.yaml $SCREENZ_HOME/profiles/office.yaml
+--- examples/profiles/office.yaml	2026-08-28 18:42:53
++++ /private/tmp/claude-502/-Users-jpeak-play-screenz/b11f702a-9915-4898-8920-0decd91fc3e7/scratchpad/home2/profiles/office.yaml	2026-08-28 18:43:04
+@@ -39,3 +39,9 @@
+       bundle: com.tinyspeck.slackmacgap
+     display: laptop
+     region: right-half
++  # added by screenz profile save
++  - match:
++      bundle: com.spotify.client
++    display: laptop
++    region: bottom-half
++    gap: 8.0
+
+$ screenz apply office   # dell-left names /LU28R55/ index=1 — not connected today
+screenz apply: rule 1: display "name=/LU28R55/ index=1" matches 0 of 3 connected displays; exactly one is needed
+exit: 1
