@@ -1,0 +1,38 @@
+$ gh release view v0.1.0 --repo neozenith/screenz
+title:	screenz v0.1.0
+tag:	v0.1.0
+draft:	false
+prerelease:	false
+immutable:	false
+author:	github-actions[bot]
+created:	2026-08-28T09:27:46Z
+published:	2026-08-29T04:54:40Z
+url:	https://github.com/neozenith/screenz/releases/tag/v0.1.0
+asset:	checksums.txt
+asset:	screenz_v0.1.0_darwin_amd64.tar.gz
+asset:	screenz_v0.1.0_darwin_arm64.tar.gz
+
+$ gh release download v0.1.0 --repo neozenith/screenz --pattern "*"
+downloaded
+
+$ shasum -a 256 -c checksums.txt
+screenz_v0.1.0_darwin_amd64.tar.gz: OK
+screenz_v0.1.0_darwin_arm64.tar.gz: OK
+
+$ tar -xzf screenz_v0.1.0_darwin_arm64.tar.gz && ./screenz --version
+screenz v0.1.0 (commit 36074d4, built 2026-08-29T04:54:20Z by github-actions)
+
+$ ./screenz doctor
+screenz: v0.1.0
+macos: 26.6.2
+accessibility: trusted
+host app: Code (com.microsoft.VSCode)
+binary: /private/tmp/claude-502/-Users-jpeak-play-screenz/b11f702a-9915-4898-8920-0decd91fc3e7/scratchpad/install-test/screenz
+displays: 3
+  - Built-in Retina Display
+  - LU28R55 (1)
+  - LU28R55 (2)
+profile dir: /Users/jpeak/.config/screenz
+symbols: ok
+warning: macOS >= 26.1 can enforce the Accessibility grant while hiding it from System Settings; if doctor says untrusted after granting, run: tccutil reset Accessibility com.microsoft.VSCode and grant again
+exit: 0
