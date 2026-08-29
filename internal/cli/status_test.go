@@ -100,6 +100,41 @@ func TestStatusUntrustedExits1(t *testing.T) {
 	}
 }
 
+// --match filters windows only (OR across repeats); displays stay complete.
+func TestStatusMatchFilters(t *testing.T) {
+	code, out, _ := run(t, []string{"status", "--match", "app=Code", "--match", `app="Google Chrome"`}, snapDeps(officeSnapshot(), nil))
+	if code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	for _, want := range []string{"repo — main.go", "notes — todo.md", "Work — Inbox", "LU28R55 (1)", "Built-in Retina Display"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("stdout missing %q\n%s", want, out)
+		}
+	}
+
+	code, out, _ = run(t, []string{"status", "--json", "--match", "title=/Work/"}, snapDeps(officeSnapshot(), nil))
+	if code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	var rep struct {
+		Displays []discover.Display `json:"displays"`
+		Windows  []discover.Window  `json:"windows"`
+	}
+	if err := json.Unmarshal([]byte(out), &rep); err != nil {
+		t.Fatal(err)
+	}
+	if len(rep.Windows) != 1 || rep.Windows[0].Title != "Work — Inbox" {
+		t.Errorf("filtered windows wrong: %+v", rep.Windows)
+	}
+	if len(rep.Displays) != 2 {
+		t.Errorf("displays must not be filtered: %d", len(rep.Displays))
+	}
+
+	if code, _, errOut := run(t, []string{"status", "--match", "color=red"}, snapDeps(officeSnapshot(), nil)); code != 2 || !strings.Contains(errOut, `selector key "color"`) {
+		t.Fatalf("bad selector: exit=%d stderr=%q", code, errOut)
+	}
+}
+
 func TestStatusMissingSymbolsIsNotAGrantProblem(t *testing.T) {
 	d := snapDeps(officeSnapshot(), nil)
 	d.Sys = func(bool) SysInfo { return SysInfo{MissingSymbols: []string{"CGDisplayBounds"}} }

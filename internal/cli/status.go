@@ -8,17 +8,50 @@ import (
 	"io"
 
 	"github.com/joshpeak/screenz/internal/discover"
+	"github.com/joshpeak/screenz/internal/rule"
 )
 
-const statusHelp = `usage: screenz status [--json]
+const statusHelp = `usage: screenz status [--json] [--match TERMS ...]
 
 Show every on-screen window grouped by application (bundle id) and every
 connected display with stable identity. Coordinates are AX global points
 (origin at the top-left of the main display, y down).
 
 Flags:
-  --json    Emit {"schema":1,"displays":[…],"windows":[…]} JSON.
+  --match TERMS  Show only windows matching the selector (same grammar as
+                 apply: bundle=, app=, title=; values may be "quoted" or
+                 /regex/i). Repeat to OR several selectors, e.g.
+                 --match app=Code --match 'app="Microsoft Edge"'.
+                 Displays are always listed in full.
+  --json         Emit {"schema":1,"displays":[…],"windows":[…]} JSON.
 `
+
+// matchList collects repeated --match selectors; a window is shown when ANY
+// selector matches (OR), unlike apply where each --match opens its own rule.
+type matchList struct{ sels []rule.Selector }
+
+func (m *matchList) String() string { return "" }
+
+func (m *matchList) Set(s string) error {
+	sel, err := rule.ParseSelector(s)
+	if err != nil {
+		return err
+	}
+	m.sels = append(m.sels, sel)
+	return nil
+}
+
+func (m *matchList) keep(w discover.Window) bool {
+	if len(m.sels) == 0 {
+		return true
+	}
+	for _, sel := range m.sels {
+		if sel.Matches(w) {
+			return true
+		}
+	}
+	return false
+}
 
 // statusJSON is the machine-readable status shape; apply's plan JSON reuses
 // the same displays/windows object shapes (G2/G4 contract).
@@ -33,6 +66,8 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	fs := flag.NewFlagSet("status", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	jsonOut := fs.Bool("json", false, "emit JSON")
+	matches := &matchList{}
+	fs.Var(matches, "match", "show only windows matching this selector (repeatable)")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, statusHelp)
@@ -51,6 +86,13 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 		fmt.Fprintf(stderr, "screenz status: %v\n", err)
 		return 1
 	}
+	kept := snap.Windows[:0:0]
+	for _, w := range snap.Windows {
+		if matches.keep(w) {
+			kept = append(kept, w)
+		}
+	}
+	snap.Windows = kept
 
 	if *jsonOut {
 		enc := json.NewEncoder(stdout)
