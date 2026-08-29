@@ -5,7 +5,7 @@ package discover
 import (
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Real-machine invariants over the live window set (ADR1.3: fails, never

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/discover"
 )
 
 func win(bundle, app, title string) discover.Window {

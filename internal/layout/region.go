@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Region describes where windows land on a display's usable frame.

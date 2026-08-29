@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/joshpeak/screenz/internal/profile"
+	"github.com/neozenith/screenz/internal/profile"
 )
 
 type doctorReport struct {

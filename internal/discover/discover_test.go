@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Raw values recorded by the 2026-08-22 spike on the real office setup:

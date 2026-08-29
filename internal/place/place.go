@@ -9,8 +9,8 @@ package place
 import (
 	"time"
 
-	"github.com/joshpeak/screenz/internal/layout"
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Place moves one window to target and verifies every edge against the

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/discover"
 )
 
 // profDeps points SCREENZ_HOME at a fresh directory and serves the office

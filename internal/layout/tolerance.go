@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // DefaultTolerance only absorbs AX's whole-point rounding (ADR3.1).

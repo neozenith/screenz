@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/mac"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 func rect(x, y, w, h float64) mac.CGRect {

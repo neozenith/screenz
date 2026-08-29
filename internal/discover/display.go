@@ -7,7 +7,7 @@ package discover
 import (
 	"sort"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Display joins one CoreGraphics display with its NSScreen. Frames are in

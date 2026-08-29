@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/layout"
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Opens a real TextEdit document, places it left-half on the built-in

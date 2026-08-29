@@ -9,10 +9,10 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/layout"
-	"github.com/joshpeak/screenz/internal/mac"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 // Action is one planned window placement. Rule is the 1-based rule number.

@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/layout"
-	"github.com/joshpeak/screenz/internal/mac"
-	"github.com/joshpeak/screenz/internal/place"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/place"
 )
 
 func rect(x, y, w, h float64) mac.CGRect {

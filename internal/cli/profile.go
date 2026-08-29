@@ -11,9 +11,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/profile"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/profile"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 const profileHelp = `usage: screenz profile <command>

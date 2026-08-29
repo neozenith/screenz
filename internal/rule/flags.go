@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/joshpeak/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/layout"
 )
 
 // List collects rules from repeated flags. Every --match opens a new rule

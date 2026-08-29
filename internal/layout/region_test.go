@@ -3,7 +3,7 @@ package layout
 import (
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Real usable frames from the spike: the built-in Retina with a left Dock

@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 const statusHelp = `usage: screenz status [--json] [--match TERMS ...]

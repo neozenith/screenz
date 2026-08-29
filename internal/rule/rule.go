@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/layout"
 )
 
 // Matcher matches a string field either literally or with a /regex/

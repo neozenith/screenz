@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 func parseRules(t *testing.T, args ...string) []*rule.Rule {

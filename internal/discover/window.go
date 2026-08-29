@@ -3,7 +3,7 @@ package discover
 import (
 	"math"
 
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // Window states (ADR2.2): windows the tool cannot act on are reported with

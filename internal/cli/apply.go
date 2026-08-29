@@ -8,11 +8,11 @@ import (
 	"io"
 	"strings"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/mac"
-	"github.com/joshpeak/screenz/internal/plan"
-	"github.com/joshpeak/screenz/internal/profile"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/plan"
+	"github.com/neozenith/screenz/internal/profile"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 const applyHelp = `usage: screenz apply [PROFILE] [--dry-run] [--json] [rule flags...]

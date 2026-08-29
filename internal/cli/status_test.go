@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/mac"
 )
 
 // officeSnapshot mirrors the real office: three displays and windows for

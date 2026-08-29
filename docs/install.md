@@ -9,7 +9,7 @@ account. macOS 13 or newer.
 With the GitHub CLI (no quarantine xattr is set):
 
 ```sh
-gh release download --repo joshpeak/screenz --pattern '*darwin_arm64*'
+gh release download --repo neozenith/screenz --pattern '*darwin_arm64*'
 tar -xzf screenz_*_darwin_arm64.tar.gz
 mkdir -p ~/.local/bin && mv screenz ~/.local/bin/   # any $PATH dir
 screenz --version
@@ -18,7 +18,7 @@ screenz --version
 Or with curl (also quarantine-free) — take the URL from the Releases page:
 
 ```sh
-curl -LO https://github.com/joshpeak/screenz/releases/latest/download/screenz_<version>_darwin_arm64.tar.gz
+curl -LO https://github.com/neozenith/screenz/releases/latest/download/screenz_<version>_darwin_arm64.tar.gz
 ```
 
 Intel Macs use the `darwin_amd64` tarball. Verify against `checksums.txt`

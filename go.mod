@@ -1,4 +1,4 @@
-module github.com/joshpeak/screenz
+module github.com/neozenith/screenz
 
 go 1.27
 

@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/goccy/go-yaml"
-	"github.com/joshpeak/screenz/internal/layout"
-	"github.com/joshpeak/screenz/internal/rule"
+	"github.com/neozenith/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/rule"
 )
 
 // Profile is one named rule set. The YAML keys map one-to-one onto the CLI

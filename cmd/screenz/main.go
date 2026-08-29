@@ -10,10 +10,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/joshpeak/screenz/internal/cli"
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/mac"
-	"github.com/joshpeak/screenz/internal/place"
+	"github.com/neozenith/screenz/internal/cli"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/place"
 	"golang.org/x/sys/unix"
 )
 

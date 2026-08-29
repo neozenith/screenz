@@ -8,7 +8,7 @@ import (
 )
 
 // Release identity, injected by the release build via
-// -ldflags "-X github.com/joshpeak/screenz/internal/cli.version=v1.2.3 …"
+// -ldflags "-X github.com/neozenith/screenz/internal/cli.version=v1.2.3 …"
 // using the goreleaser variable naming convention (G6).
 var (
 	version = "dev"

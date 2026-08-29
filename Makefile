@@ -39,10 +39,10 @@ COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo none)
 DATE := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 BUILT_BY ?= make
 LDFLAGS := -s -w \
-	-X github.com/joshpeak/screenz/internal/cli.version=$(VERSION) \
-	-X github.com/joshpeak/screenz/internal/cli.commit=$(COMMIT) \
-	-X github.com/joshpeak/screenz/internal/cli.date=$(DATE) \
-	-X github.com/joshpeak/screenz/internal/cli.builtBy=$(BUILT_BY)
+	-X github.com/neozenith/screenz/internal/cli.version=$(VERSION) \
+	-X github.com/neozenith/screenz/internal/cli.commit=$(COMMIT) \
+	-X github.com/neozenith/screenz/internal/cli.date=$(DATE) \
+	-X github.com/neozenith/screenz/internal/cli.builtBy=$(BUILT_BY)
 
 # cmd/screenz is darwin-only by build tag (G6); on a linux runner the check
 # tiers cover the pure packages, which build and test everywhere.

@@ -1,6 +1,6 @@
 package place
 
-import "github.com/joshpeak/screenz/internal/mac"
+import "github.com/neozenith/screenz/internal/mac"
 
 // Result reports one window placement with the read-back frame — AX
 // set-frame is a proposal that apps clamp silently, so the read back is the

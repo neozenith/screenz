@@ -10,10 +10,10 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/joshpeak/screenz/internal/discover"
-	"github.com/joshpeak/screenz/internal/layout"
-	"github.com/joshpeak/screenz/internal/mac"
-	"github.com/joshpeak/screenz/internal/place"
+	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/layout"
+	"github.com/neozenith/screenz/internal/mac"
+	"github.com/neozenith/screenz/internal/place"
 )
 
 // SysInfo is the machine report a doctor run needs, gathered impurely by
