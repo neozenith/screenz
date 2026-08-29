@@ -8,8 +8,7 @@
 | **Relates to** | Shares the term grammar with ADR-0011 |
 | **Enforced in** | internal/rule (parseTerms, cutRegex, swallowedTerm) |
 
-> **Lens**: The same regex literal must work unchanged in CLI and YAML, and slashes inside window
-> titles need no escaping; any remaining ambiguity fails loudly, never silently.
+> **Lens**: The same regex literal must work unchanged in CLI and YAML, and slashes inside window titles need no escaping; any remaining ambiguity fails loudly, never silently.
 
 ## Problem
 

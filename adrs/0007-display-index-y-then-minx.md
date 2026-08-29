@@ -8,8 +8,7 @@
 | **Relates to** | - |
 | **Enforced in** | internal/discover (BuildDisplays), internal/rule (bare-integer index shorthand) |
 
-> **Lens**: The human-friendly display number follows the ordering users already know; stable identity
-> always comes from UUID or name, never the index.
+> **Lens**: The human-friendly display number follows the ordering users already know; stable identity always comes from UUID or name, never the index.
 
 ## Problem
 

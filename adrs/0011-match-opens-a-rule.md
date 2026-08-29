@@ -8,8 +8,7 @@
 | **Relates to** | ADR-0014 relies on this for lossless profile saves |
 | **Enforced in** | internal/rule (List, matchFlag, field), internal/profile (YAML key mapping) |
 
-> **Lens**: One quoting layer and identical keys across CLI and YAML; the CLI grammar is the
-> saved-profile grammar.
+> **Lens**: One quoting layer and identical keys across CLI and YAML; the CLI grammar is the saved-profile grammar.
 
 ## Problem
 

@@ -8,8 +8,7 @@
 | **Relates to** | ADR-0008 applies the same honesty to frames |
 | **Enforced in** | internal/discover (states), internal/plan (Skipped), internal/cli status and apply |
 
-> **Lens**: Never hide what the tool cannot act on; every un-actionable window carries a state and
-> every incomplete sweep fails the run.
+> **Lens**: Never hide what the tool cannot act on; every un-actionable window carries a state and every incomplete sweep fails the run.
 
 ## Problem
 

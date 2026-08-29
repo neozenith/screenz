@@ -8,8 +8,7 @@
 | **Relates to** | Serialises the grammar from ADR-0011 |
 | **Enforced in** | internal/profile (strict load, comment map, append-only saves, atomic writes) |
 
-> **Lens**: A hand-commented file is user data; every write must preserve the comments and survive
-> interruption.
+> **Lens**: A hand-commented file is user data; every write must preserve the comments and survive interruption.
 
 ## Problem
 

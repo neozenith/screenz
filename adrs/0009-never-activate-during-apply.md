@@ -8,8 +8,7 @@
 | **Relates to** | - |
 | **Enforced in** | internal/place (Place never calls activate) |
 
-> **Lens**: A bulk operation must not fight the user for focus; place frames through AX and leave the
-> frontmost app alone.
+> **Lens**: A bulk operation must not fight the user for focus; place frames through AX and leave the frontmost app alone.
 
 ## Problem
 

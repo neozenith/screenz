@@ -8,8 +8,7 @@
 | **Relates to** | Feeds the verdict in ADR-0008 |
 | **Enforced in** | internal/place (the attempt loop) |
 
-> **Lens**: Give macOS the settled three attempts before judging a frame; retry immediately, then once
-> more after 25 ms.
+> **Lens**: Give macOS the settled three attempts before judging a frame; retry immediately, then once more after 25 ms.
 
 ## Problem
 

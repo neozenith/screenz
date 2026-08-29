@@ -8,8 +8,7 @@
 | **Relates to** | ADR-0004 covers how the bridge is tested |
 | **Enforced in** | internal/mac, Makefile (CGO_ENABLED=0 -trimpath builds) |
 
-> **Lens**: Bind macOS primitives through purego and keep CGO off; prove each new symbol on real
-> hardware before building anything on it.
+> **Lens**: Bind macOS primitives through purego and keep CGO off; prove each new symbol on real hardware before building anything on it.
 
 ## Problem
 

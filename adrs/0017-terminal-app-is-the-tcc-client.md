@@ -8,8 +8,7 @@
 | **Relates to** | Split from ADR-0001; extends ADR-0003 |
 | **Enforced in** | internal/mac (HostApp), internal/cli (grantInstruction, doctor), docs/install.md |
 
-> **Lens**: Keep screenz shell-launched so the Accessibility grant belongs to the terminal app and
-> survives every rebuild; a self-responsible daemon needs a Developer ID certificate first.
+> **Lens**: Keep screenz shell-launched so the Accessibility grant belongs to the terminal app and survives every rebuild; a self-responsible daemon needs a Developer ID certificate first.
 
 ## Problem
 

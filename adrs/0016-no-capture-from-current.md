@@ -8,8 +8,7 @@
 | **Relates to** | - |
 | **Enforced in** | internal/cli profile (init, save; no --from-current flag) |
 
-> **Lens**: Automate the repeated task, not the rare one; capture features earn their place only when
-> authoring cost dominates.
+> **Lens**: Automate the repeated task, not the rare one; capture features earn their place only when authoring cost dominates.
 
 ## Problem
 

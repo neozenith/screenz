@@ -8,8 +8,7 @@
 | **Relates to** | Tests the bridge from ADR-0002 |
 | **Enforced in** | Makefile (check, coverage, itest), internal/mac and internal/place integration tests, internal/cli Deps seam |
 
-> **Lens**: Keep pure coverage universal and exercise the real OS seam on real hardware; a
-> capability-gated skip is a green lie.
+> **Lens**: Keep pure coverage universal and exercise the real OS seam on real hardware; a capability-gated skip is a green lie.
 
 ## Problem
 
