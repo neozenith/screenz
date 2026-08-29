@@ -15,31 +15,25 @@
 
 ### Symptom
 
-Minimized, hidden and other-Space windows cannot be placed, and an app whose AX enumeration failed
-contributes no windows at all.
+Minimized, hidden and other-Space windows cannot be placed, and an app whose AX enumeration failed contributes no windows at all.
 
 ### Pain point
 
-Silently dropping any of them makes a partial result look like a complete one, which is the exact
-failure this tool exists to prevent.
+Silently dropping any of them makes a partial result look like a complete one, which is the exact failure this tool exists to prevent.
 
 ## Decision
 
 ### The lens
 
-- **Given**: Spaces have no public API (the offscreen skip is permanent) and AX enumeration can fail
-  per app
-- **We prefer**: reporting a state (minimized, hidden, sheet, dialog, offscreen, unknown) and listing
-  skips with reasons, over filtering un-actionable windows out
+- **Given**: Spaces have no public API (the offscreen skip is permanent) and AX enumeration can fail per app
+- **We prefer**: reporting a state (minimized, hidden, sheet, dialog, offscreen, unknown) and listing skips with reasons, over filtering un-actionable windows out
 - **Because**: the user must see what was not done and why, not infer it from absence
 - **Unless**: never; this one is unconditional
 
 ### In practice
 
-- status shows every window with its state; a failed frame read is state unknown, never a zero-valued
-  frame passed off as real.
-- apply lists matched-but-skipped windows with reasons and refuses to run when an application could
-  not be enumerated.
+- status shows every window with its state; a failed frame read is state unknown, never a zero-valued frame passed off as real.
+- apply lists matched-but-skipped windows with reasons and refuses to run when an application could not be enumerated.
 
 ## Consequences
 

@@ -15,29 +15,24 @@
 
 ### Symptom
 
-The only seam that matters (real AX behaviour) cannot run on hosted CI, yet the suite must stay
-runnable on any machine.
+The only seam that matters (real AX behaviour) cannot run on hosted CI, yet the suite must stay runnable on any machine.
 
 ### Pain point
 
-The easy outs both lie: mocks prove the fake, and `t.Skip` when the grant is missing turns the suite
-green with zero coverage of the seam.
+The easy outs both lie: mocks prove the fake, and `t.Skip` when the grant is missing turns the suite green with zero coverage of the seam.
 
 ## Decision
 
 ### The lens
 
-- **Given**: house rules forbid mocks, hand-rolled fakes and capability-gated skips, and hosted macOS
-  runners accept TCC rows yet still time out on AX calls
+- **Given**: house rules forbid mocks, hand-rolled fakes and capability-gated skips, and hosted macOS runners accept TCC rows yet still time out on AX calls
 - **We prefer**: two tiers, over one merged tier or hosted-CI AX testing
-- **Because**: `make check` stays pure and runs anywhere at 100% coverage, while `make itest` opens a
-  real window, places it through the shipped path, and asserts the read back
+- **Because**: `make check` stays pure and runs anywhere at 100% coverage, while `make itest` opens a real window, places it through the shipped path, and asserts the read back
 - **Unless**: hosted runners ever exercise AX reliably, which the evidence says they do not
 
 ### In practice
 
-- check covers every package except cmd/screenz, internal/mac and internal/place; those three are
-  itest's job.
+- check covers every package except cmd/screenz, internal/mac and internal/place; those three are itest's job.
 - An integration test that finds the grant missing fails with the grant instruction; it never skips.
 - Pure CLI tests feed real recorded machine values through injected Deps functions.
 

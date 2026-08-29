@@ -15,25 +15,20 @@
 
 ### Symptom
 
-An ad-hoc signed binary that owns its own TCC grant loses it on every rebuild, because TCC keys it on
-the binary's CDHash.
+An ad-hoc signed binary that owns its own TCC grant loses it on every rebuild, because TCC keys it on the binary's CDHash.
 
 ### Pain point
 
-Users would re-grant Accessibility after every update, and would not know why, since System Settings
-shows the app list, not the hash bookkeeping.
+Users would re-grant Accessibility after every update, and would not know why, since System Settings shows the app list, not the hash bookkeeping.
 
 ## Decision
 
 ### The lens
 
-- **Given**: a shell-launched tool inherits its terminal host app's grant, so the Go linker's ad-hoc
-  signature never matters
-- **We prefer**: documenting and testing screenz only as a shell-launched tool, over a LaunchAgent or
-  daemon mode
+- **Given**: a shell-launched tool inherits its terminal host app's grant, so the Go linker's ad-hoc signature never matters
+- **We prefer**: documenting and testing screenz only as a shell-launched tool, over a LaunchAgent or daemon mode
 - **Because**: the grant then keys on the terminal app and survives rebuilds and updates
-- **Unless**: daemon mode is ever justified and a Developer ID certificate is acquired to give the
-  binary a stable identity
+- **Unless**: daemon mode is ever justified and a Developer ID certificate is acquired to give the binary a stable identity
 
 ### In practice
 

@@ -15,30 +15,24 @@
 
 ### Symptom
 
-Profiles are commented specs, and yaml.v3 drops comments on struct marshal while being archived
-upstream.
+Profiles are commented specs, and yaml.v3 drops comments on struct marshal while being archived upstream.
 
 ### Pain point
 
-A save that strips the user's comments, or a crash that truncates the file, destroys hand-authored
-content that cannot be regenerated.
+A save that strips the user's comments, or a crash that truncates the file, destroys hand-authored content that cannot be regenerated.
 
 ## Decision
 
 ### The lens
 
-- **Given**: comments must round-trip and the library landscape offers goccy's comment map as the
-  maintained option
-- **We prefer**: goccy/go-yaml with Strict decoding and CommentToMap/WithComment, over yaml.v3 or a
-  release-candidate v4
+- **Given**: comments must round-trip and the library landscape offers goccy's comment map as the maintained option
+- **We prefer**: goccy/go-yaml with Strict decoding and CommentToMap/WithComment, over yaml.v3 or a release-candidate v4
 - **Because**: unknown keys error instead of vanishing, and comments survive the round trip
-- **Unless**: a maintained yaml v4 stabilises with equivalent comment support, which would prompt a
-  re-evaluation
+- **Unless**: a maintained yaml v4 stabilises with equivalent comment support, which would prompt a re-evaluation
 
 ### In practice
 
-- Saves are append-only so existing comment paths stay valid, block style only, written via temp-file
-  rename.
+- Saves are append-only so existing comment paths stay valid, block style only, written via temp-file rename.
 - Blank lines do not survive a save and flow-style comments are lost; the template avoids both.
 
 ## Consequences

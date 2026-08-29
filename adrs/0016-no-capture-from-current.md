@@ -19,18 +19,15 @@ A capture-from-current command looks convenient: snapshot today's layout into a 
 
 ### Pain point
 
-Captured selectors over-match (the title regex that splits browser profiles cannot be inferred), and
-captured regions describe today's frames rather than intent, so every capture needs hand-editing anyway.
+Captured selectors over-match (the title regex that splits browser profiles cannot be inferred), and captured regions describe today's frames rather than intent, so every capture needs hand-editing anyway.
 
 ## Decision
 
 ### The lens
 
 - **Given**: profiles are authored a handful of times ever, while the context switch repeats daily
-- **We prefer**: profile init (a commented template) and profile save from rule flags, over a
-  --from-current capture
-- **Because**: a capture mapper is surface without payoff and would force a snap-or-fail policy that
-  contradicts strict verification
+- **We prefer**: profile init (a commented template) and profile save from rule flags, over a --from-current capture
+- **Because**: a capture mapper is surface without payoff and would force a snap-or-fail policy that contradicts strict verification
 - **Unless**: the number of contexts or machines grows enough that authoring cost dominates
 
 ### In practice

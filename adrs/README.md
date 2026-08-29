@@ -1,16 +1,10 @@
 # Architecture Decision Records
 
-Records follow the template shape: a metadata table, a Lens blockquote (the
-reusable rule, first), then Problem, Decision (Given / We prefer / Because /
-Unless), and Consequences. Read a Lens to apply a decision; open the file
-only for its argument. Decisions are immutable in substance; a change of
-mind is a new ADR that supersedes the old one with links both ways, and
-supersession may retire a single clause (recorded in the earlier record's
-Status and Relates to rows, never by rewriting the clause).
+Records follow the template shape: a metadata table, a Lens blockquote (the reusable rule, first), then Problem, Decision (Given / We prefer / Because / Unless), and Consequences.
+Read a Lens to apply a decision; open the file only for its argument.
+Decisions are immutable in substance; a change of mind is a new ADR that supersedes the old one with links both ways, and supersession may retire a single clause (recorded in the earlier record's Status and Relates to rows, never by rewriting the clause).
 
-Two numbering axes exist by history: files are NNNN ordered, and code
-comments cite the planning-era IDs (ADR1.1 through ADR6.2) carried in each
-record's Plan ID row.
+Two numbering axes exist by history: files are NNNN ordered, and code comments cite the planning-era IDs (ADR1.1 through ADR6.2) carried in each record's Plan ID row.
 
 | File | Plan ID | Lens |
 |------|---------|------|

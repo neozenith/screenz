@@ -14,23 +14,19 @@
 
 ### Symptom
 
-Chromium and Electron apps run many processes; PID grouping splits one app's windows into several
-groups or merges helpers into the wrong one.
+Chromium and Electron apps run many processes; PID grouping splits one app's windows into several groups or merges helpers into the wrong one.
 
 ### Pain point
 
-A rule that says "all VS Code windows" cannot be expressed reliably against PIDs, and profiles would
-encode unstable numbers.
+A rule that says "all VS Code windows" cannot be expressed reliably against PIDs, and profiles would encode unstable numbers.
 
 ## Decision
 
 ### The lens
 
 - **Given**: multi-process apps and profiles that must name applications durably
-- **We prefer**: NSRunningApplication.bundleIdentifier resolved from the window's PID as the group key,
-  over the PID itself
-- **Because**: the bundle id is the stable product identity a profile can name, such as
-  com.microsoft.VSCode
+- **We prefer**: NSRunningApplication.bundleIdentifier resolved from the window's PID as the group key, over the PID itself
+- **Because**: the bundle id is the stable product identity a profile can name, such as com.microsoft.VSCode
 - **Unless**: never; this one is unconditional
 
 ### In practice

@@ -15,28 +15,24 @@
 
 ### Symptom
 
-Without the grant, AX enumeration returns nothing and an unguarded run reports "moved 0 windows" with
-exit 0.
+Without the grant, AX enumeration returns nothing and an unguarded run reports "moved 0 windows" with exit 0.
 
 ### Pain point
 
-That is a silent false success, and the fix is invisible: the grant belongs to the terminal app, not to
-screenz, so users looking for "screenz" in System Settings find nothing.
+That is a silent false success, and the fix is invisible: the grant belongs to the terminal app, not to screenz, so users looking for "screenz" in System Settings find nothing.
 
 ## Decision
 
 ### The lens
 
 - **Given**: TCC attributes a shell-launched tool to its terminal host app
-- **We prefer**: checking the grant first in every AX command and exiting 1 with the host app named,
-  over proceeding and reporting whatever AX returns
+- **We prefer**: checking the grant first in every AX command and exiting 1 with the host app named, over proceeding and reporting whatever AX returns
 - **Because**: a run against an ungranted or unbindable machine can only produce misleading output
 - **Unless**: never; this one is unconditional
 
 ### In practice
 
-- requireTrusted gates status and apply; missing dlopen symbols get their own named error, not the
-  grant instruction.
+- requireTrusted gates status and apply; missing dlopen symbols get their own named error, not the grant instruction.
 - doctor asks with the system prompt option and prints the exact remediation, including `tccutil reset`.
 
 ## Consequences

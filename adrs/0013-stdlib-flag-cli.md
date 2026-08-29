@@ -18,8 +18,7 @@ The CLI needs subcommands, repeated flags and exit-code discipline, which framew
 
 ### Pain point
 
-A framework buys convenience with a dependency, its own conventions, and drift from the house pattern
-used across every other tool.
+A framework buys convenience with a dependency, its own conventions, and drift from the house pattern used across every other tool.
 
 ## Decision
 
@@ -32,8 +31,7 @@ used across every other tool.
 
 ### In practice
 
-- Exit codes: 0 success, 1 runtime error, 2 usage error; help to stdout on request, errors and usage
-  to stderr.
+- Exit codes: 0 success, 1 runtime error, 2 usage error; help to stdout on request, errors and usage to stderr.
 - Read-only verbs are named status.
 
 ## Consequences

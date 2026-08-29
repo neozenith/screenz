@@ -19,8 +19,7 @@ Rectangle activates an app after a cross-display move, which is fine for one foc
 
 ### Pain point
 
-Across a 16-window context switch, per-window activation would strobe focus, reorder the window stack,
-and interrupt whatever the user is doing.
+Across a 16-window context switch, per-window activation would strobe focus, reorder the window stack, and interrupt whatever the user is doing.
 
 ## Decision
 
@@ -33,8 +32,7 @@ and interrupt whatever the user is doing.
 
 ### In practice
 
-- place.Place performs the set-size, set-position, set-size recipe with no NSRunningApplication
-  activation anywhere.
+- place.Place performs the set-size, set-position, set-size recipe with no NSRunningApplication activation anywhere.
 
 ## Consequences
 

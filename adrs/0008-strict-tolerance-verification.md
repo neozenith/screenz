@@ -15,26 +15,20 @@
 
 ### Symptom
 
-AX set-frame is a proposal: apps clamp to minimum sizes and aspect ratios silently, and the call still
-returns success.
+AX set-frame is a proposal: apps clamp to minimum sizes and aspect ratios silently, and the call still returns success.
 
 ### Pain point
 
-A silently clamped window reported as placed is the canonical false success; without read back the tool
-cannot be trusted at all.
+A silently clamped window reported as placed is the canonical false success; without read back the tool cannot be trusted at all.
 
 ## Decision
 
 ### The lens
 
 - **Given**: apps clamp frames silently and AX rounds requested sizes to whole points
-- **We prefer**: comparing every edge of the read-back frame against a per-rule numeric tolerance
-  (points, or percent of the target size per axis; default 0.5 pt), over always-strict or a boolean
-  tolerant switch
-- **Because**: the default only absorbs AX rounding, while a known fixed-size app can widen its own
-  rule without turning verification off for everything
-- **Unless**: never; the check can be widened but not disabled, so infinite and NaN tolerances are
-  rejected at parse time
+- **We prefer**: comparing every edge of the read-back frame against a per-rule numeric tolerance (points, or percent of the target size per axis; default 0.5 pt), over always-strict or a boolean tolerant switch
+- **Because**: the default only absorbs AX rounding, while a known fixed-size app can widen its own rule without turning verification off for everything
+- **Unless**: never; the check can be widened but not disabled, so infinite and NaN tolerances are rejected at parse time
 
 ### In practice
 

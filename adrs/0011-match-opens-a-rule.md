@@ -15,29 +15,24 @@
 
 ### Symptom
 
-Stdlib flag has no native repeated groups, but one invocation must carry many selector, display,
-region rules.
+Stdlib flag has no native repeated groups, but one invocation must carry many selector, display, region rules.
 
 ### Pain point
 
-A nested rule string would need its own parser and two or three quoting layers, and profiles would
-store opaque strings.
+A nested rule string would need its own parser and two or three quoting layers, and profiles would store opaque strings.
 
 ## Decision
 
 ### The lens
 
-- **Given**: profile save must serialise flags losslessly, and the flag package documents that
-  Value.Set is called in command-line order
-- **We prefer**: repeated --match opening a rule with sibling flags binding to the most recent one,
-  over --rule strings or positional groups
+- **Given**: profile save must serialise flags losslessly, and the flag package documents that Value.Set is called in command-line order
+- **We prefer**: repeated --match opening a rule with sibling flags binding to the most recent one, over --rule strings or positional groups
 - **Because**: ordering makes the binding deterministic, and identical keys map one-to-one into YAML
 - **Unless**: a future selector cannot be expressed in a single flag value
 
 ### In practice
 
-- A sibling flag before any --match is a usage error (exit 2); every rule requires a display and a
-  region after parsing.
+- A sibling flag before any --match is a usage error (exit 2); every rule requires a display and a region after parsing.
 
 ## Consequences
 

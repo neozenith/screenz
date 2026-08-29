@@ -15,8 +15,7 @@
 
 ### Symptom
 
-Go's os.UserConfigDir on darwin ignores XDG_CONFIG_HOME and returns ~/Library/Application Support,
-a path containing a space.
+Go's os.UserConfigDir on darwin ignores XDG_CONFIG_HOME and returns ~/Library/Application Support, a path containing a space.
 
 ### Pain point
 
@@ -27,10 +26,8 @@ That path is awkward to version in a dotfiles repo and unoverridable in tests an
 ### The lens
 
 - **Given**: the user syncs tool config through dotfiles and needs a cheap override
-- **We prefer**: $SCREENZ_HOME, then $XDG_CONFIG_HOME/screenz, then ~/.config/screenz, over
-  os.UserConfigDir
-- **Because**: the XDG path is syncable and space-free, and the env override keeps a wrong default
-  cheap everywhere
+- **We prefer**: $SCREENZ_HOME, then $XDG_CONFIG_HOME/screenz, then ~/.config/screenz, over os.UserConfigDir
+- **Because**: the XDG path is syncable and space-free, and the env override keeps a wrong default cheap everywhere
 - **Unless**: a GUI or daemon mode ships, where Application Support conventions would apply
 
 ### In practice

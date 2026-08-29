@@ -19,23 +19,20 @@ A window moved to another display keeps its old size on the first attempt.
 
 ### Pain point
 
-macOS clamps the size to the source display until the position lands, so a single set produces an
-honest-but-avoidable clamped verdict.
+macOS clamps the size to the source display until the position lands, so a single set produces an honest-but-avoidable clamped verdict.
 
 ## Decision
 
 ### The lens
 
 - **Given**: the size clamp resolves once the position has landed, usually within milliseconds
-- **We prefer**: re-applying immediately on mismatch and once more after 25 ms, over a single attempt
-  or an open-ended retry loop
+- **We prefer**: re-applying immediately on mismatch and once more after 25 ms, over a single attempt or an open-ended retry loop
 - **Because**: three attempts is the proven prior art and bounds the worst case per window
 - **Unless**: macOS changes the clamp behaviour this recipe compensates for
 
 ### In practice
 
-- Each attempt runs set size, set position, set size, then reads back; the loop exits early once within
-  tolerance.
+- Each attempt runs set size, set position, set size, then reads back; the loop exits early once within tolerance.
 
 ## Consequences
 

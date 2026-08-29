@@ -15,30 +15,25 @@
 
 ### Symptom
 
-screenz must install on client laptops that have no App Store access and no Apple developer tooling,
-the same bar Rectangle clears via a cask.
+screenz must install on client laptops that have no App Store access and no Apple developer tooling, the same bar Rectangle clears via a cask.
 
 ### Pain point
 
-A Homebrew tap needs a second repo and formula sha256 rewrites on every release, and notarisation needs
-an Apple account. All of that serves an audience of zero for a single-user tool.
+A Homebrew tap needs a second repo and formula sha256 rewrites on every release, and notarisation needs an Apple account.
+All of that serves an audience of zero for a single-user tool.
 
 ## Decision
 
 ### The lens
 
-- **Given**: a single-user tool whose binary cross-compiles CGO-free from any runner OS, and CLI
-  downloads (`gh`, `curl`) that never set the quarantine xattr
-- **We prefer**: tag-triggered CI builds uploaded to the GitHub Releases page, over a Homebrew tap or
-  committed per-arch binaries
-- **Because**: Releases already gives versioned, downloadable artifacts straight from CI with no extra
-  machinery and no Apple account
+- **Given**: a single-user tool whose binary cross-compiles CGO-free from any runner OS, and CLI downloads (`gh`, `curl`) that never set the quarantine xattr
+- **We prefer**: tag-triggered CI builds uploaded to the GitHub Releases page, over a Homebrew tap or committed per-arch binaries
+- **Because**: Releases already gives versioned, downloadable artifacts straight from CI with no extra machinery and no Apple account
 - **Unless**: the tool grows an external audience, at which point a prebuilt tap formula is the upgrade path
 
 ### In practice
 
-- A `v*` tag runs `make check` then `make dist` on ubuntu-latest and uploads both darwin tarballs plus
-  checksums.txt to the release.
+- A `v*` tag runs `make check` then `make dist` on ubuntu-latest and uploads both darwin tarballs plus checksums.txt to the release.
 - The repo stays binary-free; installation is `gh release download` or `curl` per docs/install.md.
 
 ## Consequences
