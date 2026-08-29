@@ -3,5 +3,7 @@
 .codex/
 .*_cache/
 tmp/
+.playwright*/
 bin/
 dist/
+.DS_Store
