@@ -7,8 +7,11 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/neozenith/screenz/internal/cli"
 	"github.com/neozenith/screenz/internal/discover"
@@ -21,7 +24,10 @@ func main() { os.Exit(run()) }
 
 func run() int {
 	home, _ := os.UserHomeDir()
+	exe, _ := os.Executable()
 	return cli.Run(os.Args[1:], os.Stdout, os.Stderr, cli.Deps{
+		Fetch:    fetch,
+		ExePath:  exe,
 		Getenv:   os.Getenv,
 		Home:     home,
 		Sys:      sysInfo,
@@ -29,6 +35,21 @@ func run() int {
 		Displays: displays,
 		Place:    place.Place,
 	})
+}
+
+// fetch is the one HTTP dependency (screenz update); GitHub redirects
+// release-asset downloads, which http.Client follows by default.
+func fetch(url string) ([]byte, error) {
+	client := &http.Client{Timeout: 60 * time.Second}
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GET %s: %s", url, resp.Status)
+	}
+	return io.ReadAll(resp.Body)
 }
 
 // snapshot gathers and resolves the live window and display state. A 1 s

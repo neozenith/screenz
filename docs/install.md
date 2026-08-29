@@ -84,3 +84,16 @@ screenz apply office           # the context switch
 Profiles live in `$SCREENZ_HOME`, `$XDG_CONFIG_HOME/screenz` or
 `~/.config/screenz` (ADR5.2) — dotfiles-friendly. Example profiles are in
 [`examples/profiles/`](../examples/profiles/).
+
+## Updating
+
+An installed release updates itself:
+
+```sh
+screenz update --check   # report the latest release
+screenz update           # download, verify checksums, atomic self-replace
+```
+
+The swap writes a sibling file and renames over the binary, so a failed
+update never leaves a truncated executable. A source build (`screenz
+version` says `dev`) refuses to overwrite itself unless you pass `--force`.

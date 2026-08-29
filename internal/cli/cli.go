@@ -39,6 +39,8 @@ type Deps struct {
 	Snapshot func() (discover.Snapshot, error)
 	Displays func() ([]discover.Display, error)
 	Place    func(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) place.Result
+	Fetch    func(url string) ([]byte, error)
+	ExePath  string
 }
 
 // Run dispatches the first positional to its command handler and returns the
@@ -57,6 +59,8 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 		return runApply(args[1:], stdout, stderr, d)
 	case "profile":
 		return runProfile(args[1:], stdout, stderr, d)
+	case "update":
+		return runUpdate(args[1:], stdout, stderr, d)
 	case "version", "--version":
 		printVersion(stdout)
 		return 0
@@ -103,6 +107,7 @@ Commands:
   status    Show windows grouped by application and connected displays.
   apply     Move groups of windows by rules or a profile, verifying every frame.
   profile   Manage named rule-set profiles (status, init, save).
+  update    Self-update from the latest GitHub release (checksum-verified).
   version   Print the release version (also --version).
 
 Run 'screenz <command> --help' for command flags.

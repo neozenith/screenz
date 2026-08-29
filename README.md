@@ -18,7 +18,9 @@ gh release download --repo neozenith/screenz \
 ```
 
 Intel Macs: use `--pattern '*darwin_amd64.tar.gz'`. Pin a version by adding
-its tag: `gh release download v0.1.0 …`.
+its tag: `gh release download v0.1.0 …`. After that first install,
+`screenz update` self-updates in place (checksum-verified atomic swap;
+`--check` to just look).
 
 Then grant Accessibility to **your terminal app** (not the binary — TCC
 attributes a shell-launched tool to the app hosting the shell) and verify:
