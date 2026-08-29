@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR2.2 |
 | **Provenance** | The planning session's negative measures: "moved 9 of 10" must never look like success |
-| **Relates to** | ADR-0008 applies the same honesty to frames |
+| **Relates to** | [ADR-0008](0008-strict-tolerance-verification.md) applies the same honesty to frames |
 | **Enforced in** | internal/discover (states), internal/plan (Skipped), internal/cli status and apply |
 
 > **Lens**: Never hide what the tool cannot act on; every un-actionable window carries a state and every incomplete sweep fails the run.

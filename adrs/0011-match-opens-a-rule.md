@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR4.1 |
 | **Provenance** | The planning session's grammar decision, settled against the documented stdlib flag ordering guarantee |
-| **Relates to** | ADR-0014 relies on this for lossless profile saves |
+| **Relates to** | [ADR-0014](0014-goccy-yaml-comments.md) relies on this for lossless profile saves |
 | **Enforced in** | internal/rule (List, matchFlag, field), internal/profile (YAML key mapping) |
 
 > **Lens**: One quoting layer and identical keys across CLI and YAML; the CLI grammar is the saved-profile grammar.

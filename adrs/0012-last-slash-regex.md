@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR4.2 |
 | **Provenance** | The planning session's grammar decision; the swallowed-term guard was added after review found the two-regex ambiguity |
-| **Relates to** | Shares the term grammar with ADR-0011 |
+| **Relates to** | Shares the term grammar with [ADR-0011](0011-match-opens-a-rule.md) |
 | **Enforced in** | internal/rule (parseTerms, cutRegex, swallowedTerm) |
 
 > **Lens**: The same regex literal must work unchanged in CLI and YAML, and slashes inside window titles need no escaping; any remaining ambiguity fails loudly, never silently.

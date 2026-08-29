@@ -108,7 +108,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 			fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 			return 1
 		}
-		// Profile rules first, inline rules appended after (ADR5.1); an
+		// Profile rules first, inline rules appended after (ADR4.1); an
 		// unresolved alias exits before any window moves.
 		ruleSet, err = prof.Resolved(rules.Rules)
 		if err != nil {

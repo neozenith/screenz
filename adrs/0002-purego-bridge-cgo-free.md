@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR1.1 |
 | **Provenance** | The purego spike on the target machine (2026-08-22, Go 1.27, purego v0.10.2) proved every primitive |
-| **Relates to** | ADR-0004 covers how the bridge is tested |
+| **Relates to** | [ADR-0004](0004-two-test-tiers.md) covers how the bridge is tested |
 | **Enforced in** | internal/mac, Makefile (CGO_ENABLED=0 -trimpath builds) |
 
 > **Lens**: Bind macOS primitives through purego and keep CGO off; prove each new symbol on real hardware before building anything on it.

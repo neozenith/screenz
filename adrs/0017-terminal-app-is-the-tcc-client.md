@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 (split from ADR-0001 on 2026-08-29) |
 | **Plan ID** | ADR6.2 |
 | **Provenance** | Distribution research: the Go linker ad-hoc signs darwin output, and TCC keys a self-responsible binary on its CDHash |
-| **Relates to** | Split from ADR-0001; extends ADR-0003 |
+| **Relates to** | Split from [ADR-0001](0001-distribute-via-github-releases.md); extends [ADR-0003](0003-fail-loudly-without-grant.md) |
 | **Enforced in** | internal/mac (HostApp), internal/cli (grantInstruction, doctor), docs/install.md |
 
 > **Lens**: Keep screenz shell-launched so the Accessibility grant belongs to the terminal app and survives every rebuild; a self-responsible daemon needs a Developer ID certificate first.

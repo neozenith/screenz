@@ -325,7 +325,7 @@ func Load(path string) (*Profile, error) {
 // Resolved returns the profile's rules with display aliases substituted
 // from the displays map. An unknown alias errors here — before any window
 // moves — and the substituted spec still resolves through the plan phase,
-// so an alias that matches zero or two connected displays exits 1 (ADR5.1).
+// so an alias that matches zero or two connected displays exits 1 (ADR2.3).
 func (p *Profile) Resolved(extra []*rule.Rule) ([]*rule.Rule, error) {
 	all := append(append([]*rule.Rule{}, p.Rules...), extra...)
 	out := make([]*rule.Rule, 0, len(all))

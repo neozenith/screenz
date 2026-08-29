@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR1.3 |
 | **Provenance** | House test rules (no mocks, no capability skips) plus evidence that hosted macOS runners time out on AX |
-| **Relates to** | Tests the bridge from ADR-0002 |
+| **Relates to** | Tests the bridge from [ADR-0002](0002-purego-bridge-cgo-free.md) |
 | **Enforced in** | Makefile (check, coverage, itest), internal/mac and internal/place integration tests, internal/cli Deps seam |
 
 > **Lens**: Keep pure coverage universal and exercise the real OS seam on real hardware; a capability-gated skip is a green lie.

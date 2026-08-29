@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR1.2 |
 | **Provenance** | TCC research during planning: grants attach to the terminal host app, which users do not expect |
-| **Relates to** | Extended by ADR-0017 (who the TCC client is) |
+| **Relates to** | Extended by [ADR-0017](0017-terminal-app-is-the-tcc-client.md) (who the TCC client is) |
 | **Enforced in** | internal/cli (requireTrusted, grantInstruction, doctor), internal/mac (Missing) |
 
 > **Lens**: An environment that cannot do the job fails with the responsible party named; it never reports an empty world as success.

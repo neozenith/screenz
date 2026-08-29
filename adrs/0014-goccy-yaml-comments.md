@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR5.1 |
 | **Provenance** | The user asked for commented profiles; library research found yaml.v3 archived and comment-dropping |
-| **Relates to** | Serialises the grammar from ADR-0011 |
+| **Relates to** | Serialises the grammar from [ADR-0011](0011-match-opens-a-rule.md) |
 | **Enforced in** | internal/profile (strict load, comment map, append-only saves, atomic writes) |
 
 > **Lens**: A hand-commented file is user data; every write must preserve the comments and survive interruption.

@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR3.1 |
 | **Provenance** | Rectangle bug history (no read back) plus the spike fact that AX rounds sizes to whole points |
-| **Relates to** | ADR-0010 covers the retry before the verdict |
+| **Relates to** | [ADR-0010](0010-retry-three-times.md) covers the retry before the verdict |
 | **Enforced in** | internal/layout (Tolerance), internal/place (read back), internal/cli apply exit codes |
 
 > **Lens**: Verification is never off. A rule may widen its tolerance numerically and deliberately;

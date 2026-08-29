@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR3.3 |
 | **Provenance** | Rectangle's WindowManager retry loop, adopted as settled prior art |
-| **Relates to** | Feeds the verdict in ADR-0008 |
+| **Relates to** | Feeds the verdict in [ADR-0008](0008-strict-tolerance-verification.md) |
 | **Enforced in** | internal/place (the attempt loop) |
 
 > **Lens**: Give macOS the settled three attempts before judging a frame; retry immediately, then once more after 25 ms.

@@ -5,7 +5,7 @@
 | **Status** | Accepted, 2026-08-28 |
 | **Plan ID** | ADR6.1 |
 | **Provenance** | The screen-organiser planning session; distribution research into Gatekeeper and quarantine behaviour |
-| **Relates to** | Split 2026-08-29: the TCC-client decision moved to ADR-0017 |
+| **Relates to** | Split 2026-08-29: the TCC-client decision moved to [ADR-0017](0017-terminal-app-is-the-tcc-client.md) |
 | **Enforced in** | .github/workflows/release.yml, Makefile (build-all, dist, release), docs/install.md |
 
 > **Lens**: Distribution machinery must match the audience that exists today. CI-built Releases artifacts serve a single user; tap or store machinery waits for a real external audience.
