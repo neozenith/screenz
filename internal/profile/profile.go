@@ -289,6 +289,9 @@ func convert(py profileYAML) (*Profile, error) {
 	if len(py.Displays) > 0 {
 		p.Displays = map[string]rule.DisplaySpec{}
 		for alias, sy := range py.Displays {
+			if _, err := strconv.Atoi(alias); err == nil {
+				return nil, fmt.Errorf("displays.%s: purely numeric alias names are reserved (a bare number in display: means index=N)", alias)
+			}
 			spec, err := sy.toSpec()
 			if err != nil {
 				return nil, fmt.Errorf("displays.%s: %w", alias, err)

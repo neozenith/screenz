@@ -57,8 +57,14 @@ func Build(rules []*rule.Rule, snap discover.Snapshot) (Plan, error) {
 			}
 		}
 		if len(matches) != 1 {
-			return Plan{}, fmt.Errorf("rule %d: display %q matches %d of %d connected displays; exactly one is needed",
+			msg := fmt.Sprintf("rule %d: display %q matches %d of %d connected displays; exactly one is needed",
 				i+1, r.Display, len(matches), len(snap.Displays))
+			if len(matches) == 0 {
+				if explain := r.Display.Explain(snap.Displays); explain != "" {
+					msg += " (" + explain + ")"
+				}
+			}
+			return Plan{}, fmt.Errorf("%s", msg)
 		}
 		targets[i] = matches[0]
 	}

@@ -151,6 +151,65 @@ func TestParseDisplayAndMatch(t *testing.T) {
 	}
 }
 
+func TestParseDisplayBareIndexShorthand(t *testing.T) {
+	spec, err := ParseDisplay("2")
+	if err != nil || spec.Index != 2 || spec.Alias != "" {
+		t.Fatalf("ParseDisplay(2) = %+v, %v", spec, err)
+	}
+	if spec.String() != "2" {
+		t.Errorf("String() = %q, not lossless", spec.String())
+	}
+	if !spec.Matches(display(2, "LU28R55 (1)", "u", 0, false, false)) {
+		t.Error("bare index must match by index")
+	}
+	if _, err := ParseDisplay("0"); err == nil {
+		t.Error("index 0 accepted")
+	}
+}
+
+// The identical-monitors trap: two individually correct terms that AND to
+// nothing must be explained per term, not just counted.
+func TestDisplayExplainDiagnosesConflictingTerms(t *testing.T) {
+	panels := []discover.Display{
+		display(1, "Built-in Retina Display", "UUID-BUILTIN", 0, true, true),
+		display(2, "LU28R55 (1)", "UUID-LEFT", 1129796439, false, false),
+		display(3, "LU28R55 (2)", "UUID-RIGHT", 1129796439, false, false),
+	}
+	spec, err := ParseDisplay(`name="LU28R55 (1)" index=1`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := spec.Explain(panels)
+	for _, want := range []string{
+		"terms AND together",
+		`name="LU28R55 (1)" matches [index=2 LU28R55 (1)]`,
+		"index=1 matches [index=1 Built-in Retina Display]",
+		"remove or fix the conflicting term",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("Explain missing %q:\n%s", want, got)
+		}
+	}
+	// A term matching nothing at all says so.
+	spec, _ = ParseDisplay("name=/XDR/ index=1")
+	if got := spec.Explain(panels); !strings.Contains(got, "name=/XDR/ matches nothing") {
+		t.Errorf("Explain = %q", got)
+	}
+	// Single-term specs have nothing to untangle.
+	spec, _ = ParseDisplay("index=9")
+	if got := spec.Explain(panels); got != "" {
+		t.Errorf("single-term Explain = %q, want empty", got)
+	}
+	// Every term kind renders.
+	spec, _ = ParseDisplay("uuid=UUID-LEFT serial=1129796439 built-in=false main=false")
+	got = spec.Explain(panels)
+	for _, want := range []string{"uuid=UUID-LEFT", "serial=1129796439", "built-in=false", "main=false"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("Explain missing %q:\n%s", want, got)
+		}
+	}
+}
+
 func TestParseDisplayAlias(t *testing.T) {
 	spec, err := ParseDisplay("dell-left")
 	if err != nil || spec.Alias != "dell-left" || !spec.IsSet() {

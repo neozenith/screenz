@@ -255,11 +255,21 @@ func (d DisplaySpec) String() string { return d.raw }
 // IsSet reports whether any addressing was provided.
 func (d DisplaySpec) IsSet() bool { return d.raw != "" }
 
-// ParseDisplay parses a --display value: a bare alias word, or a term list.
+// ParseDisplay parses a --display value: a bare integer (shorthand for
+// index=N — numeric alias names are reserved), a bare alias word, or a
+// term list.
 func ParseDisplay(s string) (DisplaySpec, error) {
 	spec := DisplaySpec{raw: s}
 	if s == "" {
 		return DisplaySpec{}, fmt.Errorf("empty display")
+	}
+	if isDigits(s) {
+		v, err := strconv.Atoi(s)
+		if err != nil || v < 1 {
+			return DisplaySpec{}, fmt.Errorf("display index %q: want an integer >= 1", s)
+		}
+		spec.Index = v
+		return spec, nil
 	}
 	if !strings.ContainsAny(s, "= ") {
 		spec.Alias = s
@@ -329,6 +339,67 @@ func (d DisplaySpec) Matches(disp discover.Display) bool {
 		return false
 	}
 	return true
+}
+
+// isDigits reports whether s is a non-empty run of ASCII digits.
+func isDigits(s string) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i] < '0' || s[i] > '9' {
+			return false
+		}
+	}
+	return len(s) > 0
+}
+
+// term-by-term diagnosis for a spec that matches nothing: each entry is one
+// constraining field of the spec as its own single-term spec.
+func (d DisplaySpec) terms() []DisplaySpec {
+	var out []DisplaySpec
+	if d.Index != 0 {
+		out = append(out, DisplaySpec{Index: d.Index, raw: fmt.Sprintf("index=%d", d.Index)})
+	}
+	if d.Serial != "" {
+		out = append(out, DisplaySpec{Serial: d.Serial, raw: "serial=" + d.Serial})
+	}
+	if d.Name.IsSet() {
+		out = append(out, DisplaySpec{Name: d.Name, raw: "name=" + d.Name.String()})
+	}
+	if d.UUID.IsSet() {
+		out = append(out, DisplaySpec{UUID: d.UUID, raw: "uuid=" + d.UUID.String()})
+	}
+	if d.BuiltIn != nil {
+		out = append(out, DisplaySpec{BuiltIn: d.BuiltIn, raw: fmt.Sprintf("built-in=%t", *d.BuiltIn)})
+	}
+	if d.Main != nil {
+		out = append(out, DisplaySpec{Main: d.Main, raw: fmt.Sprintf("main=%t", *d.Main)})
+	}
+	return out
+}
+
+// Explain diagnoses a multi-term spec that matched no display: terms AND
+// together, and the usual cause is two individually correct terms that
+// contradict each other (name says one panel, index says another). Returns
+// "" when the spec has fewer than two terms — there is nothing to untangle.
+func (d DisplaySpec) Explain(displays []discover.Display) string {
+	terms := d.terms()
+	if len(terms) < 2 {
+		return ""
+	}
+	parts := make([]string, 0, len(terms))
+	for _, t := range terms {
+		var hit []string
+		for _, disp := range displays {
+			if t.Matches(disp) {
+				hit = append(hit, fmt.Sprintf("index=%d %s", disp.Index, disp.Name))
+			}
+		}
+		if len(hit) == 0 {
+			parts = append(parts, t.raw+" matches nothing")
+		} else {
+			parts = append(parts, t.raw+" matches ["+strings.Join(hit, "; ")+"]")
+		}
+	}
+	return "terms AND together: " + strings.Join(parts, ", ") + " — remove or fix the conflicting term"
 }
 
 // Rule is one selector → display → region placement rule.

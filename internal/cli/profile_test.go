@@ -49,6 +49,9 @@ displays:
     name: /XDR/
   panel:
     index: 1
+  conflicted:
+    name: /LU28R55/
+    index: 1
 rules:
   - match:
       bundle: com.microsoft.VSCode
@@ -210,6 +213,7 @@ func TestProfileStatus(t *testing.T) {
 		"laptop", "true", "index=1 Built-in Retina Display",
 		"cinema", "no connected display matches",
 		"panel", "index=1 Built-in Retina Display",
+		"conflicted", "terms AND together", "remove or fix the conflicting term",
 		"broken", "error:",
 	} {
 		if !strings.Contains(out, want) {

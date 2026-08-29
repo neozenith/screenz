@@ -141,6 +141,9 @@ func runProfileStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 				as.Display = fmt.Sprintf("index=%d %s", matches[0].Index, matches[0].Name)
 			case 0:
 				as.Problem = "no connected display matches"
+				if explain := spec.Explain(displays); explain != "" {
+					as.Problem += " (" + explain + ")"
+				}
 			default:
 				as.Problem = fmt.Sprintf("ambiguous: matches %d displays", len(matches))
 			}

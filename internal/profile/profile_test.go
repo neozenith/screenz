@@ -79,6 +79,7 @@ func TestParseErrors(t *testing.T) {
 		{"bad alias word", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: \"dell left\"\n    region: maximize\n", "want key=value"},
 		{"bad display key", "version: 1\nname: x\ndisplays:\n  d:\n    colour: red\nrules: []\n", "unknown field"},
 		{"bad display value", "version: 1\nname: x\ndisplays:\n  d:\n    index: -1\nrules: []\n", "displays.d"},
+		{"numeric alias reserved", "version: 1\nname: x\ndisplays:\n  \"2\":\n    built-in: true\nrules: []\n", "numeric alias names are reserved"},
 		{"bad match regex", "version: 1\nname: x\nrules:\n  - match: {title: /(?=x)/}\n    display: {index: 1}\n    region: maximize\n", "regex"},
 	}
 	for _, tc := range cases {

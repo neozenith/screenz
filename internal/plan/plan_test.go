@@ -195,6 +195,7 @@ func TestDisplayResolutionFailsBeforeAnyMove(t *testing.T) {
 	}{
 		{"zero matches", "index=9", "matches 0 of 3"},
 		{"ambiguous", "name=/LU28R55/", "matches 2 of 3"},
+		{"conflicting terms explained", `name="LU28R55 (1)" index=1`, "terms AND together"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

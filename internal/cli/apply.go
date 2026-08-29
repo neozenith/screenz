@@ -33,7 +33,8 @@ Example (the office context switch):
 
 Rule flags:
   --match TERMS      bundle=, app=, title= terms; values may be "quoted" or /regex/i
-  --display TERMS    index=N, name=, uuid=, serial=N, built-in=BOOL, main=BOOL
+  --display TERMS    a bare index number (e.g. 2), a profile alias, or terms:
+                     index=N, name=, uuid=, serial=N, built-in=BOOL, main=BOOL
   --region REGION    maximize, halves, thirds, quarters, grid=CxR, unit=x,y,w,h
   --gap N            points between window and region edge
   --tolerance T      verification width: points (default 0.5) or N%
