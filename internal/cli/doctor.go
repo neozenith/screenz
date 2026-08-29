@@ -25,7 +25,7 @@ type doctorReport struct {
 	Missing       []string `json:"missing_symbols,omitempty"`
 }
 
-// osWarnings derives the platform caveats G6 documents: the macOS 13 floor,
+// osWarnings derives the platform caveats the install runbook documents: the macOS 13 floor,
 // and the ≥ 26.1 behavior where a path-based TCC grant is enforced but
 // hidden from System Settings, and a quarantined binary (browser download)
 // that Gatekeeper will block.
@@ -71,7 +71,7 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 
 	// Doctor asks with the prompt option so a first run deep-links the
-	// System Settings Accessibility pane (G1).
+	// System Settings Accessibility pane (ADR1.2).
 	info := d.Sys(true)
 	rep := doctorReport{
 		Schema:        1,

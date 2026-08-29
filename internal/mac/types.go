@@ -4,7 +4,7 @@ package mac
 // (discover, layout, plan, rule, profile, cli) compile and test on any OS —
 // the release workflow runs `make check` on ubuntu-latest — while every
 // function that talks to macOS stays behind //go:build darwin, and
-// cmd/screenz itself refuses to build elsewhere (G6).
+// cmd/screenz itself refuses to build elsewhere (ADR6.1).
 
 // CFRef is any CFTypeRef (also used for toll-free-bridged NSObject ids).
 type CFRef uintptr

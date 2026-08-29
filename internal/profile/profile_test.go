@@ -146,7 +146,7 @@ func TestLoadErrors(t *testing.T) {
 	}
 }
 
-// The G5 proof shape: a save on a commented profile changes only the
+// The comment-preservation proof shape (ADR5.1): a save on a commented profile changes only the
 // appended rule — every comment line present before is present after.
 func TestAppendPreservesComments(t *testing.T) {
 	dir := t.TempDir()

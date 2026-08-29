@@ -35,7 +35,10 @@ Rule flags:
   --match TERMS      bundle=, app=, title= terms; values may be "quoted" or /regex/i
   --display TERMS    a bare index number (e.g. 2), a profile alias, or terms:
                      index=N, name=, uuid=, serial=N, built-in=BOOL, main=BOOL
-  --region REGION    maximize, halves, thirds, quarters, grid=CxR, unit=x,y,w,h
+  --region REGION    maximize; left-half/right-half/top-half/bottom-half;
+                     first-third/center-third/last-third,
+                     first-two-thirds/last-two-thirds; top-left/top-right/
+                     bottom-left/bottom-right; grid=CxR; unit=x,y,w,h
   --gap N            points between window and region edge
   --tolerance T      verification width: points (default 0.5) or N%
   --first            place only the first matching window
@@ -105,7 +108,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 			fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 			return 1
 		}
-		// Profile rules first, inline rules appended after (G5); an
+		// Profile rules first, inline rules appended after (ADR5.1); an
 		// unresolved alias exits before any window moves.
 		ruleSet, err = prof.Resolved(rules.Rules)
 		if err != nil {
@@ -205,7 +208,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 }
 
 // printPlan renders the dry-run plan; its JSON reuses the status shapes
-// for displays and windows (G2/G4 contract).
+// for displays and windows (the status/apply JSON contract).
 func printPlan(p plan.Plan, snap discover.Snapshot, jsonOut bool, stdout io.Writer) {
 	if jsonOut {
 		enc := json.NewEncoder(stdout)

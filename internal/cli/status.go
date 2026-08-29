@@ -54,7 +54,7 @@ func (m *matchList) keep(w discover.Window) bool {
 }
 
 // statusJSON is the machine-readable status shape; apply's plan JSON reuses
-// the same displays/windows object shapes (G2/G4 contract).
+// the same displays/windows object shapes (the status/apply JSON contract).
 type statusJSON struct {
 	Schema   int                `json:"schema"`
 	Displays []discover.Display `json:"displays"`

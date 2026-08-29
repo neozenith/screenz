@@ -186,7 +186,7 @@ func TestOSVersionParts(t *testing.T) {
 	}
 }
 
-// The G6 doctor caveats on the real machine shapes: the macOS 13 floor, the
+// The install-runbook doctor caveats on the real machine shapes: the macOS 13 floor, the
 // 26.1+ hidden-grant behavior, and a quarantined browser download.
 func TestDoctorPlatformWarnings(t *testing.T) {
 	base := officeSys(true)(true)

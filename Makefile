@@ -33,7 +33,7 @@ BINARY := $(PROJECT_ROOT)/bin/screenz
 COVERAGE := $(TMP_ROOT)/coverage.out
 DIST := dist
 
-# Release identity, injected with the goreleaser variable names (G6).
+# Release identity, injected with the goreleaser variable names (ADR6.1).
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo none)
 DATE := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -44,7 +44,7 @@ LDFLAGS := -s -w \
 	-X github.com/neozenith/screenz/internal/cli.date=$(DATE) \
 	-X github.com/neozenith/screenz/internal/cli.builtBy=$(BUILT_BY)
 
-# cmd/screenz is darwin-only by build tag (G6); on a linux runner the check
+# cmd/screenz is darwin-only by build tag (ADR6.1); on a linux runner the check
 # tiers cover the pure packages, which build and test everywhere.
 PKGS := $(if $(filter darwin,$(GO_OS)),./...,./internal/...)
 

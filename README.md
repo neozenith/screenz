@@ -22,7 +22,7 @@ its tag: `gh release download v0.1.0 …`. After that first install,
 `screenz update` self-updates in place (checksum-verified atomic swap;
 `--check` to just look).
 
-Then grant Accessibility to **your terminal app** (not the binary — TCC
+Then grant Accessibility to **your terminal app** (not the binary; TCC
 attributes a shell-launched tool to the app hosting the shell) and verify:
 
 ```sh
@@ -38,10 +38,9 @@ Full install and grant runbook (browser downloads, macOS 26.1 caveats,
 
 ## Development
 
-Everything runs through `make` (bootstraps its own pinned Go toolchain):
-`make check` (pure tests, 100% coverage gate), `make itest` (real-window
-integration tier, needs the Accessibility grant), `make build`,
-`make release VERSION=vX.Y.Z`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for build, test tiers and house
+rules, [adrs/](adrs/README.md) for design decisions, and
+[GLOSSARY.md](GLOSSARY.md) for the project vocabulary.
 
 ## License
 

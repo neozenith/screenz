@@ -9,7 +9,7 @@ import (
 
 // Release identity, injected by the release build via
 // -ldflags "-X github.com/neozenith/screenz/internal/cli.version=v1.2.3 …"
-// using the goreleaser variable naming convention (G6).
+// using the goreleaser variable naming convention (ADR6.1).
 var (
 	version = "dev"
 	commit  = "none"

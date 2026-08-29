@@ -15,7 +15,7 @@ mkdir -p ~/.local/bin && mv screenz ~/.local/bin/   # any $PATH dir
 screenz --version
 ```
 
-Or with curl (also quarantine-free) — take the URL from the Releases page:
+Or with curl (also quarantine-free): take the URL from the Releases page:
 
 ```sh
 curl -LO https://github.com/neozenith/screenz/releases/latest/download/screenz_<version>_darwin_arm64.tar.gz
@@ -36,7 +36,7 @@ xattr -d com.apple.quarantine ~/Downloads/screenz
 `screenz doctor` checks its own binary and prints this exact command when
 needed.
 
-## 2. Grant Accessibility — to your terminal app, not to screenz
+## 2. Grant Accessibility to your terminal app, not to screenz
 
 TCC attributes a shell-launched tool to the app that hosts the shell
 (ADR6.2). The grant must be given to **the terminal you run screenz from**:
@@ -54,7 +54,7 @@ Steps:
    run) triggers the system prompt that deep-links the settings pane.
 2. System Settings → Privacy & Security → Accessibility → enable (or add
    via **+**) that app.
-3. Quit and reopen the terminal app, then `screenz doctor` again — it must
+3. Quit and reopen the terminal app, then `screenz doctor` again. It must
    print `accessibility: trusted` and exit 0.
 
 Notes:
@@ -82,7 +82,7 @@ screenz apply office           # the context switch
 ```
 
 Profiles live in `$SCREENZ_HOME`, `$XDG_CONFIG_HOME/screenz` or
-`~/.config/screenz` (ADR5.2) — dotfiles-friendly. Example profiles are in
+`~/.config/screenz` (ADR5.2), which is dotfiles-friendly. Example profiles are in
 [`examples/profiles/`](../examples/profiles/).
 
 ## Updating

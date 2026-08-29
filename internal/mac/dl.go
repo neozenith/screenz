@@ -31,7 +31,7 @@ var (
 
 // register wraps purego.RegisterLibFunc, which panics on a missing symbol.
 // A missing symbol is recorded instead so `screenz doctor` can name it
-// rather than crashing (G1 requires a loud, named failure).
+// rather than crashing (ADR1.2: fail loudly with the missing symbol named).
 func register(fptr any, lib uintptr, name string) {
 	defer func() {
 		if r := recover(); r != nil {
