@@ -10,7 +10,7 @@ Set WindowBar Colorful
 Set BorderRadius 8
 
 Hide
-Type "export PATH=$HOME/.work/bin:$PATH && export SCREENZ_DEMO=../demo-world.json && clear"
+Type "export PATH=$HOME/.work/bin:$PATH && export SCREENZ_DEMO=demo-world.json && clear"
 Enter
 Show
 

@@ -4,6 +4,26 @@ Profile-driven bulk window layout CLI for macOS.
 One command moves whole groups of application windows (by bundle id) onto named display regions, reads every frame back, and exits 0 only when everything landed where it was asked.
 Rules compose from flags and save as commented YAML profiles per context (office, home, client).
 
+![screenz apply: preview, move, verify every frame, exit 0](docs/demos/demo-apply.gif)
+
+The demo is the office context switch: VS Code maximises onto the built-in display, Chrome docks to an external's left half.
+Every `apply` is verified.
+The plan is previewable with `--dry-run`, each moved window's frame is read back, and `TARGET` must equal `ACTUAL` within tolerance for exit 0.
+
+## See your world first
+
+`screenz doctor` names the app that must hold the Accessibility grant and checks every binding.
+`screenz status` shows windows grouped by application and every connected display, filterable with the same `--match` grammar rules use.
+
+![screenz doctor and status: trust check, then the world](docs/demos/demo-status.gif)
+
+## Save the context, replay it forever
+
+A rule that works once becomes a named profile.
+Profiles are commented YAML, and your hand-written comments survive every save.
+
+![screenz profile: save, inspect the YAML, replay](docs/demos/demo-profile.gif)
+
 ## Quickstart
 
 Install the latest release into `~/.work/bin` (no App Store, no Homebrew; `gh` downloads never set the quarantine xattr):
@@ -29,6 +49,18 @@ screenz apply office           # do it, verified
 ```
 
 Full install and grant runbook (browser downloads, macOS 26.1 caveats, `tccutil` reset): [docs/install.md](docs/install.md).
+
+## How the demos are made
+
+The demos are **code**: each GIF renders from a checked-in [VHS](https://github.com/charmbracelet/vhs) tape in [docs/demos/](docs/demos/), so they regenerate deterministically whenever the CLI changes.
+
+```sh
+brew install vhs
+cd docs/demos && vhs demo-apply.tape   # re-render one demo
+```
+
+The tapes run in demo mode ([ADR-0018](adrs/0018-demo-mode-replays-a-recorded-world.md)): `SCREENZ_DEMO=demo-world.json` replays a recorded three-display world through the real pipeline with placement simulated.
+Every line except the ACTUAL column is genuinely computed, `screenz doctor` discloses the mode, and no monitors are needed to regenerate.
 
 ## Development
 

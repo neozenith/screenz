@@ -28,6 +28,11 @@ Both tiers must be green before a commit (ADR-0004, `adrs/`):
   Exit codes: 0 success, 1 runtime error, 2 usage error.
 - Check `adrs/` before re-litigating a design choice; record new binding decisions there.
 
+## Demos
+
+README GIFs render from VHS tapes in [docs/demos/](docs/demos/README.md) through demo mode (ADR-0018, ADR-0019).
+Re-render after CLI output changes: `cd docs/demos && for t in demo-*.tape; do vhs "$t"; done` (needs `brew install vhs`).
+
 ## Releasing
 
 ```sh
