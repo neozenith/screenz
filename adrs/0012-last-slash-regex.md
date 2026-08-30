@@ -1,14 +1,22 @@
-# ADR-0012: Spell regexes as /pattern/, terminated at the last slash
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR4.2 |
-| **Provenance** | The planning session's grammar decision; the swallowed-term guard was added after review found the two-regex ambiguity |
-| **Relates to** | Shares the term grammar with [ADR-0011](0011-match-opens-a-rule.md) |
-| **Enforced in** | internal/rule (parseTerms, cutRegex, swallowedTerm) |
+---
+type: Architecture Decision
+title: Spell regexes as /pattern/, terminated at the last slash
+description: One regex spelling everywhere; remaining ambiguity fails loudly
+tags: [cli, rules, grammar]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR4.2
+provenance: The planning session's grammar decision; the swallowed-term guard was added after review found the two-regex ambiguity
+enforced_in:
+  - internal/rule (parseTerms, cutRegex, swallowedTerm)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: The same regex literal must work unchanged in CLI and YAML, and slashes inside window titles need no escaping; any remaining ambiguity fails loudly, never silently.
+
+## Relates to
+
+- See also [ADR-0011](0011-match-opens-a-rule.md) (shares the term grammar)
 
 ## Problem
 

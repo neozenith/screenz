@@ -1,14 +1,24 @@
-# ADR-0001: Distribute via CI-built artifacts on the GitHub Releases page
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR6.1 |
-| **Provenance** | The screen-organiser planning session; distribution research into Gatekeeper and quarantine behaviour |
-| **Relates to** | Split 2026-08-29: the TCC-client decision moved to [ADR-0017](0017-terminal-app-is-the-tcc-client.md) |
-| **Enforced in** | .github/workflows/release.yml, Makefile (build-all, dist, release), docs/install.md |
+---
+type: Architecture Decision
+title: Distribute via CI-built artifacts on the GitHub Releases page
+description: Distribution machinery must match the audience that exists today
+tags: [distribution, release, ci]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR6.1
+provenance: The screen-organiser planning session; distribution research into Gatekeeper and quarantine behaviour
+enforced_in:
+  - .github/workflows/release.yml
+  - Makefile (build-all, dist, release)
+  - docs/install.md
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Distribution machinery must match the audience that exists today. CI-built Releases artifacts serve a single user; tap or store machinery waits for a real external audience.
+
+## Relates to
+
+- Split to [ADR-0017](0017-terminal-app-is-the-tcc-client.md) (the TCC-client decision moved out on 2026-08-29)
 
 ## Problem
 

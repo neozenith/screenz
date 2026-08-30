@@ -1,12 +1,17 @@
-# ADR-0007: Order display indexes by row, then left to right
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR2.3 |
-| **Provenance** | Rectangle's default display ordering, which the user already lives with |
-| **Relates to** | - |
-| **Enforced in** | internal/discover (BuildDisplays), internal/rule (bare-integer index shorthand) |
+---
+type: Architecture Decision
+title: Order display indexes by row, then left to right
+description: Indexes follow the known ordering; stable identity is UUID or name
+tags: [discovery, displays, ordering]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR2.3
+provenance: Rectangle's default display ordering, which the user already lives with
+enforced_in:
+  - internal/discover (BuildDisplays)
+  - internal/rule (bare-integer index shorthand)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: The human-friendly display number follows the ordering users already know; stable identity always comes from UUID or name, never the index.
 

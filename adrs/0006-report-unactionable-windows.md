@@ -1,14 +1,24 @@
-# ADR-0006: Report windows the tool cannot act on instead of hiding them
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR2.2 |
-| **Provenance** | The planning session's negative measures: "moved 9 of 10" must never look like success |
-| **Relates to** | [ADR-0008](0008-strict-tolerance-verification.md) applies the same honesty to frames |
-| **Enforced in** | internal/discover (states), internal/plan (Skipped), internal/cli status and apply |
+---
+type: Architecture Decision
+title: Report windows the tool cannot act on instead of hiding them
+description: Never hide what the tool cannot act on; incomplete enumeration fails the run
+tags: [discovery, errors]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR2.2
+provenance: "The planning session's negative measures: \"moved 9 of 10\" must never look like success"
+enforced_in:
+  - internal/discover (states)
+  - internal/plan (Skipped)
+  - internal/cli status and apply
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Never hide what the tool cannot act on; every un-actionable window carries a state and every incomplete sweep fails the run.
+
+## Relates to
+
+- See also [ADR-0008](0008-strict-tolerance-verification.md) (applies the same honesty to frames)
 
 ## Problem
 

@@ -1,0 +1,38 @@
+# Architecture Decision Record - structured form of adrs/0013-stdlib-flag-cli.md
+id: ADR-0013
+slug: stdlib-flag-cli
+plan_id: ADR4.3
+title: Use stdlib flag with a hand-rolled subcommand table
+description: Stdlib parsing, hand-rolled dispatch; no CLI framework
+status: accepted
+accepted_on: 2026-08-28
+last_changed_on: 2026-08-28
+tags: [cli, dependencies]
+
+lens: Stdlib parsing with a hand-rolled dispatch table; no CLI framework enters this codebase.
+
+provenance: House CLI rules, applied across languages
+enforced_in:
+  - cmd/screenz
+  - internal/cli (Run dispatch, per-command FlagSets, exit codes)
+
+relates_to: []
+
+problem:
+  symptom: The CLI needs subcommands, repeated flags and exit-code discipline, which frameworks advertise.
+  pain_point: A framework buys convenience with a dependency, its own conventions, and drift from the house pattern used across every other tool.
+
+decision:
+  given: the house rule mandates stdlib parsing and the tool's needs are modest
+  we_prefer: stdlib flag plus a switch on the first positional, over cobra or urfave/cli
+  because: the pattern covers everything needed and stays dependency-free
+  unless: never; this one is unconditional
+  in_practice:
+    - "Exit codes: 0 success, 1 runtime error, 2 usage error; help to stdout on request, errors and usage to stderr."
+    - Read-only verbs are named status.
+
+consequences:
+  pros:
+    - No framework dependency; predictable behaviour.
+  cons:
+    - Repeated FlagSet boilerplate per command, kept small by shared helpers.

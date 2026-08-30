@@ -1,14 +1,23 @@
-# ADR-0011: Each --match opens a rule; sibling flags bind to it
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR4.1 |
-| **Provenance** | The planning session's grammar decision, settled against the documented stdlib flag ordering guarantee |
-| **Relates to** | [ADR-0014](0014-goccy-yaml-comments.md) relies on this for lossless profile saves |
-| **Enforced in** | internal/rule (List, matchFlag, field), internal/profile (YAML key mapping) |
+---
+type: Architecture Decision
+title: Each --match opens a rule; sibling flags bind to it
+description: One quoting layer; the CLI grammar is the saved-profile grammar
+tags: [cli, rules, grammar]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR4.1
+provenance: The planning session's grammar decision, settled against the documented stdlib flag ordering guarantee
+enforced_in:
+  - internal/rule (List, matchFlag, field)
+  - internal/profile (YAML key mapping)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: One quoting layer and identical keys across CLI and YAML; the CLI grammar is the saved-profile grammar.
+
+## Relates to
+
+- Depended on by [ADR-0014](0014-goccy-yaml-comments.md) (relies on this for lossless profile saves)
 
 ## Problem
 

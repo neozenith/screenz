@@ -1,0 +1,41 @@
+# Architecture Decision Record - structured form of adrs/0002-purego-bridge-cgo-free.md
+id: ADR-0002
+slug: purego-bridge-cgo-free
+plan_id: ADR1.1
+title: Bridge to macOS through purego with CGO_ENABLED=0
+description: Bind OS primitives through purego, CGO off; prove each symbol on real hardware first
+status: accepted
+accepted_on: 2026-08-28
+last_changed_on: 2026-08-28
+tags: [macos, ffi, build]
+
+lens: Bind macOS primitives through purego and keep CGO off; prove each new symbol on real hardware before building anything on it.
+
+provenance: The purego spike on the target machine (2026-08-22, Go 1.27, purego v0.10.2) proved every primitive
+enforced_in:
+  - internal/mac
+  - Makefile (CGO_ENABLED=0 -trimpath builds)
+
+relates_to:
+  - relation: tested_by
+    target: ADR-0004
+    note: covers how the bridge is tested
+
+problem:
+  symptom: screenz needs Accessibility, CoreGraphics and AppKit calls from Go, and purego has shipped ABI bugs for exactly the struct-by-value returns those APIs use.
+  pain_point: cgo would require the Xcode command line tools on every build machine and client laptop, and would break the house CGO-free build convention.
+
+decision:
+  given: the spike proved struct-returning CGDisplayBounds, objc.Send[CGRect] exact on arm64, and AX enumerate plus set-frame with read back, all without a crash or ABI fault
+  we_prefer: purego Dlopen + RegisterLibFunc bindings with objc.Send, over cgo
+  because: it keeps CGO_ENABLED=0 and needs no compiler toolchain anywhere
+  unless: a future symbol cannot be bound through purego; cgo then returns as the documented fallback for that symbol alone
+  in_practice:
+    - All OS symbols live in internal/mac behind darwin build tags; missing symbols are recorded, never a panic.
+    - Every new binding is verified against the real window server before use.
+
+consequences:
+  pros:
+    - CGO-free cross-compilation from any OS; no client toolchain.
+  cons:
+    - The C ABI risk is owned here; each binding needs empirical proof.

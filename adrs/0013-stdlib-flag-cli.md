@@ -1,12 +1,17 @@
-# ADR-0013: Use stdlib flag with a hand-rolled subcommand table
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR4.3 |
-| **Provenance** | House CLI rules, applied across languages |
-| **Relates to** | - |
-| **Enforced in** | cmd/screenz, internal/cli (Run dispatch, per-command FlagSets, exit codes) |
+---
+type: Architecture Decision
+title: Use stdlib flag with a hand-rolled subcommand table
+description: Stdlib parsing, hand-rolled dispatch; no CLI framework
+tags: [cli, dependencies]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR4.3
+provenance: House CLI rules, applied across languages
+enforced_in:
+  - cmd/screenz
+  - internal/cli (Run dispatch, per-command FlagSets, exit codes)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Stdlib parsing with a hand-rolled dispatch table; no CLI framework enters this codebase.
 

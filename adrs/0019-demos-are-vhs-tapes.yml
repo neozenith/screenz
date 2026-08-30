@@ -1,0 +1,44 @@
+# Architecture Decision Record - structured form of adrs/0019-demos-are-vhs-tapes.md
+id: ADR-0019
+slug: demos-are-vhs-tapes
+plan_id: null
+title: Animated demos are VHS tapes rendered through demo mode
+description: A demo must be regenerable by script from checked-in sources; a human-at-the-desk recording is a screenshot with extra steps
+status: accepted
+accepted_on: 2026-08-30
+last_changed_on: 2026-08-30
+tags: [demo, documentation, ci]
+
+lens: |-
+  A demo is documentation, and documentation drifts: it must be regenerable by script from checked-in sources.
+  A recording that needs a human at the right desk is a screenshot with extra steps.
+
+provenance: Bakeoff of VHS against asciinema + agg (docs/spikes, removed after reconciliation; both variants live in git history before this commit)
+enforced_in:
+  - docs/demos (tapes + GIFs + world file); README embeds the GIFs
+
+relates_to:
+  - relation: depends_on
+    target: ADR-0018
+    note: renders through demo mode
+
+problem:
+  symptom: "The README needed animated demos, and two toolchains could produce them: VHS (scripted tapes) and asciinema + agg (recorded casts)."
+  pain_point: |-
+    Recorded casts are point-in-time captures: re-recording needs the same machine state, and agg cannot draw window chrome.
+    The choice had to be settled once so demos would not fork by tool.
+
+decision:
+  given: demos must stay true to a moving CLI, and the repo already treats docs drift as a continuous process
+  we_prefer: VHS tapes checked in beside their GIFs under docs/demos, rendered through `SCREENZ_DEMO`
+  because: the tape is the demo (deterministic re-render, CI-capable via vhs-action), and `Set WindowBar` draws the title bar agg cannot
+  unless: demos need terminal replay or a hosted player; then an asciinema cast can be added alongside, not instead
+  in_practice:
+    - "Three tapes cover the narrative: trust + status, verified apply, profile round-trip."
+    - Tapes export `SCREENZ_DEMO=demo-world.json`, so rendering needs no displays and no window moves.
+
+consequences:
+  pros:
+    - Demos regenerate with one command on any machine; demo changes are reviewable text diffs (tape + world file).
+  cons:
+    - GIF binaries live in git and are re-committed on every re-render; VHS sizes in pixels, so column budgets need width arithmetic per tape.

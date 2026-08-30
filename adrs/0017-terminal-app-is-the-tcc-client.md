@@ -1,14 +1,25 @@
-# ADR-0017: The terminal app is the TCC client; no daemon mode
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 (split from ADR-0001 on 2026-08-29) |
-| **Plan ID** | ADR6.2 |
-| **Provenance** | Distribution research: the Go linker ad-hoc signs darwin output, and TCC keys a self-responsible binary on its CDHash |
-| **Relates to** | Split from [ADR-0001](0001-distribute-via-github-releases.md); extends [ADR-0003](0003-fail-loudly-without-grant.md) |
-| **Enforced in** | internal/mac (HostApp), internal/cli (grantInstruction, doctor), docs/install.md |
+---
+type: Architecture Decision
+title: The terminal app is the TCC client; no daemon mode
+description: Shell-launched only; the terminal app owns the grant (split from 0001)
+tags: [macos, accessibility, distribution]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR6.2
+provenance: "Distribution research: the Go linker ad-hoc signs darwin output, and TCC keys a self-responsible binary on its CDHash"
+enforced_in:
+  - internal/mac (HostApp)
+  - internal/cli (grantInstruction, doctor)
+  - docs/install.md
+generated: { by: human:neozenith, at: 2026-08-29T00:00:00Z }
+---
 
 > **Lens**: Keep screenz shell-launched so the Accessibility grant belongs to the terminal app and survives every rebuild; a self-responsible daemon needs a Developer ID certificate first.
+
+## Relates to
+
+- Split from [ADR-0001](0001-distribute-via-github-releases.md)
+- Extends [ADR-0003](0003-fail-loudly-without-grant.md)
 
 ## Problem
 

@@ -1,12 +1,17 @@
-# ADR-0015: Resolve the profile directory dotfiles-first
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR5.2 |
-| **Provenance** | The user versions tool config in a dotfiles repo; darwin's UserConfigDir ignores XDG |
-| **Relates to** | - |
-| **Enforced in** | internal/profile (Dir, Path), doctor's profile dir line |
+---
+type: Architecture Decision
+title: Resolve the profile directory dotfiles-first
+description: "Config is dotfiles-first: env override, XDG, ~/.config; never a path with a space"
+tags: [profiles, config]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR5.2
+provenance: The user versions tool config in a dotfiles repo; darwin's UserConfigDir ignores XDG
+enforced_in:
+  - internal/profile (Dir, Path)
+  - doctor's profile dir line
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Config paths are dotfiles-first: an explicit env override, then XDG, then ~/.config;
 > never a path with a space.

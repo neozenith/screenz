@@ -1,14 +1,22 @@
-# ADR-0014: Use goccy/go-yaml so profile comments survive saves
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR5.1 |
-| **Provenance** | The user asked for commented profiles; library research found yaml.v3 archived and comment-dropping |
-| **Relates to** | Serialises the grammar from [ADR-0011](0011-match-opens-a-rule.md) |
-| **Enforced in** | internal/profile (strict load, comment map, append-only saves, atomic writes) |
+---
+type: Architecture Decision
+title: Use goccy/go-yaml so profile comments survive saves
+description: Hand comments are user data; every write preserves them and survives interruption
+tags: [profiles, yaml, dependencies]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR5.1
+provenance: The user asked for commented profiles; library research found yaml.v3 archived and comment-dropping
+enforced_in:
+  - internal/profile (strict load, comment map, append-only saves, atomic writes)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: A hand-commented file is user data; every write must preserve the comments and survive interruption.
+
+## Relates to
+
+- Depends on [ADR-0011](0011-match-opens-a-rule.md) (serialises the grammar)
 
 ## Problem
 

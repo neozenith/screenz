@@ -55,7 +55,7 @@ COVEREXCLUDE := -e /cmd/screenz -e /internal/mac -e /internal/place
 
 .DEFAULT_GOAL := help
 
-.PHONY: all bootstrap build build-all check clean coverage dist fmt fmt-check help install itest prepare race release test tidy vet
+.PHONY: adrs all bootstrap build build-all check clean coverage dist fmt fmt-check help install itest prepare race release test tidy vet
 
 all: check build ## Run all confidence checks and build the local binary.
 
@@ -103,6 +103,10 @@ vet: | prepare $(GO) ## Run Go's static analysis checks.
 	$(GO) vet $(PKGS)
 
 check: fmt-check vet race coverage ## Verify formatting, vet, race-test, and full coverage.
+
+adrs: ## Regenerate the decision-record markdown, index and graph from adrs/*.yml.
+	uv run --no-project --with PyYAML --with Jinja2 --with jsonschema \
+		adrs/render.py adrs --group-by tag --author human:neozenith
 
 itest: | prepare $(GO) ## Run the real-window integration tier (fails, never skips, without the Accessibility grant).
 	$(GO) test -tags integration -count=1 ./internal/mac/... ./internal/place/... ./internal/discover/...

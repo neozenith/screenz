@@ -1,14 +1,22 @@
-# ADR-0010: Retry a mismatched frame three times with a 25 ms pause
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR3.3 |
-| **Provenance** | Rectangle's WindowManager retry loop, adopted as settled prior art |
-| **Relates to** | Feeds the verdict in [ADR-0008](0008-strict-tolerance-verification.md) |
-| **Enforced in** | internal/place (the attempt loop) |
+---
+type: Architecture Decision
+title: Retry a mismatched frame three times with a 25 ms pause
+description: Three attempts before judging a frame; retry, then once after 25 ms
+tags: [placement, verification]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR3.3
+provenance: Rectangle's WindowManager retry loop, adopted as settled prior art
+enforced_in:
+  - internal/place (the attempt loop)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Give macOS the settled three attempts before judging a frame; retry immediately, then once more after 25 ms.
+
+## Relates to
+
+- See also [ADR-0008](0008-strict-tolerance-verification.md) (feeds the verdict)
 
 ## Problem
 

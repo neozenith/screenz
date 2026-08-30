@@ -1,15 +1,25 @@
-# ADR-0008: Fail strictly on a mismatched frame, with a numeric tolerance
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR3.1 |
-| **Provenance** | Rectangle bug history (no read back) plus the spike fact that AX rounds sizes to whole points |
-| **Relates to** | [ADR-0010](0010-retry-three-times.md) covers the retry before the verdict |
-| **Enforced in** | internal/layout (Tolerance), internal/place (read back), internal/cli apply exit codes |
+---
+type: Architecture Decision
+title: Fail strictly on a mismatched frame, with a numeric tolerance
+description: Verification is never off; widen numerically and deliberately
+tags: [placement, verification]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR3.1
+provenance: Rectangle bug history (no read back) plus the spike fact that AX rounds sizes to whole points
+enforced_in:
+  - internal/layout (Tolerance)
+  - internal/place (read back)
+  - internal/cli apply exit codes
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Verification is never off. A rule may widen its tolerance numerically and deliberately;
 > nothing may disable the check.
+
+## Relates to
+
+- See also [ADR-0010](0010-retry-three-times.md) (covers the retry before the verdict)
 
 ## Problem
 

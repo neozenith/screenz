@@ -1,0 +1,38 @@
+# Architecture Decision Record - structured form of adrs/0007-display-index-y-then-minx.md
+id: ADR-0007
+slug: display-index-y-then-minx
+plan_id: ADR2.3
+title: Order display indexes by row, then left to right
+description: Indexes follow the known ordering; stable identity is UUID or name
+status: accepted
+accepted_on: 2026-08-28
+last_changed_on: 2026-08-28
+tags: [discovery, displays, ordering]
+
+lens: The human-friendly display number follows the ordering users already know; stable identity always comes from UUID or name, never the index.
+
+provenance: Rectangle's default display ordering, which the user already lives with
+enforced_in:
+  - internal/discover (BuildDisplays)
+  - internal/rule (bare-integer index shorthand)
+
+relates_to: []
+
+problem:
+  symptom: Displays need a short human handle, but CG display ids are small unstable ints and identical panels can share a serial number.
+  pain_point: Without a declared ordering, "display 2" means different things after any layout change, and profiles written against numbers break silently.
+
+decision:
+  given: the user's muscle memory comes from Rectangle's ordering, and identical panels are only distinguishable by UUID or the suffixed localized name
+  we_prefer: index numbering top-to-bottom by row then left-to-right, with a bare integer meaning index=N, over arbitrary or CG-id ordering
+  because: it matches the ordering the user already knows, while UUID and name stay the durable keys
+  unless: the reference convention changes; profiles that must survive layout changes already address panels by name or UUID instead
+  in_practice:
+    - Purely numeric alias names are reserved so the integer shorthand stays unambiguous.
+    - Zero-match display specs explain per term what each term would have matched.
+
+consequences:
+  pros:
+    - Quick one-digit tweaks for ad-hoc use; durable names for portable profiles.
+  cons:
+    - Indexes shift when displays connect or move; that is documented, not hidden.

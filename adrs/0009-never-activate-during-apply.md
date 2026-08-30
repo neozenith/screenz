@@ -1,12 +1,16 @@
-# ADR-0009: Never activate applications during a bulk apply
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR3.2 |
-| **Provenance** | Rectangle prior art: its cross-display move force-activates the app afterwards |
-| **Relates to** | - |
-| **Enforced in** | internal/place (Place never calls activate) |
+---
+type: Architecture Decision
+title: Never activate applications during a bulk apply
+description: Bulk operations never fight the user for focus
+tags: [placement, focus]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR3.2
+provenance: "Rectangle prior art: its cross-display move force-activates the app afterwards"
+enforced_in:
+  - internal/place (Place never calls activate)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: A bulk operation must not fight the user for focus; place frames through AX and leave the frontmost app alone.
 

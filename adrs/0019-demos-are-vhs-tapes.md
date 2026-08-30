@@ -1,15 +1,22 @@
-# ADR-0019: Animated demos are VHS tapes rendered through demo mode
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-30 |
-| **Plan ID** | - |
-| **Provenance** | Bakeoff of VHS against asciinema + agg (docs/spikes, removed after reconciliation; both variants live in git history before this commit) |
-| **Relates to** | Renders through demo mode from [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) |
-| **Enforced in** | docs/demos (tapes + GIFs + world file); README embeds the GIFs |
+---
+type: Architecture Decision
+title: Animated demos are VHS tapes rendered through demo mode
+description: A demo must be regenerable by script from checked-in sources; a human-at-the-desk recording is a screenshot with extra steps
+tags: [demo, documentation, ci]
+status: accepted
+accepted_on: 2026-08-30
+provenance: Bakeoff of VHS against asciinema + agg (docs/spikes, removed after reconciliation; both variants live in git history before this commit)
+enforced_in:
+  - docs/demos (tapes + GIFs + world file); README embeds the GIFs
+generated: { by: human:neozenith, at: 2026-08-30T00:00:00Z }
+---
 
 > **Lens**: A demo is documentation, and documentation drifts: it must be regenerable by script from checked-in sources.
 > A recording that needs a human at the right desk is a screenshot with extra steps.
+
+## Relates to
+
+- Depends on [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) (renders through demo mode)
 
 ## Problem
 

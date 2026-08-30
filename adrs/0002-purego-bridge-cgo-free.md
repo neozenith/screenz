@@ -1,14 +1,23 @@
-# ADR-0002: Bridge to macOS through purego with CGO_ENABLED=0
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR1.1 |
-| **Provenance** | The purego spike on the target machine (2026-08-22, Go 1.27, purego v0.10.2) proved every primitive |
-| **Relates to** | [ADR-0004](0004-two-test-tiers.md) covers how the bridge is tested |
-| **Enforced in** | internal/mac, Makefile (CGO_ENABLED=0 -trimpath builds) |
+---
+type: Architecture Decision
+title: Bridge to macOS through purego with CGO_ENABLED=0
+description: Bind OS primitives through purego, CGO off; prove each symbol on real hardware first
+tags: [macos, ffi, build]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR1.1
+provenance: The purego spike on the target machine (2026-08-22, Go 1.27, purego v0.10.2) proved every primitive
+enforced_in:
+  - internal/mac
+  - Makefile (CGO_ENABLED=0 -trimpath builds)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Bind macOS primitives through purego and keep CGO off; prove each new symbol on real hardware before building anything on it.
+
+## Relates to
+
+- Tested by [ADR-0004](0004-two-test-tiers.md) (covers how the bridge is tested)
 
 ## Problem
 

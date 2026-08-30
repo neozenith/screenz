@@ -1,14 +1,24 @@
-# ADR-0004: Two test tiers; the integration tier fails, never skips
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR1.3 |
-| **Provenance** | House test rules (no mocks, no capability skips) plus evidence that hosted macOS runners time out on AX |
-| **Relates to** | Tests the bridge from [ADR-0002](0002-purego-bridge-cgo-free.md) |
-| **Enforced in** | Makefile (check, coverage, itest), internal/mac and internal/place integration tests, internal/cli Deps seam |
+---
+type: Architecture Decision
+title: Two test tiers; the integration tier fails, never skips
+description: Pure coverage universal; the real seam tested on real hardware; a skip is a green lie
+tags: [testing, coverage]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR1.3
+provenance: House test rules (no mocks, no capability skips) plus evidence that hosted macOS runners time out on AX
+enforced_in:
+  - Makefile (check, coverage, itest)
+  - internal/mac and internal/place integration tests
+  - internal/cli Deps seam
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Keep pure coverage universal and exercise the real OS seam on real hardware; a capability-gated skip is a green lie.
+
+## Relates to
+
+- Tests [ADR-0002](0002-purego-bridge-cgo-free.md) (tests the bridge)
 
 ## Problem
 

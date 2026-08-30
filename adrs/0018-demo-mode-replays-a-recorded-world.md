@@ -1,14 +1,22 @@
-# ADR-0018: Demo mode replays a recorded world and simulates placement
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-30 |
-| **Plan ID** | - |
-| **Provenance** | Demo curation session: the animated-README bakeoff could not render multi-display demos on an undocked laptop, and the maintainer chose fabricated apply output over hardware-gated docs |
-| **Relates to** | Scoped exception to [ADR-0008](0008-strict-tolerance-verification.md); replay uses the seams from [ADR-0004](0004-two-test-tiers.md) |
-| **Enforced in** | internal/demo; cmd/screenz wiring (env-gated); internal/cli doctor (disclosure) |
+---
+type: Architecture Decision
+title: Demo mode replays a recorded world and simulates placement
+description: "Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests"
+tags: [demo, documentation, testing]
+status: accepted
+accepted_on: 2026-08-30
+provenance: "Demo curation session: the animated-README bakeoff could not render multi-display demos on an undocked laptop, and the maintainer chose fabricated apply output over hardware-gated docs"
+enforced_in:
+  - internal/demo; cmd/screenz wiring (env-gated); internal/cli doctor (disclosure)
+generated: { by: human:neozenith, at: 2026-08-30T00:00:00Z }
+---
 
 > **Lens**: Fabricated output is a documentation prop, never a product path: gate it on an explicit env var, wire it only in cmd, disclose it in doctor, and keep it out of every test.
+
+## Relates to
+
+- Scoped exception to [ADR-0008](0008-strict-tolerance-verification.md) (demo mode simulates read-back; the rule stands everywhere else)
+- Depends on [ADR-0004](0004-two-test-tiers.md) (replay rides the injected Deps seams)
 
 ## Problem
 

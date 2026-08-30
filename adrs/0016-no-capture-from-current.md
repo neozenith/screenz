@@ -1,12 +1,16 @@
-# ADR-0016: Profiles are authored from flags or the template, not captured
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR5.3 |
-| **Provenance** | Planning-session scope decision: the tool replaces the context switch, not profile authoring |
-| **Relates to** | - |
-| **Enforced in** | internal/cli profile (init, save; no --from-current flag) |
+---
+type: Architecture Decision
+title: Profiles are authored from flags or the template, not captured
+description: Automate the repeated task, not the rare one
+tags: [profiles, scope]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR5.3
+provenance: "Planning-session scope decision: the tool replaces the context switch, not profile authoring"
+enforced_in:
+  - internal/cli profile (init, save; no --from-current flag)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Automate the repeated task, not the rare one; capture features earn their place only when authoring cost dominates.
 

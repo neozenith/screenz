@@ -1,12 +1,18 @@
-# ADR-0005: Group windows by bundle id, not PID
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR2.1 |
-| **Provenance** | Rectangle prior-art reading: its tile-active-app groups by PID and splits multi-process apps |
-| **Relates to** | - |
-| **Enforced in** | internal/discover (GroupByBundle, Window.Bundle), internal/rule selectors, profiles |
+---
+type: Architecture Decision
+title: Group windows by bundle id, not PID
+description: Group by product identity (bundle id), never process identity
+tags: [discovery, identity]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR2.1
+provenance: "Rectangle prior-art reading: its tile-active-app groups by PID and splits multi-process apps"
+enforced_in:
+  - internal/discover (GroupByBundle, Window.Bundle)
+  - internal/rule selectors
+  - profiles
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: Group and address windows by product identity (the bundle id), never by process identity.
 

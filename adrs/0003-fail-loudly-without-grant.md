@@ -1,14 +1,23 @@
-# ADR-0003: Fail loudly when Accessibility is not granted
-
-| Field | Value |
-|---|---|
-| **Status** | Accepted, 2026-08-28 |
-| **Plan ID** | ADR1.2 |
-| **Provenance** | TCC research during planning: grants attach to the terminal host app, which users do not expect |
-| **Relates to** | Extended by [ADR-0017](0017-terminal-app-is-the-tcc-client.md) (who the TCC client is) |
-| **Enforced in** | internal/cli (requireTrusted, grantInstruction, doctor), internal/mac (Missing) |
+---
+type: Architecture Decision
+title: Fail loudly when Accessibility is not granted
+description: Fail with the responsible party named; never report an empty world as success
+tags: [accessibility, errors]
+status: accepted
+accepted_on: 2026-08-28
+plan_id: ADR1.2
+provenance: "TCC research during planning: grants attach to the terminal host app, which users do not expect"
+enforced_in:
+  - internal/cli (requireTrusted, grantInstruction, doctor)
+  - internal/mac (Missing)
+generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+---
 
 > **Lens**: An environment that cannot do the job fails with the responsible party named; it never reports an empty world as success.
+
+## Relates to
+
+- Extended by [ADR-0017](0017-terminal-app-is-the-tcc-client.md) (who the TCC client is)
 
 ## Problem
 

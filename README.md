@@ -64,7 +64,7 @@ Every line except the ACTUAL column is genuinely computed, `screenz doctor` disc
 
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for build, test tiers and house rules, [adrs/](adrs/README.md) for design decisions, and [GLOSSARY.md](GLOSSARY.md) for the project vocabulary.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for build, test tiers and house rules, [adrs/](adrs/index.md) for design decisions, and [GLOSSARY.md](GLOSSARY.md) for the project vocabulary.
 
 ## License
 
