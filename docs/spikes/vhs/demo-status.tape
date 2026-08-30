@@ -1,8 +1,8 @@
 # Demo 1 — trust, then see the world: doctor + scoped multi-match status.
 Output demo-status.gif
 
-Set Width 1150
-Set Height 470
+Set Width 1220
+Set Height 580
 Set FontSize 14
 Set TypingSpeed 15ms
 Set Padding 14
@@ -10,7 +10,7 @@ Set WindowBar Colorful
 Set BorderRadius 8
 
 Hide
-Type "export PATH=$HOME/.work/bin:$PATH && clear"
+Type "export PATH=$HOME/.work/bin:$PATH && export SCREENZ_DEMO=../demo-world.json && clear"
 Enter
 Show
 

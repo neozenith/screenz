@@ -2,6 +2,7 @@
 # Simulated-typing driver for the asciinema demos.
 # Usage: asciinema rec --window-size 120x22 -c "bash record.sh status" demo-status.cast
 set -u
+export SCREENZ_DEMO=../demo-world.json
 export PATH="$HOME/.work/bin:$PATH"
 
 type_run() {
@@ -18,8 +19,8 @@ type_run() {
   sleep 1.6
 }
 
-RULE_FLAGS="--match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region left-half \\
-  --match 'app=\"Google Chrome\" title=/Example Domain/'          --display 1 --region right-half"
+RULE_FLAGS="--match 'bundle=com.microsoft.VSCode title=/office-demo/' --display built-in=true --region maximize \\
+  --match 'app=\"Google Chrome\" title=/Example Domain/'          --display 1 --region left-half"
 
 case "${1:?demo name required: status|apply|profile}" in
 status)

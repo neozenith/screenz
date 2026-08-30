@@ -9,7 +9,7 @@ Rules compose from flags and save as commented YAML profiles per context (office
 
 ![screenz apply: preview, move, verify every frame, exit 0](demo-apply.gif)
 
-The demo is the office context switch on one display: VS Code takes the left half, Chrome the right.
+The demo is the office context switch: VS Code maximises onto the built-in display, Chrome docks to an external's left half.
 Every `apply` is verified.
 The plan is previewable with `--dry-run`, each moved window's frame is read back, and `TARGET` must equal `ACTUAL` within tolerance for exit 0.
 
@@ -60,13 +60,14 @@ Each demo is an [asciinema](https://asciinema.org) recording (`*.cast`), capture
 ```sh
 brew install asciinema agg
 cd docs/spikes/asciinema
-asciinema rec --window-size 120x22 -c "bash record.sh apply" demo-apply.cast
+asciinema rec --window-size 126x22 -c "bash record.sh apply" demo-apply.cast
 agg --font-size 14 demo-apply.cast demo-apply.gif
 ```
 
 The `.cast` files are plain text (asciicast), so they diff in review and replay in the terminal with `asciinema play`.
 They could also be hosted on asciinema.org's shareable web player instead of committing GIFs.
-The recordings are real Accessibility-granted runs against live VS Code and Chrome windows on this machine.
+The session runs in demo mode (ADR-0018): `SCREENZ_DEMO=../demo-world.json` replays a recorded three-display world through the real pipeline with placement simulated.
+Every line except the ACTUAL column is genuinely computed, `screenz doctor` discloses the mode, and no monitors are needed to regenerate.
 
 One known limitation: `agg` renders the raw terminal only and has no window-chrome option, so these GIFs carry no title bar.
 A title bar needs either asciinema.org's hosted player (chrome comes from the embed) or an SVG pipeline such as `svg-term-cli --window`.

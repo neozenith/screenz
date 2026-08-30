@@ -9,7 +9,7 @@ Rules compose from flags and save as commented YAML profiles per context (office
 
 ![screenz apply: preview, move, verify every frame, exit 0](demo-apply.gif)
 
-The demo is the office context switch on one display: VS Code takes the left half, Chrome the right.
+The demo is the office context switch: VS Code maximises onto the built-in display, Chrome docks to an external's left half.
 Every `apply` is verified.
 The plan is previewable with `--dry-run`, each moved window's frame is read back, and `TARGET` must equal `ACTUAL` within tolerance for exit 0.
 
@@ -62,7 +62,8 @@ brew install vhs
 cd docs/spikes/vhs && vhs demo-apply.tape   # re-render one demo
 ```
 
-VHS drives a real shell on this machine, so the recordings show real Accessibility-granted runs against live VS Code and Chrome windows.
+VHS drives a real shell in demo mode (ADR-0018): `SCREENZ_DEMO=../demo-world.json` replays a recorded three-display world through the real pipeline with placement simulated.
+Every line except the ACTUAL column is genuinely computed, `screenz doctor` discloses the mode, and no monitors are needed to regenerate.
 The fake title bar is VHS's own: `Set WindowBar Colorful` draws the window chrome at render time, no compositing needed.
 `charmbracelet/vhs-action` can re-render them in CI on every release so the README can never drift from the binary.
 
