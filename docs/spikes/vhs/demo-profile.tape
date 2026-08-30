@@ -1,9 +1,10 @@
 # Demo 3 — save the office context: profile save, commented YAML, replay.
 Output demo-profile.gif
 
-Set Width 1360
-Set Height 680
-Set FontSize 13
+Set Width 1080
+Set Height 700
+Set FontSize 14
+Set TypingSpeed 15ms
 Set Padding 14
 Set WindowBar Colorful
 Set BorderRadius 8
@@ -15,9 +16,9 @@ Show
 
 Type `screenz profile save office \`
 Enter
-Type `  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region maximize \`
+Type `  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region left-half \`
 Enter
-Type `  --match 'app="Google Chrome" title=/neozenith/'          --display 2 --region left-half`
+Type `  --match 'app="Google Chrome" title=/Example Domain/'          --display 1 --region right-half`
 Sleep 500ms
 Enter
 Sleep 2.5s

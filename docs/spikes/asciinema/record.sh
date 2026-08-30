@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Simulated-typing driver for the asciinema demos.
-# Usage: asciinema rec --window-size 155x28 -c "bash record.sh status" demo-status.cast
+# Usage: asciinema rec --window-size 120x22 -c "bash record.sh status" demo-status.cast
 set -u
 export PATH="$HOME/.work/bin:$PATH"
 
@@ -10,7 +10,7 @@ type_run() {
   local i
   for ((i = 0; i < ${#cmd}; i++)); do
     printf '%s' "${cmd:i:1}"
-    sleep 0.015
+    sleep 0.005
   done
   sleep 0.4
   printf '\n'
@@ -18,13 +18,14 @@ type_run() {
   sleep 1.6
 }
 
-RULE_FLAGS="--match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region maximize \\
-  --match 'app=\"Google Chrome\" title=/neozenith/'          --display 2 --region left-half"
+RULE_FLAGS="--match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region left-half \\
+  --match 'app=\"Google Chrome\" title=/Example Domain/'          --display 1 --region right-half"
 
 case "${1:?demo name required: status|apply|profile}" in
 status)
   type_run "screenz doctor"
-  type_run "screenz status --match 'bundle=com.microsoft.VSCode title=/office-demo/' --match 'app=\"Google Chrome\" title=/neozenith/'"
+  type_run "screenz status \\
+  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --match 'app=\"Google Chrome\" title=/Example Domain/'"
   ;;
 apply)
   type_run "screenz apply --dry-run \\

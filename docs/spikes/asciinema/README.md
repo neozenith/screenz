@@ -9,7 +9,7 @@ Rules compose from flags and save as commented YAML profiles per context (office
 
 ![screenz apply: preview, move, verify every frame, exit 0](demo-apply.gif)
 
-The demo is the office context switch: VS Code maximises onto the built-in display, Chrome docks to the external's left half.
+The demo is the office context switch on one display: VS Code takes the left half, Chrome the right.
 Every `apply` is verified.
 The plan is previewable with `--dry-run`, each moved window's frame is read back, and `TARGET` must equal `ACTUAL` within tolerance for exit 0.
 
@@ -60,8 +60,8 @@ Each demo is an [asciinema](https://asciinema.org) recording (`*.cast`), capture
 ```sh
 brew install asciinema agg
 cd docs/spikes/asciinema
-asciinema rec --window-size 170x24 -c "bash record.sh apply" demo-apply.cast
-agg --font-size 13 demo-apply.cast demo-apply.gif
+asciinema rec --window-size 120x22 -c "bash record.sh apply" demo-apply.cast
+agg --font-size 14 demo-apply.cast demo-apply.gif
 ```
 
 The `.cast` files are plain text (asciicast), so they diff in review and replay in the terminal with `asciinema play`.
