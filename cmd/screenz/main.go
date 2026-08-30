@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/neozenith/screenz/internal/cli"
+	"github.com/neozenith/screenz/internal/demo"
 	"github.com/neozenith/screenz/internal/discover"
 	"github.com/neozenith/screenz/internal/mac"
 	"github.com/neozenith/screenz/internal/place"
@@ -25,7 +26,7 @@ func main() { os.Exit(run()) }
 func run() int {
 	home, _ := os.UserHomeDir()
 	exe, _ := os.Executable()
-	return cli.Run(os.Args[1:], os.Stdout, os.Stderr, cli.Deps{
+	deps := cli.Deps{
 		Fetch:    fetch,
 		ExePath:  exe,
 		Getenv:   os.Getenv,
@@ -34,7 +35,30 @@ func run() int {
 		Snapshot: snapshot,
 		Displays: displays,
 		Place:    place.Place,
-	})
+	}
+	// Demo mode (ADR-0018): replay a recorded `status --json` world and
+	// simulate placement so demonstration text renders without the
+	// recorded hardware. Doctor discloses it; nothing else changes.
+	if world := os.Getenv("SCREENZ_DEMO"); world != "" {
+		snap, err := demo.Load(world)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "screenz: SCREENZ_DEMO: %v\n", err)
+			return 1
+		}
+		deps.Snapshot = func() (discover.Snapshot, error) { return snap, nil }
+		deps.Displays = func() ([]discover.Display, error) { return snap.Displays, nil }
+		deps.Place = demo.Place
+		realSys := deps.Sys
+		deps.Sys = func(full bool) cli.SysInfo {
+			info := realSys(full)
+			info.DisplayNames = nil
+			for _, d := range snap.Displays {
+				info.DisplayNames = append(info.DisplayNames, d.Name)
+			}
+			return info
+		}
+	}
+	return cli.Run(os.Args[1:], os.Stdout, os.Stderr, deps)
 }
 
 // fetch is the one HTTP dependency (screenz update); GitHub redirects

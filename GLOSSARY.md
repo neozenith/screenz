@@ -10,6 +10,7 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | alias | A profile-defined name for a display spec (`displays:` map). Purely numeric names are reserved for the index shorthand. |
 | bundle id | The application identity windows are grouped by (for example `com.microsoft.VSCode`), never the PID. |
 | clamped | A placement whose read-back frame fell outside the rule's tolerance; the run exits 1. |
+| demo mode | Env-gated replay (`SCREENZ_DEMO=<world file>`) with simulated placement, for curating demonstration text (ADR-0018). Doctor disclosed, never in tests. |
 | display index | The human-friendly display number, ordered by row top-to-bottom then left-to-right. Unstable across layout changes; UUID and name are the stable keys. |
 | display spec | The terms addressing one display: a bare index, an alias, or `index=`, `name=`, `uuid=`, `serial=`, `built-in=`, `main=` ANDed together. |
 | first | Rule setting that places only the first matching window instead of every match: `--first` on the CLI, `each: false` in YAML. |
@@ -29,3 +30,4 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | tolerance | The per-rule verification width: points, or percent of the target size per axis. Default 0.5 pt; never infinite. |
 | unmatched | The count of windows no rule matched; reported in the plan and left untouched. |
 | usable frame | The display area regions are computed over: the visible frame with the menu bar strip carved out. |
+| world file | A serialised `status --json` capture (schema 1: displays + windows) that demo mode replays through the real pipeline. |

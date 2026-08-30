@@ -35,6 +35,27 @@ func run(t *testing.T, args []string, d Deps) (int, string, string) {
 	return code, stdout.String(), stderr.String()
 }
 
+func TestDoctorDisclosesDemoMode(t *testing.T) {
+	d := deps(officeSys(true))
+	d.Getenv = func(key string) string {
+		if key == "SCREENZ_DEMO" {
+			return "demo-world.json"
+		}
+		return ""
+	}
+	code, out, _ := run(t, []string{"doctor"}, d)
+	if code != 0 {
+		t.Fatalf("exit = %d, want 0", code)
+	}
+	if !strings.Contains(out, "demo mode: replaying demo-world.json; placement simulated") {
+		t.Errorf("doctor must disclose demo mode\n%s", out)
+	}
+	_, jsonOut, _ := run(t, []string{"doctor", "--json"}, d)
+	if !strings.Contains(jsonOut, `"demo_world": "demo-world.json"`) {
+		t.Errorf("doctor --json must carry demo_world\n%s", jsonOut)
+	}
+}
+
 func TestDoctorTrustedTable(t *testing.T) {
 	code, out, errOut := run(t, []string{"doctor"}, deps(officeSys(true)))
 	if code != 0 {

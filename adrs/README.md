@@ -25,3 +25,4 @@ Two numbering axes exist by history: files are NNNN ordered, and code comments c
 | [0015](0015-profile-dir-resolution.md) | ADR5.2 | Config is dotfiles-first: env override, XDG, ~/.config; never a path with a space |
 | [0016](0016-no-capture-from-current.md) | ADR5.3 | Automate the repeated task, not the rare one |
 | [0017](0017-terminal-app-is-the-tcc-client.md) | ADR6.2 | Shell-launched only; the terminal app owns the grant (split from 0001) |
+| [0018](0018-demo-mode-replays-a-recorded-world.md) | - | Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests |

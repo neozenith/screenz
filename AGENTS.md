@@ -15,7 +15,7 @@ Single binary, no daemon.
 
 - `internal/mac`: the only package that binds macOS frameworks (purego, darwin build tags); `internal/place` and `cmd/screenz` are darwin-tagged too.
   Impure, covered by itest.
-- `internal/{discover,layout,rule,plan,profile,selfupdate}`: pure transforms, 100% coverage, must compile on Linux.
+- `internal/{demo,discover,layout,rule,plan,profile,selfupdate}`: pure transforms, 100% coverage, must compile on Linux.
 - `internal/place`: impure placement engine, covered by itest.
 - `internal/cli`: pure command pipeline over injected `Deps`; `cmd/screenz` only wires real implementations.
 
@@ -24,6 +24,7 @@ Single binary, no daemon.
 - Never add a CLI framework, a mock of the OS bridge, or a capability-gated `t.Skip`.
 - Never print diagnostics to stdout; `--json` output must stay parseable.
 - Never weaken the read-back verification: apply exits 0 only when every frame lands within tolerance.
+  The one sanctioned exception is demo mode (`SCREENZ_DEMO`, ADR-0018): env-gated, wired only in `cmd/screenz`, disclosed by doctor, never used in tests or evidence transcripts.
 
 ## Decisions and language
 

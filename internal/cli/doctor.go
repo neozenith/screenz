@@ -23,6 +23,7 @@ type doctorReport struct {
 	Displays      []string `json:"displays"`
 	ProfileDir    string   `json:"profile_dir"`
 	Missing       []string `json:"missing_symbols,omitempty"`
+	DemoWorld     string   `json:"demo_world,omitempty"`
 }
 
 // osWarnings derives the platform caveats the install runbook documents: the macOS 13 floor,
@@ -86,6 +87,7 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 		Displays:      info.DisplayNames,
 		ProfileDir:    profile.Dir(d.Getenv, d.Home),
 		Missing:       info.MissingSymbols,
+		DemoWorld:     d.Getenv("SCREENZ_DEMO"),
 	}
 	if info.Trusted {
 		rep.Accessibility = "trusted"
@@ -117,6 +119,11 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 			for _, s := range rep.Missing {
 				fmt.Fprintf(stdout, "  - %s\n", s)
 			}
+		}
+		// Demo mode fabricates placement results (ADR-0018); doctor is
+		// the trust surface, so it always names the replayed world.
+		if rep.DemoWorld != "" {
+			fmt.Fprintf(stdout, "demo mode: replaying %s; placement simulated\n", rep.DemoWorld)
 		}
 		for _, w := range rep.Warnings {
 			fmt.Fprintf(stdout, "warning: %s\n", w)

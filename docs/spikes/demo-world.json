@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "displays": [
+    {
+      "index": 1,
+      "id": 2,
+      "uuid": "977271E6-5E58-4A81-AEDA-509487D2649E",
+      "name": "PHL 329P1",
+      "serial": 197,
+      "vendor": 16652,
+      "model": 2393,
+      "main": false,
+      "built_in": false,
+      "scale": 2,
+      "frame": {
+        "origin": {
+          "x": -1920,
+          "y": -98
+        },
+        "size": {
+          "w": 1920,
+          "h": 1080
+        }
+      },
+      "visible_frame": {
+        "origin": {
+          "x": -1859,
+          "y": -68
+        },
+        "size": {
+          "w": 1859,
+          "h": 1050
+        }
+      },
+      "pixel_w": 3840,
+      "pixel_h": 2160
+    },
+    {
+      "index": 2,
+      "id": 1,
+      "uuid": "37D8832A-2D66-02CA-B9F7-8F30A301B230",
+      "name": "Built-in Retina Display",
+      "serial": 4251086178,
+      "vendor": 1552,
+      "model": 41057,
+      "main": true,
+      "built_in": true,
+      "scale": 2,
+      "frame": {
+        "origin": {
+          "x": 0,
+          "y": 0
+        },
+        "size": {
+          "w": 1512,
+          "h": 982
+        }
+      },
+      "visible_frame": {
+        "origin": {
+          "x": 0,
+          "y": 33
+        },
+        "size": {
+          "w": 1512,
+          "h": 949
+        }
+      },
+      "pixel_w": 3024,
+      "pixel_h": 1964
+    },
+    {
+      "index": 3,
+      "id": 3,
+      "uuid": "D9AD2B4E-9B92-4F29-B8D3-741CF5331C43",
+      "name": "LG FULL HD",
+      "serial": 0,
+      "vendor": 7789,
+      "model": 23519,
+      "main": false,
+      "built_in": false,
+      "scale": 1,
+      "frame": {
+        "origin": {
+          "x": 1512,
+          "y": 0
+        },
+        "size": {
+          "w": 1920,
+          "h": 1080
+        }
+      },
+      "visible_frame": {
+        "origin": {
+          "x": 1512,
+          "y": 30
+        },
+        "size": {
+          "w": 1920,
+          "h": 1050
+        }
+      },
+      "pixel_w": 1920,
+      "pixel_h": 1080
+    }
+  ],
+  "windows": [
+    {
+      "id": 501,
+      "pid": 501,
+      "bundle": "com.microsoft.VSCode",
+      "app": "Code",
+      "title": "Welcome — office-demo",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "display_index": 2,
+      "frame": {
+        "origin": {
+          "x": 180,
+          "y": 140
+        },
+        "size": {
+          "w": 900,
+          "h": 620
+        }
+      }
+    },
+    {
+      "id": 502,
+      "pid": 502,
+      "bundle": "com.google.Chrome",
+      "app": "Google Chrome",
+      "title": "Example Domain - Google Chrome",
+      "role": "AXWindow",
+      "subrole": "AXStandardWindow",
+      "state": "normal",
+      "display_index": 1,
+      "frame": {
+        "origin": {
+          "x": -1500,
+          "y": 60
+        },
+        "size": {
+          "w": 1100,
+          "h": 800
+        }
+      }
+    }
+  ]
+}

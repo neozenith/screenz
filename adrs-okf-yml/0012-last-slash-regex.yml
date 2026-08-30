@@ -1,0 +1,39 @@
+# Architecture Decision Record - structured form of adrs/0012-last-slash-regex.md
+id: ADR-0012
+slug: last-slash-regex
+plan_id: ADR4.2
+title: Spell regexes as /pattern/, terminated at the last slash
+description: One regex spelling everywhere; remaining ambiguity fails loudly
+status: accepted
+accepted_on: 2026-08-28
+last_changed_on: 2026-08-28
+tags: [cli, rules, grammar]
+
+lens: The same regex literal must work unchanged in CLI and YAML, and slashes inside window titles need no escaping; any remaining ambiguity fails loudly, never silently.
+
+provenance: The planning session's grammar decision; the swallowed-term guard was added after review found the two-regex ambiguity
+enforced_in:
+  - internal/rule (parseTerms, cutRegex, swallowedTerm)
+
+relates_to:
+  - relation: see_also
+    target: ADR-0011
+    note: shares the term grammar
+
+problem:
+  symptom: Window titles contain slashes (paths, URLs), and regex values need a delimiter that survives both shell quoting and YAML scalars.
+  pain_point: A conventionally-terminated delimiter would force escaping inside titles, and a second spelling for YAML would break lossless saves.
+
+decision:
+  given: titles contain slashes and the value must round-trip between CLI and YAML unchanged
+  we_prefer: /pattern/ terminated at the last slash outside quoted regions, with an optional trailing i, over tilde or prefix spellings
+  because: last-slash termination makes interior slashes free, and Go's RE2 rejects look-arounds as clean usage errors
+  unless: a real pattern proves ambiguous under last-slash parsing; the swallowed-term guard now turns that case into a loud usage error rather than a silent mis-match
+  in_practice:
+    - The terminator scan ignores quoted regions, and a pattern that captures a following key=value term errors with guidance.
+
+consequences:
+  pros:
+    - Natural title patterns; one spelling everywhere.
+  cons:
+    - Two regex terms in one list must be reordered or reduced to one.

@@ -1,0 +1,36 @@
+# Architecture Decision Record - structured form of adrs/0009-never-activate-during-apply.md
+id: ADR-0009
+slug: never-activate-during-apply
+plan_id: ADR3.2
+title: Never activate applications during a bulk apply
+description: Bulk operations never fight the user for focus
+status: accepted
+accepted_on: 2026-08-28
+last_changed_on: 2026-08-28
+tags: [placement, focus]
+
+lens: A bulk operation must not fight the user for focus; place frames through AX and leave the frontmost app alone.
+
+provenance: "Rectangle prior art: its cross-display move force-activates the app afterwards"
+enforced_in:
+  - internal/place (Place never calls activate)
+
+relates_to: []
+
+problem:
+  symptom: Rectangle activates an app after a cross-display move, which is fine for one focused window.
+  pain_point: Across a 16-window context switch, per-window activation would strobe focus, reorder the window stack, and interrupt whatever the user is doing.
+
+decision:
+  given: applies touch many windows across many apps in one run
+  we_prefer: setting frames through AX without any activation, over Rectangle's activate-after-move
+  because: the frontmost app must be unchanged after the run
+  unless: a single-window interactive mode ever ships, where activation may be the point
+  in_practice:
+    - place.Place performs the set-size, set-position, set-size recipe with no NSRunningApplication activation anywhere.
+
+consequences:
+  pros:
+    - Applies are silent; focus never moves.
+  cons:
+    - None observed; cross-display placement works without activation.
