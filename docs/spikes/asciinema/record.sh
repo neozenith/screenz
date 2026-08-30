@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Simulated-typing driver for the asciinema demos.
-# Usage: asciinema rec --window-size 120x28 -c "bash record.sh status" demo-status.cast
+# Usage: asciinema rec --window-size 155x28 -c "bash record.sh status" demo-status.cast
 set -u
 export PATH="$HOME/.work/bin:$PATH"
 
@@ -18,13 +18,13 @@ type_run() {
   sleep 1.6
 }
 
-RULE_FLAGS="--match 'bundle=com.apple.TextEdit title=/Untitled [0-9]/' \\
-  --display 2 --region grid=2x1 --gap 12"
+RULE_FLAGS="--match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region maximize \\
+  --match 'app=\"Google Chrome\" title=/neozenith/'          --display 2 --region left-half"
 
 case "${1:?demo name required: status|apply|profile}" in
 status)
   type_run "screenz doctor"
-  type_run "screenz status --match bundle=com.apple.TextEdit"
+  type_run "screenz status --match 'bundle=com.microsoft.VSCode title=/office-demo/' --match 'app=\"Google Chrome\" title=/neozenith/'"
   ;;
 apply)
   type_run "screenz apply --dry-run \\
@@ -36,10 +36,10 @@ apply)
 profile)
   SCREENZ_HOME="$(mktemp -d)"
   export SCREENZ_HOME
-  type_run "screenz profile save demo \\
+  type_run "screenz profile save office \\
   $RULE_FLAGS"
-  type_run 'cat $SCREENZ_HOME/profiles/demo.yaml'
-  type_run "screenz apply --dry-run demo"
+  type_run 'cat $SCREENZ_HOME/profiles/office.yaml'
+  type_run "screenz apply --dry-run office"
   ;;
 esac
 sleep 0.8

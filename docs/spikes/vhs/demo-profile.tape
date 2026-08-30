@@ -1,31 +1,33 @@
-# Demo 3 — save the context: profile save, commented YAML, replay.
+# Demo 3 — save the office context: profile save, commented YAML, replay.
 Output demo-profile.gif
 
-Set Width 1200
-Set Height 470
-Set FontSize 14
-Set Padding 16
+Set Width 1360
+Set Height 680
+Set FontSize 13
+Set Padding 14
+Set WindowBar Colorful
+Set BorderRadius 8
 
 Hide
 Type "export PATH=$HOME/.work/bin:$PATH && export SCREENZ_HOME=$(mktemp -d) && clear"
 Enter
 Show
 
-Type "screenz profile save demo \"
+Type `screenz profile save office \`
 Enter
-Type "  --match 'bundle=com.apple.TextEdit title=/Untitled [0-9]/' \"
+Type `  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region maximize \`
 Enter
-Type "  --display 2 --region grid=2x1 --gap 12"
+Type `  --match 'app="Google Chrome" title=/neozenith/'          --display 2 --region left-half`
 Sleep 500ms
 Enter
 Sleep 2.5s
 
-Type "cat $SCREENZ_HOME/profiles/demo.yaml"
+Type "cat $SCREENZ_HOME/profiles/office.yaml"
 Sleep 500ms
 Enter
 Sleep 4s
 
-Type "screenz apply --dry-run demo"
+Type "screenz apply --dry-run office"
 Sleep 500ms
 Enter
 Sleep 4.5s

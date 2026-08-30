@@ -1,30 +1,32 @@
-# Demo 2 — the context switch: preview, apply, verify, exit 0.
+# Demo 2 — the office switch: preview, apply, verify every frame, exit 0.
 Output demo-apply.gif
 
-Set Width 1200
-Set Height 380
-Set FontSize 14
-Set Padding 16
+Set Width 1500
+Set Height 500
+Set FontSize 13
+Set Padding 14
+Set WindowBar Colorful
+Set BorderRadius 8
 
 Hide
 Type "export PATH=$HOME/.work/bin:$PATH && clear"
 Enter
 Show
 
-Type "screenz apply --dry-run \"
+Type `screenz apply --dry-run \`
 Enter
-Type "  --match 'bundle=com.apple.TextEdit title=/Untitled [0-9]/' \"
+Type `  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region maximize \`
 Enter
-Type "  --display 2 --region grid=2x1 --gap 12"
+Type `  --match 'app="Google Chrome" title=/neozenith/'          --display 2 --region left-half`
 Sleep 500ms
 Enter
 Sleep 3.5s
 
-Type "screenz apply \"
+Type `screenz apply \`
 Enter
-Type "  --match 'bundle=com.apple.TextEdit title=/Untitled [0-9]/' \"
+Type `  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --display 1 --region maximize \`
 Enter
-Type "  --display 2 --region grid=2x1 --gap 12"
+Type `  --match 'app="Google Chrome" title=/neozenith/'          --display 2 --region left-half`
 Sleep 500ms
 Enter
 Sleep 3.5s
