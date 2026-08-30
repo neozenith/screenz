@@ -9,7 +9,7 @@ Rules compose from flags and save as commented YAML profiles per context (office
 
 ![screenz apply: preview, move, verify every frame, exit 0](demo-apply.gif)
 
-The demo is the office context switch: one command maximises VS Code onto the built-in display and docks Chrome to the left half of the external.
+The demo is the office context switch: VS Code maximises onto the built-in display, Chrome docks to the external's left half.
 Every `apply` is verified.
 The plan is previewable with `--dry-run`, each moved window's frame is read back, and `TARGET` must equal `ACTUAL` within tolerance for exit 0.
 
