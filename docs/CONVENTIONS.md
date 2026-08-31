@@ -7,8 +7,11 @@ Where this file states a rule, it is the oracle; anything it leaves unstated fal
 
 - **ADR surface**: `okf-yaml` — decision records are authored as YAML in `adrs/NNNN-slug.yml`, and their markdown is generated.
 - **ADR record shape**: OKF frontmatter, then a Lens blockquote (the reusable rule, first), then Problem, Decision (Given / We prefer / Because / Unless), and Consequences.
-- **Generated paths**: `adrs/*.md`, `adrs/index.md`, `adrs/graph.md`, `adrs/graph.json`.
+- **Generated paths**: `adrs/*.md`, `adrs/index.md`, `adrs/graph.md`, `adrs/graph.json`, `adrs/graph.html`.
   These are build artifacts. Never hand-edit one; edit the `.yml` and regenerate.
+  `graph.html` is written in the same pass as `graph.json` and inlines the same payload, so the two can never describe different graphs.
+  It carries every record's markdown with it and needs no server: open the file, or serve the directory if the browser blocks `file://`.
+  Cytoscape and marked load from `cdnjs.cloudflare.com`; with no network the page says so and points at `index.md`.
 - **Regenerate**: `make adrs`.
 - **Record contract**: `adrs/record.schema.json`.
   Validation runs before rendering, so an invalid record stops the build rather than producing markdown nothing checked.
@@ -29,6 +32,7 @@ Where this file states a rule, it is the oracle; anything it leaves unstated fal
 | `adrs/*.yml` | One decision each, authored as data | A maintainer recording a decision |
 | `adrs/index.md` | Generated listing of every record with its Lens | Anyone routing to a decision |
 | `adrs/graph.md` | Generated view of the typed relation graph | Anyone tracing how decisions relate |
+| `adrs/graph.html` | Generated browsable graph: click a record to read it | Anyone exploring the decision set |
 
 ## How records are written
 

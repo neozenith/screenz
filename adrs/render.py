@@ -9,8 +9,10 @@
                              index.md       OKF reserved directory listing
                              graph.md       companion doc holding the graph
                              graph.json     Cytoscape elements payload
+                             graph.html     the same payload, browsable
 
-The YAML is the source of truth; every .md and .json emitted here is generated.
+The YAML is the source of truth; every .md, .json and .html emitted here is
+generated.
 Validation runs first and hard: a record that fails the schema stops the build
 rather than producing markdown nothing checked.
 """
@@ -238,6 +240,38 @@ def cytoscape(records: list[Record], group_by: str) -> Record:
     return {"elements": elements, "layout": {"name": "cose"}, "height": 620}
 
 
+#: The OKF frontmatter block at the head of every generated record.
+FRONTMATTER = re.compile(r"\A---\n.*?\n---\n+", re.S)
+
+
+def pane_markdown(markdown: str, title: str) -> str:
+    """The record as the browsable graph should read it.
+
+    The frontmatter is stripped and replaced by a heading. A markdown
+    renderer has no concept of frontmatter: it reads the block as a
+    paragraph and the closing `---` as a setext underline, so the whole
+    header arrives as one bold blob where the title should be. The fields
+    it carries are already on the page as chips or in the body.
+    """
+    return f"# {title}\n\n" + FRONTMATTER.sub("", markdown, count=1)
+
+
+def script_json(payload: Any) -> str:
+    """Serialise for inlining in a <script type="application/json"> block.
+
+    The three HTML-significant characters are escaped as \\uXXXX, which is
+    still valid JSON but cannot close the script element early — a record
+    that quotes `</script>` or a `<command>` placeholder would otherwise
+    truncate the page at exactly the point it is hardest to notice.
+    """
+    return (
+        json.dumps(payload, separators=(", ", ": "))
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+    )
+
+
 def environment(by_id: dict[str, Record]) -> Environment:
     """Jinja environment. StrictUndefined so a missing field fails loudly."""
     env = Environment(
@@ -274,12 +308,20 @@ def render(
     by_id = {r["id"]: r for r in records}
     env = environment(by_id)
 
+    # The rendered markdown is kept as well as written: graph.html inlines it
+    # so the page reads a record without a second fetch, which is what lets it
+    # open from file:// with no server.
+    rendered: dict[str, Record] = {}
     for record in records:
         name = f"{record['id'].split('-')[-1]}-{record['slug']}.md"
-        (source_dir / name).write_text(
-            env.get_template("record.md.j2").render(rec=record, author=author),
-            encoding="utf-8",
-        )
+        markdown = env.get_template("record.md.j2").render(rec=record, author=author)
+        (source_dir / name).write_text(markdown, encoding="utf-8")
+        rendered[record["id"]] = {
+            "file": name,
+            "title": record["title"],
+            "status": record["status"],
+            "markdown": pane_markdown(markdown, record["title"]),
+        }
 
     edges = [
         {"source": r["id"], "relation": e["relation"], "target": e["target"]}
@@ -297,6 +339,18 @@ def render(
 
     graph = cytoscape(records, group_by)
     (source_dir / "graph.json").write_text(json.dumps(graph, indent=2) + "\n", encoding="utf-8")
+    # graph.html is the same payload made browsable, regenerated in the same
+    # breath as graph.json so the two can never describe different graphs.
+    (source_dir / "graph.html").write_text(
+        env.get_template("graph.html.j2").render(
+            repo=source_dir.resolve().parent.name,
+            node_count=len(records),
+            edge_count=len(edges),
+            graph_json=script_json(graph),
+            record_json=script_json(rendered),
+        ),
+        encoding="utf-8",
+    )
     skew = asymmetries(records)
     (source_dir / "graph.md").write_text(
         env.get_template("graph.md.j2").render(
