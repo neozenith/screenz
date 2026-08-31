@@ -18,12 +18,13 @@ connected display with stable identity. Coordinates are AX global points
 (origin at the top-left of the main display, y down).
 
 Flags:
-  --match TERMS  Show only windows matching the selector (same grammar as
-                 apply: bundle=, app=, title=; values may be "quoted" or
-                 /regex/i). Repeat to OR several selectors, e.g.
-                 --match app=Code --match 'app="Microsoft Edge"'.
-                 Displays are always listed in full.
-  --json         Emit {"schema":1,"displays":[…],"windows":[…]} JSON.
+  -m, --match TERMS  Show only windows matching the selector (same grammar
+                     as apply: bundle=, app=, title=; values may be "quoted"
+                     or /regex/i). Repeat to OR several selectors, e.g.
+                     -m app=Code -m 'app="Microsoft Edge"'.
+                     Displays are always listed in full.
+  -j, --json         Emit {"schema":1,"displays":[…],"windows":[…]} JSON.
+  -h, --help         Show this help.
 `
 
 // matchList collects repeated --match selectors; a window is shown when ANY
@@ -66,8 +67,10 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	fs := flag.NewFlagSet("status", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	jsonOut := fs.Bool("json", false, "emit JSON")
+	aliasBool(fs, jsonOut, "j", "emit JSON")
 	matches := &matchList{}
 	fs.Var(matches, "match", "show only windows matching this selector (repeatable)")
+	fs.Var(matches, "m", "show only windows matching this selector (repeatable)")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, statusHelp)

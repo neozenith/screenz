@@ -16,8 +16,12 @@ Check the GitHub Releases page for a newer screenz and replace this binary
 in place (checksum-verified, atomic swap; no quarantine xattr is set).
 
 Flags:
-  --check   Report whether an update exists without installing it.
-  --force   Update even from a dev (source) build or the same version.
+  --check       Report whether an update exists without installing it.
+  --force       Update even from a dev (source) build or the same version.
+  -h, --help    Show this help.
+
+Neither --check nor --force has a one-letter alias: this command replaces
+the running binary, so both are typed in full (ADR-0021).
 `
 
 func runUpdate(args []string, stdout, stderr io.Writer, d Deps) int {

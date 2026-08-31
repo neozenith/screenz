@@ -282,6 +282,15 @@ func TestRunDispatch(t *testing.T) {
 		{"help flag", []string{"--help"}, 0, "usage: screenz", ""},
 		{"help word", []string{"help"}, 0, "usage: screenz", ""},
 		{"dash h", []string{"-h"}, 0, "usage: screenz", ""},
+		// Each command answers to its initial too (ADR-0024); -h on the
+		// short form proves it reached the same handler, not a near miss.
+		{"a is apply", []string{"a", "-h"}, 0, "usage: screenz apply", ""},
+		{"d is doctor", []string{"d", "-h"}, 0, "usage: screenz doctor", ""},
+		{"s is status", []string{"s", "-h"}, 0, "usage: screenz status", ""},
+		{"p is profile", []string{"p", "-h"}, 0, "usage: screenz profile", ""},
+		{"u is update", []string{"u", "-h"}, 0, "usage: screenz update", ""},
+		{"v is version", []string{"v"}, 0, "screenz", ""},
+		{"h is help", []string{"h"}, 0, "usage: screenz", ""},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -40,9 +40,58 @@ var namedRegions = map[string]span{
 	"bottom-right":     {0.5, 0.5, 1, 1},
 }
 
-// ParseRegion parses a region literal: a name from the catalogue,
-// grid=CxR, or unit=x,y,w,h.
+// regionAliases accept the en-GB/en-AU spelling of every catalogue name
+// that has one. Parsing canonicalises to the -ize/-er spelling, so String
+// renders one spelling and a profile stores one spelling (ADR-0022).
+var regionAliases = map[string]string{
+	"maximise":     "maximize",
+	"centre-third": "center-third",
+}
+
+// regionCodes are the shorthand codes for the catalogue: letters for the
+// halves and corners, a digit family for the thirds so l3 (last-third)
+// cannot be misread as a transposed tl (top-left). Every named region has
+// exactly one code (ADR-0023). Codes are dialect-free — c3 spells the
+// centre third whichever way you spell centre.
+var regionCodes = map[string]string{
+	"max": "maximize",
+	"lh":  "left-half",
+	"rh":  "right-half",
+	"th":  "top-half",
+	"bh":  "bottom-half",
+	"f3":  "first-third",
+	"c3":  "center-third",
+	"l3":  "last-third",
+	"f23": "first-two-thirds",
+	"l23": "last-two-thirds",
+	"tl":  "top-left",
+	"tr":  "top-right",
+	"bl":  "bottom-left",
+	"br":  "bottom-right",
+}
+
+// canonicalRegion resolves a spelling variant or a shorthand code to its
+// catalogue name; anything else passes through untouched, so an unknown
+// region is still reported as the user typed it.
+func canonicalRegion(s string) string {
+	if canon, ok := regionAliases[s]; ok {
+		return canon
+	}
+	if canon, ok := regionCodes[s]; ok {
+		return canon
+	}
+	return s
+}
+
+// DefaultRegion is the region a rule takes when none is given: the whole
+// usable frame (ADR-0020). Constructed here because kind is unexported —
+// a zero Region is a degenerate span, never a usable default.
+func DefaultRegion() Region { return Region{Name: "maximize", kind: 'n'} }
+
+// ParseRegion parses a region literal: a name from the catalogue (in
+// either spelling, or as its shorthand code), grid=CxR, or unit=x,y,w,h.
 func ParseRegion(s string) (Region, error) {
+	s = canonicalRegion(s)
 	if _, ok := namedRegions[s]; ok {
 		return Region{Name: s, kind: 'n'}, nil
 	}
@@ -76,7 +125,9 @@ func ParseRegion(s string) (Region, error) {
 	return Region{}, fmt.Errorf("unknown region %q", s)
 }
 
-// String renders the region back to its literal (lossless for profile save).
+// String renders the region back to its literal (lossless for profile
+// save). An en-GB spelling or a shorthand code canonicalises on parse, so
+// it renders as the catalogue name rather than as it was typed.
 func (r Region) String() string {
 	switch r.kind {
 	case 'g':

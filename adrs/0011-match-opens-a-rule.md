@@ -10,7 +10,7 @@ provenance: The planning session's grammar decision, settled against the documen
 enforced_in:
   - internal/rule (List, matchFlag, field)
   - internal/profile (YAML key mapping)
-generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-08-31T00:00:00Z }
 ---
 
 > **Lens**: One quoting layer and identical keys across CLI and YAML; the CLI grammar is the saved-profile grammar.
@@ -18,6 +18,8 @@ generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
 ## Relates to
 
 - Depended on by [ADR-0014](0014-goccy-yaml-comments.md) (relies on this for lossless profile saves)
+- Extended by [ADR-0020](0020-omitted-region-means-maximize.md) (the region half of the completeness clause below is retired there; display stays mandatory)
+- Extended by [ADR-0021](0021-one-letter-aliases-for-rule-flags.md) (adds a one-letter alias per rule flag; the long name stays the canonical and the YAML key)
 
 ## Problem
 

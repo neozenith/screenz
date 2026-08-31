@@ -208,6 +208,24 @@ func TestApplyDryRunMovesNothing(t *testing.T) {
 	}
 }
 
+// -n and -j reach the same code paths as --dry-run and --json (ADR-0021),
+// including the promise that a dry run places nothing.
+func TestApplyShortFlags(t *testing.T) {
+	d := applyDeps("ok")
+	d.Place = func(_, _ mac.AXElement, _ mac.CGRect, _ layout.Tolerance) place.Result {
+		t.Fatal("dry-run must not place windows")
+		return place.Result{}
+	}
+	args := []string{"apply", "-n", "-j", "-m", "bundle=com.microsoft.VSCode", "-d", "index=2", "-r", "left-half"}
+	code, out, _ := run(t, args, d)
+	if code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	if !strings.Contains(out, `"schema": 1`) || !strings.Contains(out, `"actions"`) {
+		t.Errorf("short flags did not produce dry-run JSON:\n%s", out)
+	}
+}
+
 func TestApplyDryRunJSONSharesStatusShapes(t *testing.T) {
 	code, out, _ := run(t, append([]string{"apply", "--dry-run", "--json"}, vscodeRule...), applyDeps("ok"))
 	if code != 0 {
@@ -246,7 +264,7 @@ func TestApplyUsageErrors(t *testing.T) {
 		{"bad flag", []string{"apply", "--nope"}, "flag provided but not defined"},
 		{"two positionals", []string{"apply", "office", "extra"}, "unexpected argument"},
 		{"no rules", []string{"apply"}, "no profile or rules given"},
-		{"missing region", []string{"apply", "--match", "bundle=a", "--display", "index=1"}, "missing --region"},
+		{"missing display", []string{"apply", "--match", "bundle=a", "--region", "maximize"}, "missing --display"},
 		{"sibling before match", []string{"apply", "--display", "index=1"}, "--display given before any --match"},
 		{"bad selector", []string{"apply", "--match", "state=weird"}, `selector key "state"`},
 	}

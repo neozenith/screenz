@@ -5,6 +5,7 @@
 package cli
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"strings"
@@ -44,27 +45,29 @@ type Deps struct {
 }
 
 // Run dispatches the first positional to its command handler and returns the
-// process exit code: 0 success, 1 runtime failure, 2 usage error.
+// process exit code: 0 success, 1 runtime failure, 2 usage error. Every
+// command answers to its initial as well as its name (ADR-0024); no two
+// commands share one, and the full name is what help and errors say.
 func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 	cmd := ""
 	if len(args) > 0 {
 		cmd = args[0]
 	}
 	switch cmd {
-	case "doctor":
+	case "doctor", "d":
 		return runDoctor(args[1:], stdout, stderr, d)
-	case "status":
+	case "status", "s":
 		return runStatus(args[1:], stdout, stderr, d)
-	case "apply":
+	case "apply", "a":
 		return runApply(args[1:], stdout, stderr, d)
-	case "profile":
+	case "profile", "p":
 		return runProfile(args[1:], stdout, stderr, d)
-	case "update":
+	case "update", "u":
 		return runUpdate(args[1:], stdout, stderr, d)
-	case "version", "--version":
+	case "version", "v", "--version":
 		printVersion(stdout)
 		return 0
-	case "-h", "--help", "help":
+	case "-h", "--help", "help", "h":
 		usage(stdout)
 		return 0
 	default:
@@ -80,6 +83,13 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 
 func newTabwriter(w io.Writer) *tabwriter.Writer {
 	return tabwriter.NewWriter(w, 2, 4, 2, ' ', 0)
+}
+
+// aliasBool binds a one-letter second name to an already-registered bool
+// flag (ADR-0021). It keeps whatever default the long registration set, so
+// the two names are one flag with one value, not two that can disagree.
+func aliasBool(fs *flag.FlagSet, p *bool, short, usage string) {
+	fs.BoolVar(p, short, *p, usage)
 }
 
 // requireTrusted enforces ADR1.2 for every AX-reading command: fail loudly
@@ -102,14 +112,14 @@ func requireTrusted(d Deps, stderr io.Writer) bool {
 func usage(w io.Writer) {
 	fmt.Fprint(w, `usage: screenz <command> [flags]
 
-Commands:
-  doctor    Check the Accessibility grant, displays, and symbol bindings.
-  status    Show windows grouped by application and connected displays.
-  apply     Move groups of windows by rules or a profile, verifying every frame.
-  profile   Manage named rule-set profiles (status, init, save).
-  update    Self-update from the latest GitHub release (checksum-verified).
-  version   Print the release version (also --version).
+Commands (each also answers to its initial):
+  d, doctor    Check the Accessibility grant, displays, and symbol bindings.
+  s, status    Show windows grouped by application and connected displays.
+  a, apply     Move groups of windows by rules or a profile, verifying every frame.
+  p, profile   Manage named rule-set profiles (status, init, save).
+  u, update    Self-update from the latest GitHub release (checksum-verified).
+  v, version   Print the release version (also --version).
 
-Run 'screenz <command> --help' for command flags.
+Run 'screenz <command> --help' (or -h) for command flags.
 `)
 }

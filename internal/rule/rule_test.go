@@ -274,6 +274,40 @@ func TestFlagsBuildRulesInOrder(t *testing.T) {
 	}
 }
 
+// The one-letter aliases are the same flags, not a parallel set: they open
+// and bind rules identically, and may be mixed with the long names in one
+// command line (ADR-0021).
+func TestShortFlagsAreTheSameFlags(t *testing.T) {
+	l, err := parse(t,
+		"-m", "bundle=com.microsoft.VSCode", "-d", "index=1",
+		"-m", `app="Google Chrome"`, "--display", "index=2", "-r", "left-half", "-g", "8",
+		"-m", "bundle=com.microsoft.edgemac", "-d", "2", "-r", "right-half",
+		"-t", "5%", "-f", "-o", "title",
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(l.Rules) != 3 {
+		t.Fatalf("got %d rules, want 3", len(l.Rules))
+	}
+	r1, r2, r3 := l.Rules[0], l.Rules[1], l.Rules[2]
+	if r1.Display.Index != 1 || r1.Region.String() != "maximize" || r1.First {
+		t.Errorf("rule 1 wrong: %+v", r1)
+	}
+	if r2.Display.Index != 2 || r2.Region.String() != "left-half" || r2.Gap != 8 {
+		t.Errorf("rule 2 wrong: %+v", r2)
+	}
+	if !r3.First || r3.Order != "title" || r3.Tolerance.String() != "5%" {
+		t.Errorf("rule 3 wrong: %+v", r3)
+	}
+	// A short flag before any --match is the same usage error, named by the
+	// long form so the message routes to the documented flag.
+	_, err = parse(t, "-d", "index=1")
+	if err == nil || !strings.Contains(err.Error(), "--display given before any --match") {
+		t.Errorf("err = %v, want the --display usage error", err)
+	}
+}
+
 func TestFlagsSiblingBeforeMatchIsUsageError(t *testing.T) {
 	for _, args := range [][]string{
 		{"--display", "index=1"},
@@ -307,9 +341,25 @@ func TestValidateIncompleteRules(t *testing.T) {
 	if err == nil || !strings.Contains(err.Error(), "missing --display") {
 		t.Errorf("missing display not caught: %v", err)
 	}
-	_, err = parse(t, "--match", "bundle=a", "--display", "index=1")
-	if err == nil || !strings.Contains(err.Error(), "missing --region") {
-		t.Errorf("missing region not caught: %v", err)
+}
+
+// An omitted --region is the whole usable frame (ADR-0020), not the
+// degenerate zero Region.
+func TestOmittedRegionDefaultsToMaximize(t *testing.T) {
+	l, err := parse(t, "--match", "bundle=a", "--display", "index=1")
+	if err != nil {
+		t.Fatalf("rule without --region rejected: %v", err)
+	}
+	if got := l.Rules[0].Region.String(); got != "maximize" {
+		t.Errorf("default region = %q, want maximize", got)
+	}
+	// An explicit --region still wins, whichever side of --display it lands.
+	l, err = parse(t, "--match", "bundle=a", "--region", "left-half", "--display", "index=1")
+	if err != nil {
+		t.Fatalf("explicit region rejected: %v", err)
+	}
+	if got := l.Rules[0].Region.String(); got != "left-half" {
+		t.Errorf("explicit region = %q, want left-half", got)
 	}
 }
 

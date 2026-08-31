@@ -13,25 +13,29 @@ import (
 // package documents that Value.Set is called in command-line order (ADR4.1).
 type List struct{ Rules []*Rule }
 
-// Register wires the rule flags onto a FlagSet.
+// Register wires the rule flags onto a FlagSet. Every rule flag carries a
+// one-letter alias bound to the same Value (ADR-0021); the long name stays
+// canonical in help, in error text and as the profile YAML key.
 func (l *List) Register(fs *flag.FlagSet) {
-	fs.Var(matchFlag{l}, "match", "open a new rule: bundle=, app=, title= terms")
-	fs.Var(field{l, "display", setDisplay, false}, "display", "bind the display for the last rule")
-	fs.Var(field{l, "region", setRegion, false}, "region", "bind the region for the last rule")
-	fs.Var(field{l, "gap", setGap, false}, "gap", "points between window and region edge")
-	fs.Var(field{l, "tolerance", setTolerance, false}, "tolerance", "verification tolerance: points or N%")
-	fs.Var(field{l, "order", setOrder, false}, "order", "window order within the rule: existing, title or pid")
-	fs.Var(field{l, "first", setFirst, true}, "first", "place only the first matching window")
+	bind := func(v flag.Value, long, short, usage string) {
+		fs.Var(v, long, usage)
+		fs.Var(v, short, usage)
+	}
+	bind(matchFlag{l}, "match", "m", "open a new rule: bundle=, app=, title= terms")
+	bind(field{l, "display", setDisplay, false}, "display", "d", "bind the display for the last rule")
+	bind(field{l, "region", setRegion, false}, "region", "r", "bind the region for the last rule")
+	bind(field{l, "gap", setGap, false}, "gap", "g", "points between window and region edge")
+	bind(field{l, "tolerance", setTolerance, false}, "tolerance", "t", "verification tolerance: points or N%")
+	bind(field{l, "order", setOrder, false}, "order", "o", "window order within the rule: existing, title or pid")
+	bind(field{l, "first", setFirst, true}, "first", "f", "place only the first matching window")
 }
 
-// Validate checks that every rule is complete after Parse.
+// Validate checks that every rule is complete after Parse. Only --display
+// is mandatory; an omitted --region defaults to maximize (ADR-0020).
 func (l *List) Validate() error {
 	for i, r := range l.Rules {
 		if !r.Display.IsSet() {
 			return fmt.Errorf("rule %d (%s): missing --display", i+1, r.Match)
-		}
-		if !r.HasRegion {
-			return fmt.Errorf("rule %d (%s): missing --region", i+1, r.Match)
 		}
 	}
 	return nil
@@ -49,6 +53,7 @@ func (m matchFlag) Set(s string) error {
 	m.l.Rules = append(m.l.Rules, &Rule{
 		Match:     sel,
 		Order:     "existing",
+		Region:    layout.DefaultRegion(),
 		Tolerance: layout.Tolerance{Value: layout.DefaultTolerance},
 	})
 	return nil
@@ -86,7 +91,7 @@ func setRegion(r *Rule, s string) error {
 	if err != nil {
 		return err
 	}
-	r.Region, r.HasRegion = reg, true
+	r.Region = reg
 	return nil
 }
 

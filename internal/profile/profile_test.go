@@ -71,7 +71,6 @@ func TestParseErrors(t *testing.T) {
 		{"empty match", "version: 1\nname: x\nrules:\n  - match: {}\n    display: {index: 1}\n    region: maximize\n", "empty match"},
 		{"missing display", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    region: maximize\n", "missing display"},
 		{"empty display spec", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: {}\n    region: maximize\n", "empty display spec"},
-		{"missing region", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: {index: 1}\n", "missing region"},
 		{"bad region", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: {index: 1}\n    region: diagonal\n", "unknown region"},
 		{"bad gap", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: {index: 1}\n    region: maximize\n    gap: -3\n", "gap must be non-negative"},
 		{"bad tolerance", "version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: {index: 1}\n    region: maximize\n    tolerance: wide\n", "tolerance"},
@@ -89,6 +88,18 @@ func TestParseErrors(t *testing.T) {
 				t.Fatalf("err = %v, want %q", err, tc.want)
 			}
 		})
+	}
+}
+
+// A rule may omit the region key; it means maximize, exactly as the CLI
+// grammar does (ADR-0020).
+func TestOmittedRegionDefaultsToMaximize(t *testing.T) {
+	p, err := Parse([]byte("version: 1\nname: x\nrules:\n  - match: {bundle: a}\n    display: {index: 1}\n"))
+	if err != nil {
+		t.Fatalf("rule without region rejected: %v", err)
+	}
+	if got := p.Rules[0].Region.String(); got != "maximize" {
+		t.Errorf("default region = %q, want maximize", got)
 	}
 }
 

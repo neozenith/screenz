@@ -6,7 +6,7 @@ title: Use stdlib flag with a hand-rolled subcommand table
 description: Stdlib parsing, hand-rolled dispatch; no CLI framework
 status: accepted
 accepted_on: 2026-08-28
-last_changed_on: 2026-08-28
+last_changed_on: 2026-08-31
 tags: [cli, dependencies]
 
 lens: Stdlib parsing with a hand-rolled dispatch table; no CLI framework enters this codebase.
@@ -16,7 +16,13 @@ enforced_in:
   - cmd/screenz
   - internal/cli (Run dispatch, per-command FlagSets, exit codes)
 
-relates_to: []
+relates_to:
+  - relation: see_also
+    target: ADR-0021
+    note: its alias mechanism and the absence of flag clustering both follow from stdlib flag
+  - relation: extended_by
+    target: ADR-0024
+    note: gives each command in the dispatch table a second case label, its initial
 
 problem:
   symptom: The CLI needs subcommands, repeated flags and exit-code discipline, which frameworks advertise.

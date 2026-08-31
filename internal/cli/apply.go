@@ -21,9 +21,15 @@ Apply placement rules to the live window set in one invocation. With a
 PROFILE name, the profile's rules run first and any inline rule flags are
 appended after them; display aliases resolve through the profile. Every
 --match opens a new rule; --display, --region, --gap, --tolerance, --first
-and --order bind to the most recent rule (ADR4.1). A window is placed by
-the FIRST rule it matches. Display selectors resolve against connected
-displays before anything moves; zero or ambiguous matches abort the run.
+and --order bind to the most recent rule (ADR4.1). A rule needs a
+--display; an omitted --region means maximize (ADR-0020). A window is
+placed by the FIRST rule it matches. Display selectors resolve against
+connected displays before anything moves; zero or ambiguous matches
+abort the run.
+
+Every flag below has the one-letter alias shown beside it (ADR-0021).
+Each takes its own dash: all but --first carry a value, so there is
+nothing to cluster.
 
 Example (the office context switch):
   screenz apply \
@@ -31,22 +37,36 @@ Example (the office context switch):
     --match 'app="Google Chrome" title=/Work/' --display index=2 --region left-half \
     --match bundle=com.microsoft.edgemac       --display index=2 --region right-half
 
+  ...or in short form, leaning on the maximize default:
+  screenz apply -m bundle=com.microsoft.VSCode -d 1 \
+                -m 'app="Google Chrome" title=/Work/' -d 2 -r left-half \
+                -m bundle=com.microsoft.edgemac -d 2 -r right-half
+
 Rule flags:
-  --match TERMS      bundle=, app=, title= terms; values may be "quoted" or /regex/i
-  --display TERMS    a bare index number (e.g. 2), a profile alias, or terms:
-                     index=N, name=, uuid=, serial=N, built-in=BOOL, main=BOOL
-  --region REGION    maximize; left-half/right-half/top-half/bottom-half;
-                     first-third/center-third/last-third,
-                     first-two-thirds/last-two-thirds; top-left/top-right/
-                     bottom-left/bottom-right; grid=CxR; unit=x,y,w,h
-  --gap N            points between window and region edge
-  --tolerance T      verification width: points (default 0.5) or N%
-  --first            place only the first matching window
-  --order ORDER      existing (default), title, or pid
+  -m, --match TERMS      bundle=, app=, title= terms; "quoted" or /regex/i values
+  -d, --display TERMS    a bare index number (e.g. 2), a profile alias, or terms:
+                         index=N, name=, uuid=, serial=N, built-in=BOOL, main=BOOL
+  -r, --region REGION    default maximize (max). Every name has a code:
+                           max  maximize          tl  top-left
+                           lh   left-half         tr  top-right
+                           rh   right-half        bl  bottom-left
+                           th   top-half          br  bottom-right
+                           bh   bottom-half
+                           f3   first-third       f23 first-two-thirds
+                           c3   center-third      l23 last-two-thirds
+                           l3   last-third
+                         ...plus grid=CxR and unit=x,y,w,h. maximise and
+                         centre-third are accepted spellings; a profile
+                         always stores the long name.
+  -g, --gap N            points between window and region edge
+  -t, --tolerance T      verification width: points (default 0.5) or N%
+  -f, --first            place only the first matching window
+  -o, --order ORDER      existing (default), title, or pid
 
 Flags:
-  --dry-run    Print the plan without moving anything.
-  --json       Emit machine-readable output.
+  -n, --dry-run    Print the plan without moving anything.
+  -j, --json       Emit machine-readable output.
+  -h, --help       Show this help.
 `
 
 // actionResult joins a planned action with its execution result. The
@@ -71,7 +91,9 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	fs := flag.NewFlagSet("apply", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	dryRun := fs.Bool("dry-run", false, "print the plan only")
+	aliasBool(fs, dryRun, "n", "print the plan only")
 	jsonOut := fs.Bool("json", false, "emit JSON")
+	aliasBool(fs, jsonOut, "j", "emit JSON")
 	rules := &rule.List{}
 	rules.Register(fs)
 	if err := fs.Parse(args); err != nil {

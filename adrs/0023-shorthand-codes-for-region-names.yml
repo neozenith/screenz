@@ -1,0 +1,46 @@
+# Architecture Decision Record - structured form of adrs/0023-shorthand-codes-for-region-names.md
+id: ADR-0023
+slug: shorthand-codes-for-region-names
+plan_id: null
+title: Every region name has a shorthand code; thirds use digits
+description: Letters for halves and corners, digits for thirds, so no code is a transposition of another
+status: accepted
+accepted_on: 2026-08-31
+last_changed_on: 2026-08-31
+tags: [cli, rules, grammar]
+
+lens: |-
+  A code is a second way to type a name, never a second name.
+  Codes resolve at the parser door like any other alias, and the catalogue name is what help, errors and profiles say.
+
+provenance: A drafted comparison of two schemes, chosen on which one makes a mistyped code fail rather than silently place a window somewhere else
+enforced_in:
+  - internal/layout (regionCodes, canonicalRegion, and the test that pairs every code with a region)
+
+relates_to:
+  - relation: extends
+    target: ADR-0022
+    note: reuses that record's canonicalise-at-the-door rule for a second class of alias
+
+problem:
+  symptom: A rule spells out left-half or first-two-thirds in full, which is the longest token on a line that already carries a selector and a display.
+  pain_point: A purely mechanical scheme of word initials puts lt (last-third) one transposition from tl (top-left) and ftt one character from ltt, so a slip parses cleanly and places a window in the wrong part of the screen.
+
+decision:
+  given: fourteen named regions in three families — one whole-frame, halves and corners that split on position, thirds that split on ordinal
+  we_prefer: letters for the halves and corners with a digit suffix for the thirds (f3, c3, l3, f23, l23), over the initial-of-each-word scheme that would give ft, ct, lt, ftt, ltt
+  because: the digit puts the thirds in a visually separate family, so no code is a transposition or a one-character slip away from a different region
+  unless: a region joins the catalogue whose code would collide, which the record must then resolve before the region ships
+  in_practice:
+    - Every named region has exactly one code, enforced by a test that walks the catalogue and the code table in both directions.
+    - max is the one code that is not built from initials; maximize is one word and m alone reads as nothing in particular.
+    - Codes are dialect-free — c3 is the centre third however it is spelled — so they need no entry in the spelling alias table.
+    - A code never reaches disk; --region l3 saves as region last-third.
+
+consequences:
+  pros:
+    - The common rules shorten to -r lh and -r max, which is what makes a three-rule inline apply fit on one line.
+    - A mistyped code is an unknown region rather than a different region, because no code is one slip from another.
+  cons:
+    - Twenty-eight accepted spellings now reach one catalogue of fourteen, so the help text has to carry a table it did not need before.
+    - max breaks the scheme's own shape, which is the price of not calling the commonest region m.

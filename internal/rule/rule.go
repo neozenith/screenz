@@ -406,8 +406,7 @@ func (d DisplaySpec) Explain(displays []discover.Display) string {
 type Rule struct {
 	Match     Selector
 	Display   DisplaySpec
-	Region    layout.Region
-	HasRegion bool
+	Region    layout.Region // defaults to maximize when --region is omitted (ADR-0020)
 	Gap       float64
 	Tolerance layout.Tolerance
 	First     bool   // place only the first matching window (YAML each: false)

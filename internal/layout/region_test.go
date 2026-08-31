@@ -142,7 +142,9 @@ func TestGapInsets(t *testing.T) {
 
 func TestParseRegionErrors(t *testing.T) {
 	for _, bad := range []string{
-		"maximise", "grid=0x2", "grid=3", "grid=ax2", "grid=2xb",
+		// "maximise" used to belong here; it is now an accepted spelling
+		// (ADR-0022). A near-miss that is not a dialect variant still fails.
+		"maximized", "grid=0x2", "grid=3", "grid=ax2", "grid=2xb",
 		"unit=0,0,1", "unit=0,0,2,1", "unit=a,0,1,1", "unit=0.6,0,0.6,1",
 		"unit=0,0,0,1", "",
 	} {
@@ -157,6 +159,74 @@ func TestRegionString(t *testing.T) {
 		if got := mustRegion(t, s).String(); got != s {
 			t.Errorf("String() = %q, want %q", got, s)
 		}
+	}
+}
+
+// Both spellings parse to the same region, and the canonical one is what
+// String renders back into a profile (ADR-0022).
+func TestRegionSpellingAliases(t *testing.T) {
+	for alias, canon := range map[string]string{
+		"maximise":     "maximize",
+		"centre-third": "center-third",
+	} {
+		got := mustRegion(t, alias)
+		if got != mustRegion(t, canon) {
+			t.Errorf("%q parsed to %#v, want the same region as %q", alias, got, canon)
+		}
+		if got.String() != canon {
+			t.Errorf("%q rendered as %q, want the canonical %q", alias, got.String(), canon)
+		}
+	}
+	// Only the catalogue words have variants; nothing else is re-spelled.
+	if _, err := ParseRegion("left-halve"); err == nil {
+		t.Error("left-halve accepted")
+	}
+}
+
+// Every named region has exactly one shorthand code and every code names a
+// real region (ADR-0023) — adding a region without a code fails here.
+func TestRegionCodesCoverTheCatalogue(t *testing.T) {
+	seen := map[string]string{}
+	for code, name := range regionCodes {
+		if _, ok := namedRegions[name]; !ok {
+			t.Errorf("code %q names %q, which is not in the catalogue", code, name)
+		}
+		if prev, dup := seen[name]; dup {
+			t.Errorf("%q has two codes: %q and %q", name, prev, code)
+		}
+		seen[name] = code
+	}
+	for name := range namedRegions {
+		if _, ok := seen[name]; !ok {
+			t.Errorf("region %q has no shorthand code", name)
+		}
+	}
+}
+
+// A code parses to its region and renders back as the long name, so a
+// profile saved from -r l3 stores last-third (ADR-0023).
+func TestRegionCodesParseAndCanonicalise(t *testing.T) {
+	for code, name := range regionCodes {
+		got := mustRegion(t, code)
+		if got != mustRegion(t, name) {
+			t.Errorf("%q parsed to %#v, want the same region as %q", code, got, name)
+		}
+		if got.String() != name {
+			t.Errorf("%q rendered as %q, want the canonical %q", code, got.String(), name)
+		}
+	}
+}
+
+// The default must be a fully constructed region, not the zero value —
+// a zero Region spans nothing and would place degenerate frames.
+func TestDefaultRegionIsMaximize(t *testing.T) {
+	d := DefaultRegion()
+	if d != mustRegion(t, "maximize") {
+		t.Fatalf("DefaultRegion() = %#v, want the parsed maximize region", d)
+	}
+	usable := mac.CGRect{Origin: mac.CGPoint{X: 0, Y: 25}, Size: mac.CGSize{W: 1440, H: 875}}
+	if got := d.Rect(usable, 0, 1, 0); got != usable {
+		t.Errorf("Rect() = %+v, want the whole usable frame %+v", got, usable)
 	}
 }
 

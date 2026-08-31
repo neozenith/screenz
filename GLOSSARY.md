@@ -21,7 +21,7 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | order | The sort applied to a rule's matched windows before placement: `existing`, `title` or `pid`. |
 | plan | The full resolution of rules against a snapshot: actions, skipped windows and the unmatched count, computed before any window moves. |
 | profile | A named, commented YAML rule set under the profile directory (`profiles/<name>.yaml`). |
-| region | Where windows land on a display's usable frame: a named region, `grid=CxR`, or `unit=x,y,w,h`. |
+| region | Where windows land on a display's usable frame: a named region, `grid=CxR`, or `unit=x,y,w,h`. A rule that names none takes `maximize`. Each name also has a shorthand code (`lh`, `l3`, `tl`, …); `maximise` and `centre-third` are accepted spellings. |
 | rule | One selector, display spec and region (plus gap, tolerance, order, first) applied to all matching windows. A window is placed by the first rule it matches. |
 | selector | The window-matching terms of a rule: `bundle=`, `app=`, `title=` with literal, quoted or `/regex/i` values, ANDed together. |
 | skipped | A matched window the rule cannot act on (state not normal): claimed and reported with its state, never silently dropped. |

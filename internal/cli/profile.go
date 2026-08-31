@@ -30,6 +30,10 @@ Commands:
                               flags; --force rewrites the profile with
                               only the given rules. Comments survive.
 
+Rule flags take their one-letter aliases here too (-m, -d, -r, -g, -t,
+-f, -o), as does -j for --json. --force has no short form on purpose: it
+overwrites a file you hand-edited (ADR-0021).
+
 Apply a profile with: screenz apply NAME [extra rule flags]
 `
 
@@ -79,6 +83,7 @@ func runProfileStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	fs := flag.NewFlagSet("profile status", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	jsonOut := fs.Bool("json", false, "emit JSON")
+	aliasBool(fs, jsonOut, "j", "emit JSON")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, profileHelp)

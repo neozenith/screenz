@@ -312,6 +312,71 @@
     },
     {
       "data": {
+        "id": "ADR-0020",
+        "label": "0020",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0020-omitted-region-means-maximize.md",
+        "title": "An omitted region means maximize",
+        "description": "Where is mandatory, how big is defaulted; the common rule is the short one",
+        "status": "accepted",
+        "tags": "cli, rules, grammar, profiles"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0021",
+        "label": "0021",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0021-one-letter-aliases-for-rule-flags.md",
+        "title": "One-letter aliases for the rule grammar; destructive flags stay long",
+        "description": "A letter for what you type per rule, the full word for what you cannot undo",
+        "status": "accepted",
+        "tags": "cli, rules, grammar"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0022",
+        "label": "0022",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0022-region-spellings-canonicalise-on-parse.md",
+        "title": "Accept en-GB region spellings, canonicalise them on parse",
+        "description": "Type it either way, store it one way; an alias never reaches disk",
+        "status": "accepted",
+        "tags": "cli, rules, grammar, profiles"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0023",
+        "label": "0023",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0023-shorthand-codes-for-region-names.md",
+        "title": "Every region name has a shorthand code; thirds use digits",
+        "description": "Letters for halves and corners, digits for thirds, so no code is a transposition of another",
+        "status": "accepted",
+        "tags": "cli, rules, grammar"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0024",
+        "label": "0024",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0024-commands-answer-to-their-initial.md",
+        "title": "Every command answers to its initial",
+        "description": "The first letter is the command's short name, so a new command must claim a free one",
+        "status": "accepted",
+        "tags": "cli, grammar"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0001-split_to-ADR-0017",
         "source": "ADR-0001",
         "target": "ADR-0017",
@@ -392,12 +457,52 @@
     },
     {
       "data": {
+        "id": "ADR-0011-extended_by-ADR-0020",
+        "source": "ADR-0011",
+        "target": "ADR-0020",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "the region half of the completeness clause below is retired there; display stays mandatory"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0011-extended_by-ADR-0021",
+        "source": "ADR-0011",
+        "target": "ADR-0021",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "adds a one-letter alias per rule flag; the long name stays the canonical and the YAML key"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0012-see_also-ADR-0011",
         "source": "ADR-0012",
         "target": "ADR-0011",
         "label": "see also",
         "relation": "see_also",
         "note": "shares the term grammar"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0013-see_also-ADR-0021",
+        "source": "ADR-0013",
+        "target": "ADR-0021",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "its alias mechanism and the absence of flag clustering both follow from stdlib flag"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0013-extended_by-ADR-0024",
+        "source": "ADR-0013",
+        "target": "ADR-0024",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "gives each command in the dispatch table a second case label, its initial"
       }
     },
     {
@@ -458,6 +563,106 @@
         "label": "depends on",
         "relation": "depends_on",
         "note": "renders through demo mode"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0020-extends-ADR-0011",
+        "source": "ADR-0020",
+        "target": "ADR-0011",
+        "label": "extends",
+        "relation": "extends",
+        "note": "narrows that record's completeness clause \u2014 display stays mandatory, region no longer is"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0020-see_also-ADR-0022",
+        "source": "ADR-0020",
+        "target": "ADR-0022",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the default is stored in the catalogue spelling, as an explicitly typed region is"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0021-extends-ADR-0011",
+        "source": "ADR-0021",
+        "target": "ADR-0011",
+        "label": "extends",
+        "relation": "extends",
+        "note": "adds a second spelling of each rule flag without changing what a rule is"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0021-see_also-ADR-0013",
+        "source": "ADR-0021",
+        "target": "ADR-0013",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "stdlib flag is why aliases are a second registration and why -mdr grouping does not exist"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0021-see_also-ADR-0024",
+        "source": "ADR-0021",
+        "target": "ADR-0024",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the same one-letter treatment, applied to the command word rather than to its flags"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0022-see_also-ADR-0020",
+        "source": "ADR-0022",
+        "target": "ADR-0020",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the defaulted region is stored in canonical spelling like any other"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0022-extended_by-ADR-0023",
+        "source": "ADR-0022",
+        "target": "ADR-0023",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "shorthand codes reuse this canonicalise-at-the-door rule for a second class of alias"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0023-extends-ADR-0022",
+        "source": "ADR-0023",
+        "target": "ADR-0022",
+        "label": "extends",
+        "relation": "extends",
+        "note": "reuses that record's canonicalise-at-the-door rule for a second class of alias"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0024-extends-ADR-0013",
+        "source": "ADR-0024",
+        "target": "ADR-0013",
+        "label": "extends",
+        "relation": "extends",
+        "note": "adds a second case label per command to the hand-rolled dispatch table, with no parser change"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0024-see_also-ADR-0021",
+        "source": "ADR-0024",
+        "target": "ADR-0021",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the same one-letter treatment, applied to the command word rather than to its flags"
       }
     }
   ],

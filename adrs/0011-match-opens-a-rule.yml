@@ -6,7 +6,7 @@ title: Each --match opens a rule; sibling flags bind to it
 description: One quoting layer; the CLI grammar is the saved-profile grammar
 status: accepted
 accepted_on: 2026-08-28
-last_changed_on: 2026-08-28
+last_changed_on: 2026-08-31
 tags: [cli, rules, grammar]
 
 lens: One quoting layer and identical keys across CLI and YAML; the CLI grammar is the saved-profile grammar.
@@ -20,6 +20,12 @@ relates_to:
   - relation: depended_on_by
     target: ADR-0014
     note: relies on this for lossless profile saves
+  - relation: extended_by
+    target: ADR-0020
+    note: the region half of the completeness clause below is retired there; display stays mandatory
+  - relation: extended_by
+    target: ADR-0021
+    note: adds a one-letter alias per rule flag; the long name stays the canonical and the YAML key
 
 problem:
   symptom: Stdlib flag has no native repeated groups, but one invocation must carry many selector, display, region rules.

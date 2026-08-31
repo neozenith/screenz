@@ -194,7 +194,8 @@ func matchFromSelector(s rule.Selector) matchYAML {
 
 func (ry ruleYAML) toRule(i int) (*rule.Rule, error) {
 	wrap := func(err error) error { return fmt.Errorf("rules[%d]: %w", i, err) }
-	r := &rule.Rule{Order: "existing", Tolerance: layout.Tolerance{Value: layout.DefaultTolerance}}
+	r := &rule.Rule{Order: "existing", Region: layout.DefaultRegion(),
+		Tolerance: layout.Tolerance{Value: layout.DefaultTolerance}}
 	sel, err := ry.Match.toSelector()
 	if err != nil {
 		return nil, wrap(err)
@@ -216,14 +217,15 @@ func (ry ruleYAML) toRule(i int) (*rule.Rule, error) {
 	default:
 		return nil, wrap(fmt.Errorf("missing display"))
 	}
-	if ry.Region == "" {
-		return nil, wrap(fmt.Errorf("missing region"))
+	// An absent region key keeps the seeded default (ADR-0020); the save
+	// path always writes the key back explicitly.
+	if ry.Region != "" {
+		region, err := layout.ParseRegion(ry.Region)
+		if err != nil {
+			return nil, wrap(err)
+		}
+		r.Region = region
 	}
-	region, err := layout.ParseRegion(ry.Region)
-	if err != nil {
-		return nil, wrap(err)
-	}
-	r.Region, r.HasRegion = region, true
 	if ry.Gap != nil {
 		if *ry.Gap < 0 {
 			return nil, wrap(fmt.Errorf("gap must be non-negative"))

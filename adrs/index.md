@@ -19,6 +19,11 @@
 * [ADR-0017: The terminal app is the TCC client; no daemon mode](0017-terminal-app-is-the-tcc-client.md) - Shell-launched only; the terminal app owns the grant (split from 0001)
 * [ADR-0018: Demo mode replays a recorded world and simulates placement](0018-demo-mode-replays-a-recorded-world.md) - Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests
 * [ADR-0019: Animated demos are VHS tapes rendered through demo mode](0019-demos-are-vhs-tapes.md) - A demo must be regenerable by script from checked-in sources; a human-at-the-desk recording is a screenshot with extra steps
+* [ADR-0020: An omitted region means maximize](0020-omitted-region-means-maximize.md) - Where is mandatory, how big is defaulted; the common rule is the short one
+* [ADR-0021: One-letter aliases for the rule grammar; destructive flags stay long](0021-one-letter-aliases-for-rule-flags.md) - A letter for what you type per rule, the full word for what you cannot undo
+* [ADR-0022: Accept en-GB region spellings, canonicalise them on parse](0022-region-spellings-canonicalise-on-parse.md) - Type it either way, store it one way; an alias never reaches disk
+* [ADR-0023: Every region name has a shorthand code; thirds use digits](0023-shorthand-codes-for-region-names.md) - Letters for halves and corners, digits for thirds, so no code is a transposition of another
+* [ADR-0024: Every command answers to its initial](0024-commands-answer-to-their-initial.md) - The first letter is the command's short name, so a new command must claim a free one
 # By group
 
 ## accessibility
@@ -29,6 +34,11 @@
 * [ADR-0011](0011-match-opens-a-rule.md) - One quoting layer; the CLI grammar is the saved-profile grammar
 * [ADR-0012](0012-last-slash-regex.md) - One regex spelling everywhere; remaining ambiguity fails loudly
 * [ADR-0013](0013-stdlib-flag-cli.md) - Stdlib parsing, hand-rolled dispatch; no CLI framework
+* [ADR-0020](0020-omitted-region-means-maximize.md) - Where is mandatory, how big is defaulted; the common rule is the short one
+* [ADR-0021](0021-one-letter-aliases-for-rule-flags.md) - A letter for what you type per rule, the full word for what you cannot undo
+* [ADR-0022](0022-region-spellings-canonicalise-on-parse.md) - Type it either way, store it one way; an alias never reaches disk
+* [ADR-0023](0023-shorthand-codes-for-region-names.md) - Letters for halves and corners, digits for thirds, so no code is a transposition of another
+* [ADR-0024](0024-commands-answer-to-their-initial.md) - The first letter is the command's short name, so a new command must claim a free one
 ## demo
 
 * [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) - Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests
@@ -71,10 +81,24 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0008 --see_also--> ADR-0010
 * ADR-0010 --see_also--> ADR-0008
 * ADR-0011 --depended_on_by--> ADR-0014
+* ADR-0011 --extended_by--> ADR-0020
+* ADR-0011 --extended_by--> ADR-0021
 * ADR-0012 --see_also--> ADR-0011
+* ADR-0013 --see_also--> ADR-0021
+* ADR-0013 --extended_by--> ADR-0024
 * ADR-0014 --depends_on--> ADR-0011
 * ADR-0017 --split_from--> ADR-0001
 * ADR-0017 --extends--> ADR-0003
 * ADR-0018 --excepts--> ADR-0008
 * ADR-0018 --depends_on--> ADR-0004
 * ADR-0019 --depends_on--> ADR-0018
+* ADR-0020 --extends--> ADR-0011
+* ADR-0020 --see_also--> ADR-0022
+* ADR-0021 --extends--> ADR-0011
+* ADR-0021 --see_also--> ADR-0013
+* ADR-0021 --see_also--> ADR-0024
+* ADR-0022 --see_also--> ADR-0020
+* ADR-0022 --extended_by--> ADR-0023
+* ADR-0023 --extends--> ADR-0022
+* ADR-0024 --extends--> ADR-0013
+* ADR-0024 --see_also--> ADR-0021

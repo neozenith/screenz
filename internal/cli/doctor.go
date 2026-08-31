@@ -54,13 +54,15 @@ connected displays, the resolved profile directory, and that every macOS
 symbol bound. Exits 1 when Accessibility is not granted (ADR1.2).
 
 Flags:
-  --json    Emit the report as JSON.
+  -j, --json    Emit the report as JSON.
+  -h, --help    Show this help.
 `
 
 func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 	fs := flag.NewFlagSet("doctor", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	jsonOut := fs.Bool("json", false, "emit JSON")
+	aliasBool(fs, jsonOut, "j", "emit JSON")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, doctorHelp)
