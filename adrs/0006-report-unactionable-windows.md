@@ -11,7 +11,7 @@ enforced_in:
   - internal/discover (states)
   - internal/plan (Skipped)
   - internal/cli status and apply
-generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
 ---
 
 > **Lens**: Never hide what the tool cannot act on; every un-actionable window carries a state and every incomplete sweep fails the run.
@@ -19,6 +19,7 @@ generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
 ## Relates to
 
 - See also [ADR-0008](0008-strict-tolerance-verification.md) (applies the same honesty to frames)
+- See also [ADR-0026](0026-status-elides-titles-and-takes-sections.md) (eliding a title shortens how a window is shown, never whether it is shown)
 
 ## Problem
 

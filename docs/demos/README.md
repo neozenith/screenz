@@ -8,7 +8,7 @@ The tapes run in demo mode ([ADR-0018](../../adrs/0018-demo-mode-replays-a-recor
 |------|-----|-------|
 | [demo-status.tape](demo-status.tape) | [demo-status.gif](demo-status.gif) | `doctor` trust check, then `status` with two `--match` filters |
 | [demo-apply.tape](demo-apply.tape) | [demo-apply.gif](demo-apply.gif) | `apply --dry-run` preview, verified apply, `exit=0` |
-| [demo-profile.tape](demo-profile.tape) | [demo-profile.gif](demo-profile.gif) | `profile save`, the commented YAML, `apply --dry-run office` |
+| [demo-profile.tape](demo-profile.tape) | [demo-profile.gif](demo-profile.gif) | `--save-profile`, the commented YAML, `apply --dry-run --profile office` |
 
 Re-render after a CLI change:
 

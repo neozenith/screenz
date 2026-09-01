@@ -179,3 +179,135 @@ func TestStatusHelpAndBadFlag(t *testing.T) {
 		t.Fatalf("bad flag: exit=%d out=%q err=%q", code, out, errOut)
 	}
 }
+
+// Titles are elided so the table holds its shape; --verbose prints them
+// whole (ADR-0026).
+func TestStatusElidesLongTitles(t *testing.T) {
+	long := "a-very-long-window-title-that-runs-off-the-screen.go — screenz"
+	snap := officeSnapshot()
+	snap.Windows[0].Title = long
+
+	code, out, _ := run(t, []string{"status"}, snapDeps(snap, nil))
+	if code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	if strings.Contains(out, long) {
+		t.Errorf("long title was not elided:\n%s", out)
+	}
+	if !strings.Contains(out, "a-very-l...z — screenz"[:11]) || !strings.Contains(out, "...") {
+		t.Errorf("elided form missing:\n%s", out)
+	}
+
+	for _, flag := range []string{"--verbose", "-v"} {
+		code, out, _ := run(t, []string{"status", flag}, snapDeps(snap, nil))
+		if code != 0 || !strings.Contains(out, long) {
+			t.Errorf("%s did not print the full title: exit=%d\n%s", flag, code, out)
+		}
+	}
+
+	// JSON is a machine contract: it is never elided, verbose or not.
+	code, out, _ = run(t, []string{"status", "--json"}, snapDeps(snap, nil))
+	if code != 0 || !strings.Contains(out, long) {
+		t.Errorf("JSON elided a title: exit=%d\n%s", code, out)
+	}
+}
+
+// A title at or below the elided width is left alone: swapping 19
+// characters for 19 characters loses the ends and gains nothing.
+func TestStatusShortTitlesAreUntouched(t *testing.T) {
+	for _, title := range []string{"", "short", strings.Repeat("x", titleKeep*2+3)} {
+		if got := elideTitle(title); got != title {
+			t.Errorf("elideTitle(%q) = %q, want it unchanged", title, got)
+		}
+	}
+	if got := elideTitle(strings.Repeat("x", titleKeep*2+4)); !strings.Contains(got, "...") {
+		t.Errorf("one rune over the limit was not elided: %q", got)
+	}
+}
+
+// Titles carry em dashes and non-Latin scripts; slicing bytes would print
+// a replacement character mid-rune.
+func TestStatusElidesOnRuneBoundaries(t *testing.T) {
+	got := elideTitle("日本語のウィンドウタイトルはとても長いのです — screenz")
+	if strings.Contains(got, "\uFFFD") {
+		t.Errorf("elide split a rune: %q", got)
+	}
+	if n := len([]rune(got)); n != titleKeep*2+3 {
+		t.Errorf("elided to %d runes, want %d: %q", n, titleKeep*2+3, got)
+	}
+}
+
+func TestStatusSections(t *testing.T) {
+	d := snapDeps(officeSnapshot(), nil)
+	cases := []struct {
+		section  string
+		wantSeen string
+		wantGone string
+	}{
+		{"apps", "com.microsoft.VSCode", "BUILTIN"},
+		{"displays", "BUILTIN", "com.microsoft.VSCode"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.section, func(t *testing.T) {
+			code, out, _ := run(t, []string{"status", tc.section}, d)
+			if code != 0 {
+				t.Fatalf("exit = %d", code)
+			}
+			if !strings.Contains(out, tc.wantSeen) {
+				t.Errorf("stdout missing %q:\n%s", tc.wantSeen, out)
+			}
+			if strings.Contains(out, tc.wantGone) {
+				t.Errorf("stdout leaked the other section (%q):\n%s", tc.wantGone, out)
+			}
+		})
+	}
+	// A section may still take flags after it.
+	if code, out, _ := run(t, []string{"status", "apps", "-m", "app=Code"}, d); code != 0 ||
+		strings.Contains(out, "Google Chrome") {
+		t.Errorf("section + --match: exit=%d\n%s", code, out)
+	}
+	// A bare word that is not a section stays an argument error.
+	if code, _, _ := run(t, []string{"status", "windows"}, d); code != 2 {
+		t.Errorf("unknown section: exit=%d, want 2", code)
+	}
+}
+
+// A section narrows the JSON exactly as it narrows the tables.
+func TestStatusSectionJSON(t *testing.T) {
+	d := snapDeps(officeSnapshot(), nil)
+	var got statusJSON
+
+	code, out, _ := run(t, []string{"status", "apps", "--json"}, d)
+	if code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	if err := json.Unmarshal([]byte(out), &got); err != nil {
+		t.Fatalf("not JSON: %v", err)
+	}
+	if len(got.Windows) == 0 || got.Displays != nil {
+		t.Errorf("apps JSON should carry windows only: %+v", got)
+	}
+
+	got = statusJSON{}
+	code, out, _ = run(t, []string{"status", "displays", "--json"}, d)
+	if code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	if err := json.Unmarshal([]byte(out), &got); err != nil {
+		t.Fatalf("not JSON: %v", err)
+	}
+	if len(got.Displays) == 0 || got.Windows != nil {
+		t.Errorf("displays JSON should carry displays only: %+v", got)
+	}
+}
+
+// An app that could not be enumerated is reported even when only the
+// display section was asked for: an incomplete world is never silent.
+func TestStatusSectionStillWarnsOnAppErrs(t *testing.T) {
+	snap := officeSnapshot()
+	snap.AppErrs = []discover.AppErr{{PID: 88, App: "Hung", Err: "AXWindows: cannot complete"}}
+	code, _, errOut := run(t, []string{"status", "displays"}, snapDeps(snap, nil))
+	if code != 0 || !strings.Contains(errOut, "Hung") {
+		t.Errorf("exit=%d stderr=%q", code, errOut)
+	}
+}

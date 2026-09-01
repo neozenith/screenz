@@ -1,4 +1,4 @@
-# Demo 3 — save the office context: profile save, commented YAML, replay.
+# Demo 3 — save the office context: --save-profile, commented YAML, replay.
 Output demo-profile.gif
 
 Set Width 1120
@@ -14,7 +14,7 @@ Type "export PATH=$HOME/.work/bin:$PATH && export SCREENZ_DEMO=demo-world.json &
 Enter
 Show
 
-Type `screenz profile save office \`
+Type `screenz apply --dry-run --save-profile office \`
 Enter
 Type `  --match 'bundle=com.microsoft.VSCode title=/office-demo/' --display built-in=true --region maximize \`
 Enter
@@ -28,7 +28,7 @@ Sleep 500ms
 Enter
 Sleep 4s
 
-Type "screenz apply --dry-run office"
+Type "screenz apply --dry-run --profile office"
 Sleep 500ms
 Enter
 Sleep 4.5s

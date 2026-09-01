@@ -6,7 +6,7 @@ title: Every command answers to its initial
 description: The first letter is the command's short name, so a new command must claim a free one
 status: accepted
 accepted_on: 2026-08-31
-last_changed_on: 2026-08-31
+last_changed_on: 2026-09-01
 tags: [cli, grammar]
 
 lens: |-
@@ -24,6 +24,9 @@ relates_to:
   - relation: see_also
     target: ADR-0021
     note: the same one-letter treatment, applied to the command word rather than to its flags
+  - relation: extended_by
+    target: ADR-0025
+    note: changes which commands exist; the initial-as-short-name rule here is unchanged
 
 problem:
   symptom: The rule flags shortened to -m, -d and -r while the command in front of them stayed a whole word, so the shortest useful invocation still opened with apply.

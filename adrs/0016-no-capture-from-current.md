@@ -8,11 +8,15 @@ accepted_on: 2026-08-28
 plan_id: ADR5.3
 provenance: "Planning-session scope decision: the tool replaces the context switch, not profile authoring"
 enforced_in:
-  - internal/cli profile (init, save; no --from-current flag)
-generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+  - internal/cli (init, apply --save-profile; no --from-current flag)
+generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
 ---
 
 > **Lens**: Automate the repeated task, not the rare one; capture features earn their place only when authoring cost dominates.
+
+## Relates to
+
+- See also [ADR-0025](0025-three-verbs-profiles-named-by-flag.md) (the no-capture rule below stands; the commands its authoring flows live in moved there)
 
 ## Problem
 

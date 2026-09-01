@@ -8,7 +8,7 @@ accepted_on: 2026-08-31
 provenance: The rule flags had just taken one-letter aliases, and the commands they belong to had not; the six existing commands happen to have six distinct initials
 enforced_in:
   - internal/cli (Run's dispatch switch, one case per command carrying both spellings)
-generated: { by: human:neozenith, at: 2026-08-31T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
 ---
 
 > **Lens**: A command's short name is its first letter — not a chosen abbreviation, so there is nothing to remember and nothing to look up.
@@ -18,6 +18,7 @@ generated: { by: human:neozenith, at: 2026-08-31T00:00:00Z }
 
 - Extends [ADR-0013](0013-stdlib-flag-cli.md) (adds a second case label per command to the hand-rolled dispatch table, with no parser change)
 - See also [ADR-0021](0021-one-letter-aliases-for-rule-flags.md) (the same one-letter treatment, applied to the command word rather than to its flags)
+- Extended by [ADR-0025](0025-three-verbs-profiles-named-by-flag.md) (changes which commands exist; the initial-as-short-name rule here is unchanged)
 
 ## Problem
 

@@ -357,10 +357,12 @@ func (p *Profile) Aliases() []string {
 	return out
 }
 
-// Append parses an existing profile with its comment map, appends rules,
-// and writes it back: append-only keeps every existing $.rules[i] comment
-// path valid, so hand-written comments survive (ADR5.1).
-func Append(path string, rules []*rule.Rule) error {
+// Replace swaps a profile's rules for exactly the given ones, leaving the
+// rest of the file alone: the header comments, the displays map and any
+// hand-edit outside `rules:` all survive (ADR-0014, ADR-0025). That is
+// what lets a rule addressing an alias be saved — the displays map it
+// depends on is still there, which WriteNew cannot promise.
+func Replace(path string, rules []*rule.Rule) error {
 	src, err := os.ReadFile(path)
 	if err != nil {
 		return err
@@ -373,9 +375,19 @@ func Append(path string, rules []*rule.Rule) error {
 	if _, err := convert(py); err != nil {
 		return fmt.Errorf("parse %s: %w", path, err)
 	}
+	// Comment-map keys are positional ($.rules[2].match), so a comment on
+	// a rule that no longer exists would reattach to whatever now sits at
+	// that index. Every per-rule comment goes; comments elsewhere stay,
+	// including the one on `rules:` itself — that key is "$.rules" with no
+	// bracket, and it documents the section, not any one rule.
+	for key := range cm {
+		if strings.HasPrefix(key, "$.rules[") {
+			delete(cm, key)
+		}
+	}
+	py.Rules = py.Rules[:0]
 	for _, r := range rules {
 		py.Rules = append(py.Rules, yamlFromRule(r))
-		cm[fmt.Sprintf("$.rules[%d]", len(py.Rules)-1)] = []*yaml.Comment{yaml.HeadComment(" added by screenz profile save")}
 	}
 	// Marshal cannot fail for these types (every custom marshaler is
 	// error-free), so the error is not a reachable branch.
@@ -409,9 +421,9 @@ func WriteNew(path, name string, rules []*rule.Rule) error {
 	}
 	cm := yaml.CommentMap{
 		"$.version": []*yaml.Comment{yaml.HeadComment(
-			fmt.Sprintf(" screenz profile %q — written by: screenz profile save %s", name, name),
-			fmt.Sprintf(" Apply with:   screenz apply %s", name),
-			fmt.Sprintf(" Preview with: screenz apply --dry-run %s", name))},
+			fmt.Sprintf(" screenz profile %q — written by: screenz apply --save-profile %s", name, name),
+			fmt.Sprintf(" Apply with:   screenz apply --profile %s", name),
+			fmt.Sprintf(" Preview with: screenz apply --dry-run --profile %s", name))},
 	}
 	out, _ := yaml.MarshalWithOptions(py, yaml.WithComment(cm), yaml.IndentSequence(true))
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {

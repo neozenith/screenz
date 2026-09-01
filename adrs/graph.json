@@ -377,6 +377,32 @@
     },
     {
       "data": {
+        "id": "ADR-0025",
+        "label": "0025",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0025-three-verbs-profiles-named-by-flag.md",
+        "title": "Three verbs, and a profile is named by flag",
+        "description": "A command is what you are doing; a profile is which one, and that is a flag",
+        "status": "accepted",
+        "tags": "cli, profiles, grammar"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0026",
+        "label": "0026",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0026-status-elides-titles-and-takes-sections.md",
+        "title": "status elides titles and takes a section",
+        "description": "A table that holds its shape by default; the whole truth on request, and always in JSON",
+        "status": "accepted",
+        "tags": "cli, discovery"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0001-split_to-ADR-0017",
         "source": "ADR-0001",
         "target": "ADR-0017",
@@ -423,6 +449,16 @@
         "label": "see also",
         "relation": "see_also",
         "note": "applies the same honesty to frames"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0006-see_also-ADR-0026",
+        "source": "ADR-0006",
+        "target": "ADR-0026",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "eliding a title shortens how a window is shown, never whether it is shown"
       }
     },
     {
@@ -513,6 +549,16 @@
         "label": "depends on",
         "relation": "depends_on",
         "note": "serialises the grammar"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0016-see_also-ADR-0025",
+        "source": "ADR-0016",
+        "target": "ADR-0025",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the no-capture rule below stands; the commands its authoring flows live in moved there"
       }
     },
     {
@@ -663,6 +709,46 @@
         "label": "see also",
         "relation": "see_also",
         "note": "the same one-letter treatment, applied to the command word rather than to its flags"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0024-extended_by-ADR-0025",
+        "source": "ADR-0024",
+        "target": "ADR-0025",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "changes which commands exist; the initial-as-short-name rule here is unchanged"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0025-see_also-ADR-0016",
+        "source": "ADR-0025",
+        "target": "ADR-0016",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "its no-capture rule stands unchanged; only the commands its authoring flows live in have moved"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0025-extends-ADR-0024",
+        "source": "ADR-0025",
+        "target": "ADR-0024",
+        "label": "extends",
+        "relation": "extends",
+        "note": "changes which commands exist; the initial-as-short-name rule is unchanged and still holds"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0026-see_also-ADR-0006",
+        "source": "ADR-0026",
+        "target": "ADR-0006",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "elision shortens how a window is shown, never whether it is shown"
       }
     }
   ],

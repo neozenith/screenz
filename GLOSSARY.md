@@ -14,15 +14,17 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | display index | The human-friendly display number, ordered by row top-to-bottom then left-to-right. Unstable across layout changes; UUID and name are the stable keys. |
 | display spec | The terms addressing one display: a bare index, an alias, or `index=`, `name=`, `uuid=`, `serial=`, `built-in=`, `main=` ANDed together. |
 | first | Rule setting that places only the first matching window instead of every match: `--first` on the CLI, `each: false` in YAML. |
+| fits | Whether a profile can be applied on the connected displays: every alias it declares resolves to exactly one. Reported per profile by `list`. |
 | gap | Points inset between a window and its region edge. |
 | grant | The macOS Accessibility permission, held by the terminal app that launched screenz (the TCC client), not by the binary. |
 | group | Every window of one application, keyed by bundle id; the unit selectors match over. |
 | host app | The first real application ancestor of the shell screenz ran from; the TCC client that must hold the grant. |
 | order | The sort applied to a rule's matched windows before placement: `existing`, `title` or `pid`. |
 | plan | The full resolution of rules against a snapshot: actions, skipped windows and the unmatched count, computed before any window moves. |
-| profile | A named, commented YAML rule set under the profile directory (`profiles/<name>.yaml`). |
+| profile | A named, commented YAML rule set under the profile directory (`profiles/<name>.yaml`). Always named by flag: `--profile` to run one, `--save-profile` to write one. |
 | region | Where windows land on a display's usable frame: a named region, `grid=CxR`, or `unit=x,y,w,h`. A rule that names none takes `maximize`. Each name also has a shorthand code (`lh`, `l3`, `tl`, …); `maximise` and `centre-third` are accepted spellings. |
 | rule | One selector, display spec and region (plus gap, tolerance, order, first) applied to all matching windows. A window is placed by the first rule it matches. |
+| section | Half of the `status` report, named as a bare word: `apps` (the window table) or `displays`. Narrows the JSON the same way. |
 | selector | The window-matching terms of a rule: `bundle=`, `app=`, `title=` with literal, quoted or `/regex/i` values, ANDed together. |
 | skipped | A matched window the rule cannot act on (state not normal): claimed and reported with its state, never silently dropped. |
 | snapshot | One fully resolved discovery pass: displays, windows and any per-application enumeration errors. |

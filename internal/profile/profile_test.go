@@ -157,34 +157,40 @@ func TestLoadErrors(t *testing.T) {
 	}
 }
 
-// The comment-preservation proof shape (ADR5.1): a save on a commented profile changes only the
-// appended rule — every comment line present before is present after.
-func TestAppendPreservesComments(t *testing.T) {
+// The comment-preservation proof shape (ADR5.1, ADR-0025): replacing a
+// commented profile's rules changes only the rules — every comment line
+// present before is present after, and so is the displays map.
+func TestReplacePreservesEverythingButTheRules(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "office.yaml")
 	if err := WriteTemplate(path, "office", false); err != nil {
 		t.Fatal(err)
 	}
-	// Normalize once: the first save re-marshals (dropping blank lines,
-	// goccy#285); after that, saves are append-only.
-	if err := Append(path, nil); err != nil {
+	// Normalize once: the first write re-marshals (dropping blank lines,
+	// goccy#285); after that the file is stable.
+	if err := Replace(path, parseRules(t, "--match", "bundle=x", "--display", "laptop")); err != nil {
 		t.Fatal(err)
 	}
 	before, _ := os.ReadFile(path)
 
 	added := parseRules(t, "--match", "bundle=com.spotify.client", "--display", "laptop", "--region", "bottom-half", "--gap", "4", "--tolerance", "2%", "--first", "--order", "pid")
-	if err := Append(path, added); err != nil {
+	if err := Replace(path, added); err != nil {
 		t.Fatal(err)
 	}
 	after, _ := os.ReadFile(path)
 
+	// Every comment line survives, as does the displays map the aliases
+	// resolve through.
 	for _, line := range strings.Split(strings.TrimRight(string(before), "\n"), "\n") {
+		if !strings.HasPrefix(strings.TrimSpace(line), "#") {
+			continue
+		}
 		if !strings.Contains(string(after), line) {
-			t.Errorf("line lost by save: %q", line)
+			t.Errorf("comment lost by replace: %q", line)
 		}
 	}
 	for _, want := range []string{
-		"# added by screenz profile save",
+		"displays:", "dell-left:", "built-in: true",
 		"bundle: com.spotify.client",
 		"display: laptop",
 		"region: bottom-half",
@@ -194,50 +200,74 @@ func TestAppendPreservesComments(t *testing.T) {
 		"order: pid",
 	} {
 		if !strings.Contains(string(after), want) {
-			t.Errorf("appended rule missing %q\n%s", want, after)
+			t.Errorf("replaced file missing %q\n%s", want, after)
 		}
 	}
-	// And the appended file still parses with the same semantics.
+	// The rule that was there before is gone: replace, not append.
+	if strings.Contains(string(after), "bundle: x") {
+		t.Errorf("replace kept the old rule:\n%s", after)
+	}
 	p, err := Load(path)
 	if err != nil {
 		t.Fatal(err)
 	}
-	last := p.Rules[len(p.Rules)-1]
+	if len(p.Rules) != 1 {
+		t.Fatalf("want exactly the given rules, got %d", len(p.Rules))
+	}
+	last := p.Rules[0]
 	if !last.First || last.Gap != 4 || last.Tolerance.String() != "2%" || last.Order != "pid" {
-		t.Errorf("appended rule reparsed wrong: %+v", last)
+		t.Errorf("replaced rule reparsed wrong: %+v", last)
 	}
 }
 
-func TestAppendIsStableAfterNormalization(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "p.yaml")
+// A comment attached to a rule is dropped, not carried onto whatever now
+// occupies that index — comment-map keys are positional.
+func TestReplaceDropsRuleComments(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "p.yaml")
+	src := "version: 1\nname: p\n# keep me\nrules:\n  # rule note\n  - match: {bundle: a}\n    display: {index: 1}\n    region: maximize\n"
+	os.WriteFile(path, []byte(src), 0o644)
+	if err := Replace(path, parseRules(t, "--match", "bundle=b", "--display", "index=2")); err != nil {
+		t.Fatal(err)
+	}
+	after, _ := os.ReadFile(path)
+	if strings.Contains(string(after), "rule note") {
+		t.Errorf("a rule comment survived onto a different rule:\n%s", after)
+	}
+	if !strings.Contains(string(after), "# keep me") {
+		t.Errorf("a non-rule comment was dropped:\n%s", after)
+	}
+}
+
+func TestReplaceIsIdempotent(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "p.yaml")
 	if err := WriteTemplate(path, "p", false); err != nil {
 		t.Fatal(err)
 	}
-	if err := Append(path, nil); err != nil {
+	rules := parseRules(t, "--match", "bundle=a", "--display", "laptop")
+	if err := Replace(path, rules); err != nil {
 		t.Fatal(err)
 	}
 	first, _ := os.ReadFile(path)
-	if err := Append(path, nil); err != nil {
+	if err := Replace(path, rules); err != nil {
 		t.Fatal(err)
 	}
 	second, _ := os.ReadFile(path)
 	if string(first) != string(second) {
-		t.Errorf("empty append not idempotent:\n--- first\n%s\n--- second\n%s", first, second)
+		t.Errorf("replace not idempotent:\n--- first\n%s\n--- second\n%s", first, second)
 	}
 }
 
-func TestAppendErrors(t *testing.T) {
-	if err := Append(filepath.Join(t.TempDir(), "missing.yaml"), nil); err == nil {
+func TestReplaceErrors(t *testing.T) {
+	if err := Replace(filepath.Join(t.TempDir(), "missing.yaml"), nil); err == nil {
 		t.Error("missing file accepted")
 	}
 	path := filepath.Join(t.TempDir(), "bad.yaml")
 	os.WriteFile(path, []byte("version: 1\nname: x\ncolor: red\nrules: []\n"), 0o644)
-	if err := Append(path, nil); err == nil || !strings.Contains(err.Error(), "parse") {
+	if err := Replace(path, nil); err == nil || !strings.Contains(err.Error(), "parse") {
 		t.Errorf("err = %v", err)
 	}
 	os.WriteFile(path, []byte("version: 3\nname: x\nrules: []\n"), 0o644)
-	if err := Append(path, nil); err == nil || !strings.Contains(err.Error(), "unsupported profile version") {
+	if err := Replace(path, nil); err == nil || !strings.Contains(err.Error(), "unsupported profile version") {
 		t.Errorf("err = %v", err)
 	}
 }

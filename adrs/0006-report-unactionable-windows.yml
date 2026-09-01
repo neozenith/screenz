@@ -6,7 +6,7 @@ title: Report windows the tool cannot act on instead of hiding them
 description: Never hide what the tool cannot act on; incomplete enumeration fails the run
 status: accepted
 accepted_on: 2026-08-28
-last_changed_on: 2026-08-28
+last_changed_on: 2026-09-01
 tags: [discovery, errors]
 
 lens: Never hide what the tool cannot act on; every un-actionable window carries a state and every incomplete sweep fails the run.
@@ -21,6 +21,9 @@ relates_to:
   - relation: see_also
     target: ADR-0008
     note: applies the same honesty to frames
+  - relation: see_also
+    target: ADR-0026
+    note: eliding a title shortens how a window is shown, never whether it is shown
 
 problem:
   symptom: Minimized, hidden and other-Space windows cannot be placed, and an app whose AX enumeration failed contributes no windows at all.

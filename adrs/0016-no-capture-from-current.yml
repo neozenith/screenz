@@ -6,16 +6,19 @@ title: Profiles are authored from flags or the template, not captured
 description: Automate the repeated task, not the rare one
 status: accepted
 accepted_on: 2026-08-28
-last_changed_on: 2026-08-28
+last_changed_on: 2026-09-01
 tags: [profiles, scope]
 
 lens: Automate the repeated task, not the rare one; capture features earn their place only when authoring cost dominates.
 
 provenance: "Planning-session scope decision: the tool replaces the context switch, not profile authoring"
 enforced_in:
-  - internal/cli profile (init, save; no --from-current flag)
+  - internal/cli (init, apply --save-profile; no --from-current flag)
 
-relates_to: []
+relates_to:
+  - relation: see_also
+    target: ADR-0025
+    note: the no-capture rule below stands; the commands its authoring flows live in moved there
 
 problem:
   symptom: "A capture-from-current command looks convenient: snapshot today's layout into a profile."

@@ -19,8 +19,8 @@ The plan is previewable with `--dry-run`, each moved window's frame is read back
 
 ## Save the context, replay it forever
 
-A rule that works once becomes a named profile.
-Profiles are commented YAML, and your hand-written comments survive every save.
+A rule that works once becomes a named profile: add `--save-profile NAME` to the invocation that just worked.
+Profiles are commented YAML, and your hand-written comments — and your display aliases — survive every save.
 
 ![screenz profile: save, inspect the YAML, replay](docs/demos/demo-profile.gif)
 
@@ -41,11 +41,12 @@ After that first install, `screenz update` self-updates in place (checksum-verif
 Then grant Accessibility to **your terminal app** (not the binary; TCC attributes a shell-launched tool to the app hosting the shell) and verify:
 
 ```sh
-screenz doctor                 # names the app to grant; exits 0 when trusted
-screenz status                 # windows by app + displays
-screenz profile init office    # commented template in ~/.config/screenz/profiles/
-screenz apply --dry-run office # preview the context switch
-screenz apply office           # do it, verified
+screenz doctor                  # names the app to grant; exits 0 when trusted
+screenz status                  # windows by app + displays
+screenz init --profile office   # commented template in ~/.config/screenz/profiles/
+screenz list                    # which profiles fit the displays you have now
+screenz apply -n -p office      # preview the context switch (-n is --dry-run)
+screenz apply -p office         # do it, verified
 ```
 
 Full install and grant runbook (browser downloads, macOS 26.1 caveats, `tccutil` reset): [docs/install.md](docs/install.md).

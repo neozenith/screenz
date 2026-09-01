@@ -70,9 +70,9 @@ Notes:
 
 ```sh
 screenz status                 # see windows and displays
-screenz profile init office    # commented template in ~/.config/screenz/profiles/
-screenz apply --dry-run office # preview
-screenz apply office           # the context switch
+screenz init --profile office  # commented template in ~/.config/screenz/profiles/
+screenz apply -n -p office     # preview (-n is --dry-run)
+screenz apply -p office        # the context switch
 ```
 
 Profiles live in `$SCREENZ_HOME`, `$XDG_CONFIG_HOME/screenz` or `~/.config/screenz` ([ADR5.2](../adrs/0015-profile-dir-resolution.md)), which is dotfiles-friendly.

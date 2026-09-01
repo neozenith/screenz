@@ -24,6 +24,8 @@
 * [ADR-0022: Accept en-GB region spellings, canonicalise them on parse](0022-region-spellings-canonicalise-on-parse.md) - Type it either way, store it one way; an alias never reaches disk
 * [ADR-0023: Every region name has a shorthand code; thirds use digits](0023-shorthand-codes-for-region-names.md) - Letters for halves and corners, digits for thirds, so no code is a transposition of another
 * [ADR-0024: Every command answers to its initial](0024-commands-answer-to-their-initial.md) - The first letter is the command's short name, so a new command must claim a free one
+* [ADR-0025: Three verbs, and a profile is named by flag](0025-three-verbs-profiles-named-by-flag.md) - A command is what you are doing; a profile is which one, and that is a flag
+* [ADR-0026: status elides titles and takes a section](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
 # By group
 
 ## accessibility
@@ -39,6 +41,8 @@
 * [ADR-0022](0022-region-spellings-canonicalise-on-parse.md) - Type it either way, store it one way; an alias never reaches disk
 * [ADR-0023](0023-shorthand-codes-for-region-names.md) - Letters for halves and corners, digits for thirds, so no code is a transposition of another
 * [ADR-0024](0024-commands-answer-to-their-initial.md) - The first letter is the command's short name, so a new command must claim a free one
+* [ADR-0025](0025-three-verbs-profiles-named-by-flag.md) - A command is what you are doing; a profile is which one, and that is a flag
+* [ADR-0026](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
 ## demo
 
 * [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) - Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests
@@ -78,6 +82,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0003 --extended_by--> ADR-0017
 * ADR-0004 --tests--> ADR-0002
 * ADR-0006 --see_also--> ADR-0008
+* ADR-0006 --see_also--> ADR-0026
 * ADR-0008 --see_also--> ADR-0010
 * ADR-0010 --see_also--> ADR-0008
 * ADR-0011 --depended_on_by--> ADR-0014
@@ -87,6 +92,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0013 --see_also--> ADR-0021
 * ADR-0013 --extended_by--> ADR-0024
 * ADR-0014 --depends_on--> ADR-0011
+* ADR-0016 --see_also--> ADR-0025
 * ADR-0017 --split_from--> ADR-0001
 * ADR-0017 --extends--> ADR-0003
 * ADR-0018 --excepts--> ADR-0008
@@ -102,3 +108,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0023 --extends--> ADR-0022
 * ADR-0024 --extends--> ADR-0013
 * ADR-0024 --see_also--> ADR-0021
+* ADR-0024 --extended_by--> ADR-0025
+* ADR-0025 --see_also--> ADR-0016
+* ADR-0025 --extends--> ADR-0024
+* ADR-0026 --see_also--> ADR-0006

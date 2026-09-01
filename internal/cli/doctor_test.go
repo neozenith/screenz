@@ -278,7 +278,7 @@ func TestRunDispatch(t *testing.T) {
 		wantErr  string // substring of stderr
 	}{
 		{"no args", nil, 2, "", "no command given"},
-		{"unknown command", []string{"list"}, 2, "", `unknown command "list"`},
+		{"unknown command", []string{"nope"}, 2, "", `unknown command "nope"`},
 		{"help flag", []string{"--help"}, 0, "usage: screenz", ""},
 		{"help word", []string{"help"}, 0, "usage: screenz", ""},
 		{"dash h", []string{"-h"}, 0, "usage: screenz", ""},
@@ -287,7 +287,8 @@ func TestRunDispatch(t *testing.T) {
 		{"a is apply", []string{"a", "-h"}, 0, "usage: screenz apply", ""},
 		{"d is doctor", []string{"d", "-h"}, 0, "usage: screenz doctor", ""},
 		{"s is status", []string{"s", "-h"}, 0, "usage: screenz status", ""},
-		{"p is profile", []string{"p", "-h"}, 0, "usage: screenz profile", ""},
+		{"l is list", []string{"l", "-h"}, 0, "usage: screenz list", ""},
+		{"i is init", []string{"i", "-h"}, 0, "usage: screenz init", ""},
 		{"u is update", []string{"u", "-h"}, 0, "usage: screenz update", ""},
 		{"v is version", []string{"v"}, 0, "screenz", ""},
 		{"h is help", []string{"h"}, 0, "usage: screenz", ""},

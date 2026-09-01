@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"strings"
+	"os"
 
 	"github.com/neozenith/screenz/internal/discover"
 	"github.com/neozenith/screenz/internal/mac"
@@ -15,10 +15,10 @@ import (
 	"github.com/neozenith/screenz/internal/rule"
 )
 
-const applyHelp = `usage: screenz apply [PROFILE] [--dry-run] [--json] [rule flags...]
+const applyHelp = `usage: screenz apply [--profile NAME] [--save-profile NAME] [flags...]
 
-Apply placement rules to the live window set in one invocation. With a
-PROFILE name, the profile's rules run first and any inline rule flags are
+Apply placement rules to the live window set in one invocation. With
+--profile, that profile's rules run first and any inline rule flags are
 appended after them; display aliases resolve through the profile. Every
 --match opens a new rule; --display, --region, --gap, --tolerance, --first
 and --order bind to the most recent rule (ADR4.1). A rule needs a
@@ -26,6 +26,11 @@ and --order bind to the most recent rule (ADR4.1). A rule needs a
 placed by the FIRST rule it matches. Display selectors resolve against
 connected displays before anything moves; zero or ambiguous matches
 abort the run.
+
+--save-profile writes the rules this invocation ran into a profile of
+that name, creating it or replacing its rules in place — the file's
+comments and its displays: alias map survive (ADR-0025). Pair it with
+--dry-run to author a profile without moving anything.
 
 Every flag below has the one-letter alias shown beside it (ADR-0021).
 Each takes its own dash: all but --first carry a value, so there is
@@ -38,9 +43,13 @@ Example (the office context switch):
     --match bundle=com.microsoft.edgemac       --display index=2 --region right-half
 
   ...or in short form, leaning on the maximize default:
-  screenz apply -m bundle=com.microsoft.VSCode -d 1 \
-                -m 'app="Google Chrome" title=/Work/' -d 2 -r left-half \
-                -m bundle=com.microsoft.edgemac -d 2 -r right-half
+  screenz a -m bundle=com.microsoft.VSCode -d 1 \
+            -m 'app="Google Chrome" title=/Work/' -d 2 -r lh \
+            -m bundle=com.microsoft.edgemac -d 2 -r rh
+
+  Keep it:            screenz a <those flags> --save-profile office
+  Replay it:          screenz a -p office
+  Replay plus extra:  screenz a -p office -m app=Slack -d 1 -r rh
 
 Rule flags:
   -m, --match TERMS      bundle=, app=, title= terms; "quoted" or /regex/i values
@@ -64,10 +73,32 @@ Rule flags:
   -o, --order ORDER      existing (default), title, or pid
 
 Flags:
-  -n, --dry-run    Print the plan without moving anything.
-  -j, --json       Emit machine-readable output.
-  -h, --help       Show this help.
+  -p, --profile NAME     Run this profile's rules before any inline ones.
+      --save-profile N   Save the rules this run used into profile N.
+  -n, --dry-run          Print the plan without moving anything.
+  -j, --json             Emit machine-readable output.
+  -h, --help             Show this help.
 `
+
+// saveProfile writes the run's rules into a profile, creating the file or
+// replacing its rules in place (ADR-0025). It returns a process exit code:
+// 0 on success, so the caller carries on with the placement.
+func saveProfile(name string, rules []*rule.Rule, stdout, stderr io.Writer, d Deps) int {
+	path := profile.Path(d.Getenv, d.Home, name)
+	err := profile.Replace(path, rules)
+	if errors.Is(err, os.ErrNotExist) {
+		// No file to preserve, so there is nothing to replace into: write
+		// a fresh one. WriteNew refuses alias rules, which is right — a new
+		// profile has no displays map for an alias to resolve through.
+		err = profile.WriteNew(path, name, rules)
+	}
+	if err != nil {
+		fmt.Fprintf(stderr, "screenz apply: --save-profile: %v\n", err)
+		return 1
+	}
+	fmt.Fprintf(stdout, "saved %d rule(s) to %s\n", len(rules), path)
+	return 0
+}
 
 // actionResult joins a planned action with its execution result. The
 // result is "ok" only when every edge of the read-back frame is within the
@@ -83,13 +114,12 @@ type actionResult struct {
 }
 
 func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
-	name := ""
-	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
-		name = args[0]
-		args = args[1:]
-	}
 	fs := flag.NewFlagSet("apply", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
+	name := fs.String("profile", "", "run this profile's rules first")
+	fs.StringVar(name, "p", "", "run this profile's rules first")
+	// No one-letter alias: it writes a file (ADR-0021).
+	saveAs := fs.String("save-profile", "", "save the rules this run used into this profile")
 	dryRun := fs.Bool("dry-run", false, "print the plan only")
 	aliasBool(fs, dryRun, "n", "print the plan only")
 	jsonOut := fs.Bool("json", false, "emit JSON")
@@ -105,37 +135,53 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
 		return 2
 	}
+	// A profile is named by --profile, never positionally (ADR-0025): a
+	// bare word here is the old grammar, and guessing which it meant would
+	// move windows on a typo.
 	if fs.NArg() > 0 {
-		if name != "" || fs.NArg() > 1 {
-			fmt.Fprintf(stderr, "screenz apply: unexpected argument %q\n", fs.Arg(0))
-			fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
-			return 2
-		}
-		name = fs.Arg(0)
+		fmt.Fprintf(stderr, "screenz apply: unexpected argument %q (name a profile with --profile %s)\n",
+			fs.Arg(0), fs.Arg(0))
+		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
+		return 2
 	}
 	if err := rules.Validate(); err != nil {
 		fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 		return 2
 	}
-	if name == "" && len(rules.Rules) == 0 {
-		fmt.Fprintln(stderr, "screenz apply: no profile or rules given (start a rule with --match)")
+	if *name == "" && len(rules.Rules) == 0 {
+		fmt.Fprintln(stderr, "screenz apply: no profile or rules given (start a rule with --match, or name one with --profile)")
 		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
 		return 2
 	}
 
-	ruleSet := rules.Rules
-	if name != "" {
-		prof, err := profile.Load(profile.Path(d.Getenv, d.Home, name))
+	// Two views of the same rules. ruleSet is what gets placed, with every
+	// alias resolved to a concrete display. saveSet is what gets written,
+	// with aliases left as aliases — saving the resolved form would bake
+	// today's display indexes into the profile and destroy the very
+	// indirection a profile exists for.
+	ruleSet, saveSet := rules.Rules, rules.Rules
+	if *name != "" {
+		prof, err := profile.Load(profile.Path(d.Getenv, d.Home, *name))
 		if err != nil {
 			fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 			return 1
 		}
+		saveSet = append(append([]*rule.Rule{}, prof.Rules...), rules.Rules...)
 		// Profile rules first, inline rules appended after (ADR4.1); an
 		// unresolved alias exits before any window moves.
 		ruleSet, err = prof.Resolved(rules.Rules)
 		if err != nil {
 			fmt.Fprintf(stderr, "screenz apply: %v\n", err)
 			return 1
+		}
+	}
+
+	// The save runs before placement, so a profile is written whether or
+	// not the windows land — the rules are what was asked for either way,
+	// and a failed apply is exactly when you want the set kept to retry.
+	if *saveAs != "" {
+		if code := saveProfile(*saveAs, saveSet, stdout, stderr, d); code != 0 {
+			return code
 		}
 	}
 

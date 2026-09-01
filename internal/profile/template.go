@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-// templateYAML is the commented starting point emitted by `profile init`.
+// templateYAML is the commented starting point emitted by `screenz init`.
 // Block style only — goccy loses comments inside flow style {…} (#608) —
 // and every key mirrors the CLI rule grammar one-to-one (ADR4.1). Blank
 // lines are kept here for readability but do not survive a later
-// `profile save` (goccy/go-yaml#285).
-const templateYAML = `# screenz profile "NAME"          -- emitted by: screenz profile init NAME
-# Apply with:   screenz apply NAME
-# Preview with: screenz apply --dry-run NAME
+// --save-profile (goccy/go-yaml#285).
+const templateYAML = `# screenz profile "NAME"          -- emitted by: screenz init --profile NAME
+# Apply with:   screenz apply --profile NAME
+# Preview with: screenz apply --dry-run --profile NAME
 version: 1
 name: NAME
 

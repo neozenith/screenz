@@ -60,8 +60,10 @@ func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 		return runStatus(args[1:], stdout, stderr, d)
 	case "apply", "a":
 		return runApply(args[1:], stdout, stderr, d)
-	case "profile", "p":
-		return runProfile(args[1:], stdout, stderr, d)
+	case "list", "l":
+		return runList(args[1:], stdout, stderr, d)
+	case "init", "i":
+		return runInit(args[1:], stdout, stderr, d)
 	case "update", "u":
 		return runUpdate(args[1:], stdout, stderr, d)
 	case "version", "v", "--version":
@@ -113,12 +115,18 @@ func usage(w io.Writer) {
 	fmt.Fprint(w, `usage: screenz <command> [flags]
 
 Commands (each also answers to its initial):
-  d, doctor    Check the Accessibility grant, displays, and symbol bindings.
-  s, status    Show windows grouped by application and connected displays.
   a, apply     Move groups of windows by rules or a profile, verifying every frame.
-  p, profile   Manage named rule-set profiles (status, init, save).
+  s, status    Show windows grouped by application and connected displays.
+  l, list      List profiles and whether each fits the connected displays.
+  i, init      Write a commented template profile to hand-edit.
+  d, doctor    Check the Accessibility grant, displays, and symbol bindings.
   u, update    Self-update from the latest GitHub release (checksum-verified).
   v, version   Print the release version (also --version).
+
+Profiles are named by flag, not position:
+  screenz apply --profile office            replay a saved profile
+  screenz apply FLAGS --save-profile office keep the rules you just typed
+  screenz init --profile office             start one from a template
 
 Run 'screenz <command> --help' (or -h) for command flags.
 `)
