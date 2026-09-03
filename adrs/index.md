@@ -26,6 +26,7 @@
 * [ADR-0024: Every command answers to its initial](0024-commands-answer-to-their-initial.md) - The first letter is the command's short name, so a new command must claim a free one
 * [ADR-0025: Three verbs, and a profile is named by flag](0025-three-verbs-profiles-named-by-flag.md) - A command is what you are doing; a profile is which one, and that is a flag
 * [ADR-0026: status elides titles and takes a section](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
+* [ADR-0027: Embed a jq engine behind --jq rather than shell out](0027-embed-jq-behind-a-jq-flag.md) - The filter travels in the binary, so --json stays useful where jq is not installed
 # By group
 
 ## accessibility
@@ -43,6 +44,7 @@
 * [ADR-0024](0024-commands-answer-to-their-initial.md) - The first letter is the command's short name, so a new command must claim a free one
 * [ADR-0025](0025-three-verbs-profiles-named-by-flag.md) - A command is what you are doing; a profile is which one, and that is a flag
 * [ADR-0026](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
+* [ADR-0027](0027-embed-jq-behind-a-jq-flag.md) - The filter travels in the binary, so --json stays useful where jq is not installed
 ## demo
 
 * [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) - Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests
@@ -91,6 +93,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0012 --see_also--> ADR-0011
 * ADR-0013 --see_also--> ADR-0021
 * ADR-0013 --extended_by--> ADR-0024
+* ADR-0013 --extended_by--> ADR-0027
 * ADR-0014 --depends_on--> ADR-0011
 * ADR-0016 --see_also--> ADR-0025
 * ADR-0017 --split_from--> ADR-0001
@@ -112,3 +115,6 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0025 --see_also--> ADR-0016
 * ADR-0025 --extends--> ADR-0024
 * ADR-0026 --see_also--> ADR-0006
+* ADR-0027 --extends--> ADR-0013
+* ADR-0027 --see_also--> ADR-0021
+* ADR-0027 --see_also--> ADR-0002

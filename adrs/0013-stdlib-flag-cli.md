@@ -10,7 +10,7 @@ provenance: House CLI rules, applied across languages
 enforced_in:
   - cmd/screenz
   - internal/cli (Run dispatch, per-command FlagSets, exit codes)
-generated: { by: human:neozenith, at: 2026-08-31T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-09-02T00:00:00Z }
 ---
 
 > **Lens**: Stdlib parsing with a hand-rolled dispatch table; no CLI framework enters this codebase.
@@ -19,6 +19,7 @@ generated: { by: human:neozenith, at: 2026-08-31T00:00:00Z }
 
 - See also [ADR-0021](0021-one-letter-aliases-for-rule-flags.md) (its alias mechanism and the absence of flag clustering both follow from stdlib flag)
 - Extended by [ADR-0024](0024-commands-answer-to-their-initial.md) (gives each command in the dispatch table a second case label, its initial)
+- Extended by [ADR-0027](0027-embed-jq-behind-a-jq-flag.md) (settles where the no-framework rule stops - a library behind one flag is not a framework)
 
 ## Problem
 

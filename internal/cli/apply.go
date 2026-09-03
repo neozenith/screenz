@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -77,6 +76,10 @@ Flags:
       --save-profile N   Save the rules this run used into profile N.
   -n, --dry-run          Print the plan without moving anything.
   -j, --json             Emit machine-readable output.
+      --jq QUERY         Filter that JSON through a jq query, as piping it
+                         to jq would. Implies --json. Object keys come out
+                         sorted, as with jq -S.
+      --raw              Print string results from --jq unquoted (jq's -r).
   -h, --help             Show this help.
 `
 
@@ -124,6 +127,9 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	aliasBool(fs, dryRun, "n", "print the plan only")
 	jsonOut := fs.Bool("json", false, "emit JSON")
 	aliasBool(fs, jsonOut, "j", "emit JSON")
+	// --raw, never -r: that letter is --region on this command (ADR-0021).
+	jq := &jqOpts{}
+	jq.register(fs)
 	rules := &rule.List{}
 	rules.Register(fs)
 	if err := fs.Parse(args); err != nil {
@@ -151,6 +157,12 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	if *name == "" && len(rules.Rules) == 0 {
 		fmt.Fprintln(stderr, "screenz apply: no profile or rules given (start a rule with --match, or name one with --profile)")
 		fmt.Fprintln(stderr, "run 'screenz apply --help' for usage")
+		return 2
+	}
+	// Compiled before anything is saved or moved: a mistyped query must not
+	// cost a placement run.
+	filter, ok := jq.resolve("apply", jsonOut, stderr)
+	if !ok {
 		return 2
 	}
 
@@ -206,8 +218,7 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 
 	if *dryRun {
-		printPlan(p, snap, *jsonOut, stdout)
-		return 0
+		return printPlan(p, snap, *jsonOut, stdout, stderr, filter)
 	}
 	if len(snap.AppErrs) > 0 {
 		fmt.Fprintln(stderr, "screenz apply: refusing to run against an incompletely enumerated window set")
@@ -234,14 +245,16 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 
 	if *jsonOut {
-		enc := json.NewEncoder(stdout)
-		enc.SetIndent("", "  ")
-		_ = enc.Encode(struct {
+		// A failed query is reported ahead of the placement verdict: the
+		// caller asked for a filtered answer and did not get one.
+		if code := emitJSON(stdout, stderr, "apply", struct {
 			Schema    int            `json:"schema"`
 			Actions   []actionResult `json:"actions"`
 			Skipped   []plan.Skipped `json:"skipped,omitempty"`
 			Unmatched int            `json:"unmatched"`
-		}{1, results, p.Skipped, p.Unmatched})
+		}{1, results, p.Skipped, p.Unmatched}, filter); code != 0 {
+			return code
+		}
 	} else {
 		tw := newTabwriter(stdout)
 		fmt.Fprintln(tw, "#\tRULE\tAPP\tTITLE\tWID\tFROM\tTO\tTARGET\tACTUAL\tRESULT")
@@ -275,20 +288,19 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	return 0
 }
 
-// printPlan renders the dry-run plan; its JSON reuses the status shapes
-// for displays and windows (the status/apply JSON contract).
-func printPlan(p plan.Plan, snap discover.Snapshot, jsonOut bool, stdout io.Writer) {
+// printPlan renders the dry-run plan and returns the process exit code; its
+// JSON reuses the status shapes for displays and windows (the status/apply
+// JSON contract). A dry run moves nothing, so only a failed --jq query can
+// make it non-zero.
+func printPlan(p plan.Plan, snap discover.Snapshot, jsonOut bool, stdout, stderr io.Writer, filter *jqFilter) int {
 	if jsonOut {
-		enc := json.NewEncoder(stdout)
-		enc.SetIndent("", "  ")
-		_ = enc.Encode(struct {
+		return emitJSON(stdout, stderr, "apply", struct {
 			Schema   int                `json:"schema"`
 			DryRun   bool               `json:"dry_run"`
 			Displays []discover.Display `json:"displays"`
 			Plan     plan.Plan          `json:"plan"`
 			AppErrs  []discover.AppErr  `json:"app_errors,omitempty"`
-		}{1, true, snap.Displays, p, snap.AppErrs})
-		return
+		}{1, true, snap.Displays, p, snap.AppErrs}, filter)
 	}
 	tw := newTabwriter(stdout)
 	fmt.Fprintln(tw, "#\tRULE\tAPP\tTITLE\tWID\tFROM\tTO\tTARGET\tCHANGE")
@@ -304,6 +316,7 @@ func printPlan(p plan.Plan, snap discover.Snapshot, jsonOut bool, stdout io.Writ
 	tw.Flush()
 	fmt.Fprintf(stdout, "\n%d to move, %d skipped, %d windows matched no rule\n",
 		len(p.Actions), len(p.Skipped), p.Unmatched)
+	return 0
 }
 
 func rectStr(r mac.CGRect) string {

@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -32,6 +31,10 @@ Flags:
                      Displays are always listed in full.
   -v, --verbose      Print full window titles instead of eliding them.
   -j, --json         Emit {"schema":1,"displays":[…],"windows":[…]} JSON.
+      --jq QUERY     Filter that JSON through a jq query, as piping it to
+                     jq would. Implies --json. Object keys come out sorted,
+                     as with jq -S.
+      --raw          Print string results from --jq unquoted (jq's -r).
   -h, --help         Show this help.
 `
 
@@ -100,6 +103,8 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	aliasBool(fs, jsonOut, "j", "emit JSON")
 	verbose := fs.Bool("verbose", false, "print full window titles")
 	aliasBool(fs, verbose, "v", "print full window titles")
+	jq := &jqOpts{}
+	jq.register(fs)
 	matches := &matchList{}
 	fs.Var(matches, "match", "show only windows matching this selector (repeatable)")
 	fs.Var(matches, "m", "show only windows matching this selector (repeatable)")
@@ -117,6 +122,11 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	// like the section had been honoured.
 	if fs.NArg() > 0 {
 		fmt.Fprintf(stderr, "screenz status: unknown section %q (want apps or displays)\n", fs.Arg(0))
+		return 2
+	}
+	// Compiled before the snapshot, so a mistyped query costs nothing.
+	filter, ok := jq.resolve("status", jsonOut, stderr)
+	if !ok {
 		return 2
 	}
 
@@ -146,10 +156,7 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 		case "displays":
 			out.Windows, out.AppErrs = nil, nil
 		}
-		enc := json.NewEncoder(stdout)
-		enc.SetIndent("", "  ")
-		_ = enc.Encode(out)
-		return 0
+		return emitJSON(stdout, stderr, "status", out, filter)
 	}
 
 	if section != "displays" {

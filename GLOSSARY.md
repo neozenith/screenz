@@ -13,6 +13,7 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | demo mode | Env-gated replay (`SCREENZ_DEMO=<world file>`) with simulated placement, for curating demonstration text (ADR-0018). Doctor disclosed, never in tests. |
 | display index | The human-friendly display number, ordered by row top-to-bottom then left-to-right. Unstable across layout changes; UUID and name are the stable keys. |
 | display spec | The terms addressing one display: a bare index, an alias, or `index=`, `name=`, `uuid=`, `serial=`, `built-in=`, `main=` ANDed together. |
+| filter | The jq query passed to `--jq`, run against a command's JSON inside the binary rather than through a pipe (ADR-0027). Implies `--json`; follows jq's defaults, except that `--raw` is jq's `-r` and emitted object keys sort as under `jq -S`. |
 | first | Rule setting that places only the first matching window instead of every match: `--first` on the CLI, `each: false` in YAML. |
 | fits | Whether a profile can be applied on the connected displays: every alias it declares resolves to exactly one. Reported per profile by `list`. |
 | gap | Points inset between a window and its region edge. |

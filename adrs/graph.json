@@ -403,6 +403,19 @@
     },
     {
       "data": {
+        "id": "ADR-0027",
+        "label": "0027",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0027-embed-jq-behind-a-jq-flag.md",
+        "title": "Embed a jq engine behind --jq rather than shell out",
+        "description": "The filter travels in the binary, so --json stays useful where jq is not installed",
+        "status": "accepted",
+        "tags": "cli"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0001-split_to-ADR-0017",
         "source": "ADR-0001",
         "target": "ADR-0017",
@@ -539,6 +552,16 @@
         "label": "extended by",
         "relation": "extended_by",
         "note": "gives each command in the dispatch table a second case label, its initial"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0013-extended_by-ADR-0027",
+        "source": "ADR-0013",
+        "target": "ADR-0027",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "settles where the no-framework rule stops - a library behind one flag is not a framework"
       }
     },
     {
@@ -749,6 +772,36 @@
         "label": "see also",
         "relation": "see_also",
         "note": "elision shortens how a window is shown, never whether it is shown"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0027-extends-ADR-0013",
+        "source": "ADR-0027",
+        "target": "ADR-0013",
+        "label": "extends",
+        "relation": "extends",
+        "note": "a jq engine is a library behind one flag, not the CLI framework ADR-0013 refuses"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0027-see_also-ADR-0021",
+        "source": "ADR-0027",
+        "target": "ADR-0021",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "-r is --region, so the raw-string switch keeps only its long name"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0027-see_also-ADR-0002",
+        "source": "ADR-0027",
+        "target": "ADR-0002",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "gojq is pure Go, so the CGO-free single binary survives the dependency"
       }
     }
   ],

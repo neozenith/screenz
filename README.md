@@ -51,6 +51,22 @@ screenz apply -p office         # do it, verified
 
 Full install and grant runbook (browser downloads, macOS 26.1 caveats, `tccutil` reset): [docs/install.md](docs/install.md).
 
+## Script it without a pipe
+
+Every command that prints a table also takes `--json`.
+`--jq QUERY` filters that JSON through an embedded jq ([ADR-0027](adrs/0027-embed-jq-behind-a-jq-flag.md)), so the query runs wherever the binary runs, whether or not `jq` is installed.
+
+```sh
+screenz status --jq '.windows[].title' --raw          # one title per line, unquoted
+screenz status --jq '[.windows[] | select(.state == "normal")] | length'
+screenz list   --jq '.profiles[] | select(.fits | not) | .name' --raw
+screenz doctor --jq '.accessibility' --raw            # trusted / untrusted
+screenz apply -n -p office --jq '.plan.actions | length'
+```
+
+`--jq` implies `--json`, and `--raw` is jq's `-r` under a longer name because `-r` is already `--region` on `apply`.
+Output follows jq's defaults, with one deviation worth knowing: emitted object keys come out sorted, as under `jq -S`.
+
 ## How the demos are made
 
 The demos are **code**: each GIF renders from a checked-in [VHS](https://github.com/charmbracelet/vhs) tape in [docs/demos/](docs/demos/), so they regenerate deterministically whenever the CLI changes.

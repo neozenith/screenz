@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -28,6 +27,10 @@ With NAME, report only that profile.
 Flags:
   -v, --verbose   Show every alias and what it resolved to, not just the verdict.
   -j, --json      Emit {"schema":1,"profiles":[…]} JSON.
+      --jq QUERY  Filter that JSON through a jq query, as piping it to jq
+                  would. Implies --json. Object keys come out sorted, as
+                  with jq -S.
+      --raw       Print string results from --jq unquoted (jq's -r).
   -h, --help      Show this help.
 
 Author a profile with: screenz init --profile NAME
@@ -81,6 +84,8 @@ func runList(args []string, stdout, stderr io.Writer, d Deps) int {
 	aliasBool(fs, jsonOut, "j", "emit JSON")
 	verbose := fs.Bool("verbose", false, "show every alias")
 	aliasBool(fs, verbose, "v", "show every alias")
+	jq := &jqOpts{}
+	jq.register(fs)
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, listHelp)
@@ -91,6 +96,10 @@ func runList(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 	if fs.NArg() > 0 {
 		fmt.Fprintf(stderr, "screenz list: at most one NAME, got %q too\n", fs.Arg(0))
+		return 2
+	}
+	filter, ok := jq.resolve("list", jsonOut, stderr)
+	if !ok {
 		return 2
 	}
 
@@ -160,13 +169,10 @@ func runList(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 
 	if *jsonOut {
-		enc := json.NewEncoder(stdout)
-		enc.SetIndent("", "  ")
-		_ = enc.Encode(struct {
+		return emitJSON(stdout, stderr, "list", struct {
 			Schema   int             `json:"schema"`
 			Profiles []profileStatus `json:"profiles"`
-		}{1, statuses})
-		return 0
+		}{1, statuses}, filter)
 	}
 	if len(statuses) == 0 {
 		fmt.Fprintf(stdout, "no profiles in %s\n", dir)

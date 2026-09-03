@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -54,8 +53,12 @@ connected displays, the resolved profile directory, and that every macOS
 symbol bound. Exits 1 when Accessibility is not granted (ADR1.2).
 
 Flags:
-  -j, --json    Emit the report as JSON.
-  -h, --help    Show this help.
+  -j, --json      Emit the report as JSON.
+      --jq QUERY  Filter that JSON through a jq query, as piping it to jq
+                  would. Implies --json. Object keys come out sorted, as
+                  with jq -S.
+      --raw       Print string results from --jq unquoted (jq's -r).
+  -h, --help      Show this help.
 `
 
 func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
@@ -63,6 +66,8 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 	fs.SetOutput(io.Discard)
 	jsonOut := fs.Bool("json", false, "emit JSON")
 	aliasBool(fs, jsonOut, "j", "emit JSON")
+	jq := &jqOpts{}
+	jq.register(fs)
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, doctorHelp)
@@ -70,6 +75,10 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 		}
 		fmt.Fprintf(stderr, "screenz doctor: %v\n", err)
 		fmt.Fprint(stderr, doctorHelp)
+		return 2
+	}
+	filter, ok := jq.resolve("doctor", jsonOut, stderr)
+	if !ok {
 		return 2
 	}
 
@@ -96,9 +105,11 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 	}
 
 	if *jsonOut {
-		enc := json.NewEncoder(stdout)
-		enc.SetIndent("", "  ")
-		_ = enc.Encode(rep)
+		// A failed query is reported ahead of the grant verdict: the
+		// caller asked for a filtered answer and did not get one.
+		if code := emitJSON(stdout, stderr, "doctor", rep, filter); code != 0 {
+			return code
+		}
 	} else {
 		fmt.Fprintf(stdout, "screenz: %s\n", rep.Version)
 		fmt.Fprintf(stdout, "macos: %s\n", rep.OSVersion)
