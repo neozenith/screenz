@@ -1,6 +1,6 @@
-# screenz profile "office"          -- emitted by: screenz profile init office
-# Apply with:   screenz apply office
-# Preview with: screenz apply --dry-run office
+# screenz profile "office"          -- emitted by: screenz init --profile office
+# Apply with:   screenz apply --profile office
+# Preview with: screenz apply --dry-run --profile office
 version: 1
 name: office
 # Display aliases use the same terms as --display.

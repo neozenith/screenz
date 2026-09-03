@@ -28,10 +28,10 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | rule | One selector, display spec and region (plus gap, tolerance, order, first) applied to all matching windows. A window is placed by the first rule it matches. |
 | section | Half of the `status` report, named as a bare word: `apps` (the window table) or `displays`. Narrows the JSON the same way. |
 | selector | The window-matching terms of a rule: `bundle=`, `app=`, `title=` with literal, quoted or `/regex/i` values, ANDed together. |
-| skipped | A matched window the rule cannot act on (state not normal): claimed and reported with its state, never silently dropped. |
+| skipped | A matched window the rule cannot act on (state not normal): claimed and reported with its state, never silently dropped. Under `--first` it is neither claimed nor recorded, so it stays free for a later rule and counts as unmatched instead. |
 | snapshot | One fully resolved discovery pass: displays, windows and any per-application enumeration errors. |
 | state | A window's actionability: normal, minimized, hidden, sheet, dialog, offscreen (another Space), or unknown (frame read failed). Only normal windows are placed. |
 | tolerance | The per-rule verification width: points, or percent of the target size per axis. Default 0.5 pt; never infinite. |
-| unmatched | The count of windows no rule matched; reported in the plan and left untouched. |
+| unmatched | The count of windows no rule placed or claimed as skipped; reported in the plan and left untouched. A window a `--first` rule matched but passed over is counted here. |
 | usable frame | The display area regions are computed over: the visible frame with the menu bar strip carved out. |
 | world file | A serialised `status --json` capture (schema 1: displays + windows) that demo mode replays through the real pipeline. |

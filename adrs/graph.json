@@ -599,6 +599,16 @@
     },
     {
       "data": {
+        "id": "ADR-0014-extended_by-ADR-0025",
+        "source": "ADR-0014",
+        "target": "ADR-0025",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "turned the save from an append into a whole-rule-list replace, which narrowed what survives"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0016-see_also-ADR-0025",
         "source": "ADR-0016",
         "target": "ADR-0025",
@@ -785,6 +795,16 @@
         "label": "extends",
         "relation": "extends",
         "note": "changes which commands exist; the initial-as-short-name rule is unchanged and still holds"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0025-extends-ADR-0014",
+        "source": "ADR-0025",
+        "target": "ADR-0014",
+        "label": "extends",
+        "relation": "extends",
+        "note": "replaced the append save with a whole-rule-list rewrite, so per-rule comments no longer survive"
       }
     },
     {

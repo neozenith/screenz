@@ -9,7 +9,7 @@ provenance: Using the released v0.4.0 grammar in anger — `profile status` and 
 enforced_in:
   - internal/cli (Run dispatch; apply --profile/--save-profile, init --profile, list)
   - internal/profile (Replace, the in-place rule swap --save-profile writes through)
-generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-09-03T00:00:00Z }
 ---
 
 > **Lens**: A subcommand names an action, never a noun to manage: apply, status, list, init.
@@ -19,6 +19,7 @@ generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
 
 - See also [ADR-0016](0016-no-capture-from-current.md) (its no-capture rule stands unchanged; only the commands its authoring flows live in have moved)
 - Extends [ADR-0024](0024-commands-answer-to-their-initial.md) (changes which commands exist; the initial-as-short-name rule is unchanged and still holds)
+- Extends [ADR-0014](0014-goccy-yaml-comments.md) (replaced the append save with a whole-rule-list rewrite, so per-rule comments no longer survive)
 
 ## Problem
 

@@ -22,7 +22,8 @@ Both tiers must be green before a commit (ADR-0004, `adrs/`):
 ## House rules
 
 - Stdlib `flag` only; no CLI frameworks (ADR-0013).
-- No mocks or fakes standing in for the OS bridge; pure tests feed real recorded values through injected `cli.Deps` functions, and the real seam is covered by `make itest` (ADR-0004).
+- No mocks or fakes standing in for the OS bridge.
+  Pure tests feed real recorded values through injected `cli.Deps` functions, and the real seam is covered by `make itest` (ADR-0004).
 - All OS calls live in `internal/mac` and `internal/place` (darwin-only build tags); every other package is a pure transform that must compile on Linux.
 - Diagnostics go to stderr so `--json` stdout stays parseable.
   Exit codes: 0 success, 1 runtime error, 2 usage error.

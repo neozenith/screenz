@@ -6,7 +6,7 @@ title: Two test tiers; the integration tier fails, never skips
 description: Pure coverage universal; the real seam tested on real hardware; a skip is a green lie
 status: accepted
 accepted_on: 2026-08-28
-last_changed_on: 2026-08-28
+last_changed_on: 2026-09-03
 tags: [testing, coverage]
 
 lens: Keep pure coverage universal and exercise the real OS seam on real hardware; a capability-gated skip is a green lie.
@@ -14,7 +14,7 @@ lens: Keep pure coverage universal and exercise the real OS seam on real hardwar
 provenance: House test rules (no mocks, no capability skips) plus evidence that hosted macOS runners time out on AX
 enforced_in:
   - Makefile (check, coverage, itest)
-  - internal/mac and internal/place integration tests
+  - internal/mac, internal/place and internal/discover integration tests
   - internal/cli Deps seam
 
 relates_to:
@@ -32,7 +32,8 @@ decision:
   because: "`make check` stays pure and runs anywhere at 100% coverage, while `make itest` opens a real window, places it through the shipped path, and asserts the read back"
   unless: hosted runners ever exercise AX reliably, which the evidence says they do not
   in_practice:
-    - check covers every package except cmd/screenz, internal/mac and internal/place; those three are itest's job.
+    - check covers every package except cmd/screenz, internal/mac and internal/place; itest covers internal/mac, internal/place and internal/discover on real hardware.
+    - cmd/screenz sits in neither tier. It only wires real implementations into Deps, so there is nothing there to assert that internal/cli does not already assert against injected values; the wiring is proved by the binary running at all.
     - An integration test that finds the grant missing fails with the grant instruction; it never skips.
     - Pure CLI tests feed real recorded machine values through injected Deps functions.
 

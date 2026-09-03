@@ -5,8 +5,9 @@ Where this file states a rule, it is the oracle; anything it leaves unstated fal
 
 ## Dialect
 
-- **ADR surface**: `okf-yaml` — decision records are authored as YAML in `adrs/NNNN-slug.yml`, and their markdown is generated.
-- **ADR record shape**: OKF frontmatter, then a Lens blockquote (the reusable rule, first), then Problem, Decision (Given / We prefer / Because / Unless), and Consequences.
+- **ADR surface**: `okf-yaml`. Decision records are authored as YAML in `adrs/NNNN-slug.yml`, and their markdown is generated.
+- **ADR record shape**: OKF frontmatter, then a Lens blockquote (the reusable rule, first), then Problem, Decision and Consequences.
+  Decision carries Given, We prefer, Because, Unless and In practice.
 - **Generated paths**: `adrs/*.md`, `adrs/index.md`, `adrs/graph.md`, `adrs/graph.json`, `adrs/graph.html`.
   These are build artifacts. Never hand-edit one; edit the `.yml` and regenerate.
   `graph.html` is written in the same pass as `graph.json` and inlines the same payload, so the two can never describe different graphs.
@@ -36,12 +37,16 @@ Where this file states a rule, it is the oracle; anything it leaves unstated fal
 
 ## How records are written
 
-Records follow the template shape: OKF frontmatter carrying the metadata, a Lens blockquote (the reusable rule, first), then Problem, Decision (Given / We prefer / Because / Unless), and Consequences.
+Records follow the template shape: OKF frontmatter carrying the metadata, a Lens blockquote (the reusable rule, first), then Problem, Decision and Consequences.
+Decision carries Given, We prefer, Because, Unless and In practice.
 Read a Lens to apply a decision; open the record only for its argument.
 
-Decisions are immutable in substance; a change of mind is a new ADR that supersedes the old one with links both ways, and supersession may retire a single clause (recorded in the earlier record's `status` and `relates_to`, never by rewriting the clause).
+Decisions are immutable in substance.
+A change of mind is a new ADR that supersedes the old one with links both ways.
+Supersession may retire a single clause, recorded in the earlier record's `status` and `relates_to`, never by rewriting the clause.
 
-Two numbering axes exist by history: files are NNNN ordered, and code comments cite the planning-era IDs (ADR1.1 through ADR6.2) carried in each record's `plan_id` field.
+Two numbering axes exist by history.
+Files are NNNN ordered, and code comments cite the planning-era IDs (ADR1.1 through ADR6.2) carried in each record's `plan_id` field.
 That axis ended: records accepted after it carry `plan_id: null`, and ADR-0018 is the first.
 
 ## Typed relations

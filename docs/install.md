@@ -1,6 +1,6 @@
 # Installing screenz
 
-`screenz` is a single darwin binary published on the GitHub Releases page by a tag-triggered CI workflow ([ADR6.1](../adrs/0001-distribute-via-github-releases.md)).
+`screenz` is a single darwin binary published on the GitHub Releases page by a tag-triggered CI workflow ([ADR-0001](../adrs/0001-distribute-via-github-releases.md)).
 No App Store, no Homebrew, no Apple account. macOS 13 or newer.
 
 ## 1. Download
@@ -36,7 +36,7 @@ xattr -d com.apple.quarantine ~/Downloads/screenz
 
 ## 2. Grant Accessibility to your terminal app, not to screenz
 
-TCC attributes a shell-launched tool to the app that hosts the shell ([ADR6.2](../adrs/0017-terminal-app-is-the-tcc-client.md)).
+TCC attributes a shell-launched tool to the app that hosts the shell ([ADR-0017](../adrs/0017-terminal-app-is-the-tcc-client.md)).
 The grant must be given to **the terminal you run screenz from**:
 
 | You run screenz in | Grant Accessibility to |
@@ -56,7 +56,7 @@ Steps:
 
 Notes:
 
-- The grant survives screenz upgrades: the terminal app is the TCC client, so the binary's ad-hoc signature never matters ([ADR6.2](../adrs/0017-terminal-app-is-the-tcc-client.md)).
+- The grant survives screenz upgrades: the terminal app is the TCC client, so the binary's ad-hoc signature never matters ([ADR-0017](../adrs/0017-terminal-app-is-the-tcc-client.md)).
 - If the app is listed and enabled but doctor still says untrusted, reset and re-grant:
 
   ```sh
@@ -75,7 +75,7 @@ screenz apply -n -p office     # preview (-n is --dry-run)
 screenz apply -p office        # the context switch
 ```
 
-Profiles live in `$SCREENZ_HOME`, `$XDG_CONFIG_HOME/screenz` or `~/.config/screenz` ([ADR5.2](../adrs/0015-profile-dir-resolution.md)), which is dotfiles-friendly.
+Profiles live in `$SCREENZ_HOME`, `$XDG_CONFIG_HOME/screenz` or `~/.config/screenz` ([ADR-0015](../adrs/0015-profile-dir-resolution.md)), which is dotfiles-friendly.
 Example profiles are in [`examples/profiles/`](../examples/profiles/).
 
 ## Updating

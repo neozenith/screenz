@@ -6,7 +6,7 @@ title: Three verbs, and a profile is named by flag
 description: A command is what you are doing; a profile is which one, and that is a flag
 status: accepted
 accepted_on: 2026-09-01
-last_changed_on: 2026-09-01
+last_changed_on: 2026-09-03
 tags: [cli, profiles, grammar]
 
 lens: |-
@@ -25,6 +25,9 @@ relates_to:
   - relation: extends
     target: ADR-0024
     note: changes which commands exist; the initial-as-short-name rule is unchanged and still holds
+  - relation: extends
+    target: ADR-0014
+    note: replaced the append save with a whole-rule-list rewrite, so per-rule comments no longer survive
 
 problem:
   symptom: Profile work was split across `profile status`, `profile init` and `profile save`, while applying one was a bare positional on apply — four spellings of the same noun across two nesting levels.

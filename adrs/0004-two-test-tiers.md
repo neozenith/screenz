@@ -9,9 +9,9 @@ plan_id: ADR1.3
 provenance: House test rules (no mocks, no capability skips) plus evidence that hosted macOS runners time out on AX
 enforced_in:
   - Makefile (check, coverage, itest)
-  - internal/mac and internal/place integration tests
+  - internal/mac, internal/place and internal/discover integration tests
   - internal/cli Deps seam
-generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-09-03T00:00:00Z }
 ---
 
 > **Lens**: Keep pure coverage universal and exercise the real OS seam on real hardware; a capability-gated skip is a green lie.
@@ -41,7 +41,8 @@ The easy outs both lie: mocks prove the fake, and `t.Skip` when the grant is mis
 
 ### In practice
 
-- check covers every package except cmd/screenz, internal/mac and internal/place; those three are itest's job.
+- check covers every package except cmd/screenz, internal/mac and internal/place; itest covers internal/mac, internal/place and internal/discover on real hardware.
+- cmd/screenz sits in neither tier. It only wires real implementations into Deps, so there is nothing there to assert that internal/cli does not already assert against injected values; the wiring is proved by the binary running at all.
 - An integration test that finds the grant missing fails with the grant instruction; it never skips.
 - Pure CLI tests feed real recorded machine values through injected Deps functions.
 

@@ -1,6 +1,6 @@
 # Decision relationship graph
 
-28 decision records, 42 typed edges, grouped into
+28 decision records, 44 typed edges, grouped into
 9 groups. Every edge comes from a record's `relates_to`
 block, so this view cannot drift from the records.
 

@@ -1,7 +1,5 @@
 # Evidence transcripts
 
-<!-- librarian stub: content pending -->
-
 Proof-of-execution transcripts from real runs on the maintainer's machine (see [CONTRIBUTING.md](../../CONTRIBUTING.md)).
 Point-in-time artifacts: each filename carries the ISO date of the run and is never updated in place.
 

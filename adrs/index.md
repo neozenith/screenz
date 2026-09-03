@@ -98,6 +98,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0013 --extended_by--> ADR-0024
 * ADR-0013 --extended_by--> ADR-0027
 * ADR-0014 --depends_on--> ADR-0011
+* ADR-0014 --extended_by--> ADR-0025
 * ADR-0016 --see_also--> ADR-0025
 * ADR-0017 --split_from--> ADR-0001
 * ADR-0017 --extends--> ADR-0003
@@ -117,6 +118,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0024 --extended_by--> ADR-0025
 * ADR-0025 --see_also--> ADR-0016
 * ADR-0025 --extends--> ADR-0024
+* ADR-0025 --extends--> ADR-0014
 * ADR-0026 --see_also--> ADR-0006
 * ADR-0027 --extends--> ADR-0013
 * ADR-0027 --see_also--> ADR-0021

@@ -1,7 +1,8 @@
 # screenz
 
 Profile-driven bulk window layout CLI for macOS.
-One command moves whole groups of application windows (by bundle id) onto named display regions, reads every frame back, and exits 0 only when everything landed where it was asked.
+One command moves whole groups of application windows (by bundle id) onto named display regions.
+It reads every frame back, and exits 0 only when everything landed where it was asked.
 Rules compose from flags and save as commented YAML profiles per context (office, home, client).
 
 ![screenz apply: preview, move, verify every frame, exit 0](docs/demos/demo-apply.gif)
@@ -20,7 +21,9 @@ The plan is previewable with `--dry-run`, each moved window's frame is read back
 ## Save the context, replay it forever
 
 A rule that works once becomes a named profile: add `--save-profile NAME` to the invocation that just worked.
-Profiles are commented YAML, and your hand-written comments — and your display aliases — survive every save.
+Profiles are commented YAML.
+Your display aliases, your header notes and every comment outside the rules list survive each save.
+Comments written against an individual rule do not, because `--save-profile` rewrites that list whole ([ADR-0014](adrs/0014-goccy-yaml-comments.md)).
 
 ![screenz profile: save, inspect the YAML, replay](docs/demos/demo-profile.gif)
 

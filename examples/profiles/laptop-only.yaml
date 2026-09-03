@@ -1,6 +1,6 @@
-# screenz profile "laptop-only" — written by: screenz profile save laptop-only
-# Apply with:   screenz apply laptop-only
-# Preview with: screenz apply --dry-run laptop-only
+# screenz profile "laptop-only" — written by: screenz apply --save-profile laptop-only
+# Apply with:   screenz apply --profile laptop-only
+# Preview with: screenz apply --dry-run --profile laptop-only
 version: 1
 name: laptop-only
 rules:
