@@ -235,6 +235,39 @@ func (s Selector) Matches(w discover.Window) bool {
 	return len(s.Terms) > 0
 }
 
+// CouldMatchApp reports whether any window of an application could satisfy
+// this selector, judged from the application's identity alone. It answers
+// the question an enumeration failure raises: a window that could not be
+// read might still have matched, so the caller has to know whether the gap
+// could have changed its result (ADR-0028).
+//
+// It is deliberately one-sided. A false is a proof — some app= or bundle=
+// term rules the application out, so no window of it can ever match. A true
+// is only the absence of that proof. Anything unknowable therefore votes
+// true: a title= term, because a title is exactly what an unread window has
+// not got, and an empty app or bundle, because an application that could
+// not even be named cannot be ruled out.
+func (s Selector) CouldMatchApp(app, bundle string) bool {
+	for _, t := range s.Terms {
+		var field string
+		switch t.Key {
+		case "app":
+			field = app
+		case "bundle":
+			field = bundle
+		default:
+			continue
+		}
+		if field == "" {
+			continue
+		}
+		if !t.Value.Match(field) {
+			return false
+		}
+	}
+	return true
+}
+
 // DisplaySpec addresses one connected display, either by alias (resolved
 // through a profile's displays map) or by terms: index=N, name=, uuid=,
 // serial=N, built-in=BOOL, main=BOOL.

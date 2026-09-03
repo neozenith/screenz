@@ -416,6 +416,19 @@
     },
     {
       "data": {
+        "id": "ADR-0028",
+        "label": "0028",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0028-incomplete-enumeration-blocks-only-what-it-could-change.md",
+        "title": "An incomplete enumeration blocks only the runs it could have changed",
+        "description": "A gap in the world stops the run when a rule could have matched into it, not merely because it exists",
+        "status": "accepted",
+        "tags": "cli, discovery"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0001-split_to-ADR-0017",
         "source": "ADR-0001",
         "target": "ADR-0017",
@@ -472,6 +485,16 @@
         "label": "see also",
         "relation": "see_also",
         "note": "eliding a title shortens how a window is shown, never whether it is shown"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0006-extended_by-ADR-0028",
+        "source": "ADR-0006",
+        "target": "ADR-0028",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "narrows when an incomplete enumeration refuses, without narrowing what gets reported"
       }
     },
     {
@@ -802,6 +825,26 @@
         "label": "see also",
         "relation": "see_also",
         "note": "gojq is pure Go, so the CGO-free single binary survives the dependency"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0028-extends-ADR-0006",
+        "source": "ADR-0028",
+        "target": "ADR-0006",
+        "label": "extends",
+        "relation": "extends",
+        "note": "keeps the guarantee and narrows its trigger to the runs the gap could actually have changed"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0028-see_also-ADR-0008",
+        "source": "ADR-0028",
+        "target": "ADR-0008",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "both refuse to call a run successful on evidence the tool does not have"
       }
     }
   ],

@@ -8,7 +8,7 @@ accepted_on: 2026-09-01
 provenance: Real window titles on this machine run past 60 characters (an IDE window is "path (Working Tree) (file) — repo"), pushing every column after TITLE off the screen
 enforced_in:
   - internal/cli (elideTitle, the section switch in runStatus)
-generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
+generated: { by: human:neozenith, at: 2026-09-03T00:00:00Z }
 ---
 
 > **Lens**: A human-facing table is allowed to shorten a field to stay readable; a machine-facing one never is.
@@ -42,7 +42,8 @@ Both halves of status are always printed, so reading about displays meant scroll
 - --json is never elided, with or without --verbose; a machine reading it gets the real title.
 - The cut is on rune boundaries, since titles carry em dashes and non-Latin scripts.
 - A title no longer than the elided form is left alone — replacing 19 characters with 19 characters loses the ends and gains nothing.
-- The apps and displays sections narrow the report, and narrow the JSON the same way, so a consumer asking for one section is not handed the other.
+- The apps and displays sections narrow the report, and narrow the JSON the same way, so a consumer asking for one section is not handed the other's rows. The other key stays present with a null value; the schema is one shape whichever section was asked for.
+- An enumeration failure is not one of those rows. It states how much of the world was readable, so it survives every narrowing and appears under every section.
 - An application that failed to enumerate is still reported even when only displays were asked for (ADR2.2).
 - A bare word that is not a section is a usage error, never ignored — ignoring it would print the full report and look like the section was honoured.
 

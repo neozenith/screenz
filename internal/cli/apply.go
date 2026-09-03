@@ -103,6 +103,34 @@ func saveProfile(name string, rules []*rule.Rule, stdout, stderr io.Writer, d De
 	return 0
 }
 
+// blockedRule pairs an enumeration failure with the 1-based rule that could
+// have matched the windows it could not read.
+type blockedRule struct {
+	rule int
+	err  discover.AppErr
+}
+
+// blockingAppErrs narrows an incomplete enumeration to the part that could
+// change this run's result (ADR-0028). An application whose windows could
+// not be read blocks the run only when some rule could have matched them;
+// a rule selecting app=Code is not made unreliable by an unreadable Slack,
+// because no window of Slack could have satisfied it either way.
+//
+// The first blocking rule per failed application is enough — the refusal
+// needs one reason per gap, not every rule that shares it.
+func blockingAppErrs(errs []discover.AppErr, rules []*rule.Rule) []blockedRule {
+	var out []blockedRule
+	for _, e := range errs {
+		for i, r := range rules {
+			if r.Match.CouldMatchApp(e.App, e.Bundle) {
+				out = append(out, blockedRule{rule: i + 1, err: e})
+				break
+			}
+		}
+	}
+	return out
+}
+
 // actionResult joins a planned action with its execution result. The
 // result is "ok" only when every edge of the read-back frame is within the
 // rule's tolerance (ADR3.1); a mismatch is "clamped" and fails the run.
@@ -220,7 +248,11 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	if *dryRun {
 		return printPlan(p, snap, *jsonOut, stdout, stderr, filter)
 	}
-	if len(snap.AppErrs) > 0 {
+	if blocking := blockingAppErrs(snap.AppErrs, ruleSet); len(blocking) > 0 {
+		for _, b := range blocking {
+			fmt.Fprintf(stderr, "screenz apply: rule %d could match unread windows of %s (%s)\n",
+				b.rule, b.err.App, b.err.Bundle)
+		}
 		fmt.Fprintln(stderr, "screenz apply: refusing to run against an incompletely enumerated window set")
 		return 1
 	}

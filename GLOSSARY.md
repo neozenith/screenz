@@ -13,6 +13,7 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | demo mode | Env-gated replay (`SCREENZ_DEMO=<world file>`) with simulated placement, for curating demonstration text (ADR-0018). Doctor disclosed, never in tests. |
 | display index | The human-friendly display number, ordered by row top-to-bottom then left-to-right. Unstable across layout changes; UUID and name are the stable keys. |
 | display spec | The terms addressing one display: a bare index, an alias, or `index=`, `name=`, `uuid=`, `serial=`, `built-in=`, `main=` ANDed together. |
+| enumeration error | An application whose windows could not be read at all (AX failure). Reported per application and never hidden: on stderr for a table, under `app_errors` for `--json`, and under every `status` section either way. It refuses an `apply` only when some rule could have matched the windows it hid, judged from the application's name and bundle id (ADR-0028). |
 | filter | The jq query passed to `--jq`, run against a command's JSON inside the binary rather than through a pipe (ADR-0027). Implies `--json`; follows jq's defaults, except that `--raw` is jq's `-r` and emitted object keys sort as under `jq -S`. |
 | first | Rule setting that places only the first matching window instead of every match: `--first` on the CLI, `each: false` in YAML. |
 | fits | Whether a profile can be applied on the connected displays: every alias it declares resolves to exactly one. Reported per profile by `list`. |

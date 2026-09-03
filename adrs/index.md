@@ -27,6 +27,7 @@
 * [ADR-0025: Three verbs, and a profile is named by flag](0025-three-verbs-profiles-named-by-flag.md) - A command is what you are doing; a profile is which one, and that is a flag
 * [ADR-0026: status elides titles and takes a section](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
 * [ADR-0027: Embed a jq engine behind --jq rather than shell out](0027-embed-jq-behind-a-jq-flag.md) - The filter travels in the binary, so --json stays useful where jq is not installed
+* [ADR-0028: An incomplete enumeration blocks only the runs it could have changed](0028-incomplete-enumeration-blocks-only-what-it-could-change.md) - A gap in the world stops the run when a rule could have matched into it, not merely because it exists
 # By group
 
 ## accessibility
@@ -45,6 +46,7 @@
 * [ADR-0025](0025-three-verbs-profiles-named-by-flag.md) - A command is what you are doing; a profile is which one, and that is a flag
 * [ADR-0026](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
 * [ADR-0027](0027-embed-jq-behind-a-jq-flag.md) - The filter travels in the binary, so --json stays useful where jq is not installed
+* [ADR-0028](0028-incomplete-enumeration-blocks-only-what-it-could-change.md) - A gap in the world stops the run when a rule could have matched into it, not merely because it exists
 ## demo
 
 * [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) - Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests
@@ -85,6 +87,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0004 --tests--> ADR-0002
 * ADR-0006 --see_also--> ADR-0008
 * ADR-0006 --see_also--> ADR-0026
+* ADR-0006 --extended_by--> ADR-0028
 * ADR-0008 --see_also--> ADR-0010
 * ADR-0010 --see_also--> ADR-0008
 * ADR-0011 --depended_on_by--> ADR-0014
@@ -118,3 +121,5 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0027 --extends--> ADR-0013
 * ADR-0027 --see_also--> ADR-0021
 * ADR-0027 --see_also--> ADR-0002
+* ADR-0028 --extends--> ADR-0006
+* ADR-0028 --see_also--> ADR-0008

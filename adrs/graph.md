@@ -1,6 +1,6 @@
 # Decision relationship graph
 
-27 decision records, 39 typed edges, grouped into
+28 decision records, 42 typed edges, grouped into
 9 groups. Every edge comes from a record's `relates_to`
 block, so this view cannot drift from the records.
 
@@ -31,3 +31,4 @@ record set, not rendering artifacts.
 * `ADR-0019` declares `depends_on ADR-0018`, but `ADR-0018` has no `depended_on_by ADR-0019`
 * `ADR-0027` declares `see_also ADR-0021`, but `ADR-0021` has no `see_also ADR-0027`
 * `ADR-0027` declares `see_also ADR-0002`, but `ADR-0002` has no `see_also ADR-0027`
+* `ADR-0028` declares `see_also ADR-0008`, but `ADR-0008` has no `see_also ADR-0028`

@@ -372,3 +372,43 @@ func TestFlagValueStringers(t *testing.T) {
 		t.Error("--first must be a boolean flag")
 	}
 }
+
+// CouldMatchApp is one-sided on purpose: false is a proof that no window of
+// the application can satisfy the selector, true is only the absence of one.
+// Everything unknowable must therefore answer true, or an unreadable
+// application would be dismissed on evidence nobody has (ADR-0028).
+func TestCouldMatchApp(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		selector string
+		app      string
+		bundle   string
+		want     bool
+	}{
+		{"app term rules it out", "app=Code", "Slack", "com.tinyspeck.slackmacgap", false},
+		{"app term names it", "app=Slack", "Slack", "com.tinyspeck.slackmacgap", true},
+		{"bundle term rules it out", "bundle=com.microsoft.VSCode", "Slack", "com.tinyspeck.slackmacgap", false},
+		{"bundle term names it", "bundle=com.tinyspeck.slackmacgap", "Slack", "com.tinyspeck.slackmacgap", true},
+		{"regex rules it out", "app=/^Code$/", "Slack", "com.tinyspeck.slackmacgap", false},
+		{"regex names it", "app=/lac/", "Slack", "com.tinyspeck.slackmacgap", true},
+		// A title is exactly what an unread window has not got.
+		{"title alone cannot rule out", "title=/Inbox/", "Slack", "com.tinyspeck.slackmacgap", true},
+		{"title cannot rescue a ruled-out app", "app=Code title=/Inbox/", "Slack", "com.tinyspeck.slackmacgap", false},
+		// An application that could not even be named cannot be dismissed.
+		{"unknown app name", "app=Code", "", "com.tinyspeck.slackmacgap", true},
+		{"unknown bundle", "bundle=com.microsoft.VSCode", "Slack", "", true},
+		{"wholly unidentified", "app=Code bundle=com.microsoft.VSCode", "", "", true},
+		// Both terms must hold, as they do for a real window.
+		{"one of two terms fails", "app=Slack bundle=com.microsoft.VSCode", "Slack", "com.tinyspeck.slackmacgap", false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			sel, err := ParseSelector(tc.selector)
+			if err != nil {
+				t.Fatalf("ParseSelector(%q): %v", tc.selector, err)
+			}
+			if got := sel.CouldMatchApp(tc.app, tc.bundle); got != tc.want {
+				t.Errorf("CouldMatchApp(%q, %q) = %v, want %v", tc.app, tc.bundle, got, tc.want)
+			}
+		})
+	}
+}

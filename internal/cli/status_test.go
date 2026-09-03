@@ -311,3 +311,28 @@ func TestStatusSectionStillWarnsOnAppErrs(t *testing.T) {
 		t.Errorf("exit=%d stderr=%q", code, errOut)
 	}
 }
+
+// The same promise on the JSON surface, which is a separate reporting
+// channel: --json returns before the stderr loop the table path falls
+// through to, so narrowing the section used to close both at once and
+// hide the failure completely. Every section carries app_errors.
+func TestStatusSectionJSONKeepsAppErrs(t *testing.T) {
+	snap := officeSnapshot()
+	snap.AppErrs = []discover.AppErr{{PID: 88, App: "Hung", Err: "AXWindows: cannot complete"}}
+	d := snapDeps(snap, nil)
+	for _, section := range []string{"apps", "displays"} {
+		t.Run(section, func(t *testing.T) {
+			code, out, _ := run(t, []string{"status", section, "--json"}, d)
+			if code != 0 {
+				t.Fatalf("exit = %d", code)
+			}
+			var got statusJSON
+			if err := json.Unmarshal([]byte(out), &got); err != nil {
+				t.Fatalf("not JSON: %v", err)
+			}
+			if len(got.AppErrs) != 1 || got.AppErrs[0].App != "Hung" {
+				t.Errorf("%s JSON dropped the enumeration failure: %s", section, out)
+			}
+		})
+	}
+}

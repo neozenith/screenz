@@ -156,24 +156,65 @@ func TestApplyJSONFailureShapes(t *testing.T) {
 	}
 }
 
-// An app whose AX enumeration failed means matching ran against an
-// incomplete world: apply must refuse, and the dry-run must warn.
-func TestApplyRefusesOnAppErrs(t *testing.T) {
+// hungDeps serves the office snapshot plus one application whose windows
+// could not be enumerated.
+func hungDeps() Deps {
 	snap := officeSnapshot()
 	snap.AppErrs = []discover.AppErr{{PID: 88, App: "Hung", Bundle: "com.hung.app", Err: "AXWindows: cannot complete"}}
 	d := applyDeps("ok")
 	d.Snapshot = func() (discover.Snapshot, error) { return snap, nil }
+	return d
+}
 
-	code, _, errOut := run(t, append([]string{"apply"}, vscodeRule...), d)
-	if code != 1 {
-		t.Fatalf("exit = %d, want 1", code)
+// An unreadable application blocks the run only when a rule could have
+// matched the windows it hid (ADR-0028) — including the title-only case,
+// where a title is exactly what went unread.
+func TestApplyRefusesOnRelevantAppErr(t *testing.T) {
+	for _, tc := range []struct{ name, match string }{
+		{"app names it", "app=Hung"},
+		{"bundle names it", "bundle=com.hung.app"},
+		{"title says nothing about the app", "title=/Inbox/"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			code, _, errOut := run(t, []string{"apply", "--match", tc.match, "--display", "index=2"}, hungDeps())
+			if code != 1 {
+				t.Fatalf("exit = %d, want 1", code)
+			}
+			for _, want := range []string{
+				"cannot enumerate Hung (pid 88)",
+				"rule 1 could match unread windows of Hung (com.hung.app)",
+				"incompletely enumerated",
+			} {
+				if !strings.Contains(errOut, want) {
+					t.Errorf("stderr missing %q:\n%s", want, errOut)
+				}
+			}
+		})
 	}
-	for _, want := range []string{"cannot enumerate Hung (pid 88)", "incompletely enumerated"} {
-		if !strings.Contains(errOut, want) {
-			t.Errorf("stderr missing %q:\n%s", want, errOut)
-		}
-	}
+}
 
+// The converse, and the reason ADR-0028 exists: a rule that no window of
+// the unreadable application could ever have satisfied is not made
+// unreliable by it, so the run proceeds — still warning about the gap.
+func TestApplyRunsDespiteIrrelevantAppErr(t *testing.T) {
+	code, out, errOut := run(t, append([]string{"apply"}, vscodeRule...), hungDeps())
+	if code != 0 {
+		t.Fatalf("exit = %d, want 0; stderr: %s", code, errOut)
+	}
+	if !strings.Contains(out, "1 moved, 0 failed") {
+		t.Errorf("stdout did not report the move:\n%s", out)
+	}
+	// Reported, never hidden (ADR-0006) — it just does not block.
+	if !strings.Contains(errOut, "cannot enumerate Hung (pid 88)") {
+		t.Errorf("stderr dropped the warning:\n%s", errOut)
+	}
+	if strings.Contains(errOut, "incompletely enumerated") {
+		t.Errorf("refused over an application no rule could match:\n%s", errOut)
+	}
+}
+
+func TestApplyDryRunWarnsOnAppErrs(t *testing.T) {
+	d := hungDeps()
 	// Dry-run still previews but warns and reports the app errors in JSON.
 	code, out, errOut := run(t, append([]string{"apply", "--dry-run", "--json"}, vscodeRule...), d)
 	if code != 0 {

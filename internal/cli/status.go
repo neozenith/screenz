@@ -147,14 +147,19 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	snap.Windows = kept
 
 	// A section narrows the JSON exactly as it narrows the tables, so a
-	// consumer asking for one section is not handed the other.
+	// consumer asking for one section is not handed the other's rows.
+	// An enumeration failure is not one of those rows: it does not describe
+	// windows, it describes how much of the world was readable, so it
+	// survives every narrowing (ADR-0006, ADR-0026). Dropping it here once
+	// hid it completely, because the JSON branch returns before the stderr
+	// warning loop that the table path falls through to.
 	if *jsonOut {
 		out := statusJSON{Schema: 1, Displays: snap.Displays, Windows: snap.Windows, AppErrs: snap.AppErrs}
 		switch section {
 		case "apps":
 			out.Displays = nil
 		case "displays":
-			out.Windows, out.AppErrs = nil, nil
+			out.Windows = nil
 		}
 		return emitJSON(stdout, stderr, "status", out, filter)
 	}
