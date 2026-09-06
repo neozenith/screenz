@@ -125,9 +125,9 @@ func ParseRegion(s string) (Region, error) {
 	return Region{}, fmt.Errorf("unknown region %q", s)
 }
 
-// String renders the region back to its literal (lossless for profile
-// save). An en-GB spelling or a shorthand code canonicalises on parse, so
-// it renders as the catalogue name rather than as it was typed.
+// String renders the region back to its literal (lossless for
+// --save-profile). An en-GB spelling or a shorthand code canonicalises on
+// parse, so it renders as the catalogue name rather than as it was typed.
 func (r Region) String() string {
 	switch r.kind {
 	case 'g':

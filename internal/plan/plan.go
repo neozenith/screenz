@@ -27,7 +27,8 @@ type Action struct {
 }
 
 // Skipped is a matched window the rule cannot act on (ADR2.2): it is
-// claimed and reported with its state, never silently dropped.
+// claimed and reported with its state, never silently dropped — except
+// under --first, which leaves it free for a later rule (see Build).
 type Skipped struct {
 	Window discover.Window `json:"window"`
 	Rule   int             `json:"rule"`
@@ -78,6 +79,10 @@ func Build(rules []*rule.Rule, snap discover.Snapshot) (Plan, error) {
 				continue
 			}
 			if w.State != discover.StateNormal {
+				// A --first rule places one window, so an unactionable match is
+				// left unclaimed and unreported: claiming it would spend the
+				// rule on a window it cannot move and hide the next candidate
+				// from later rules. It falls through to Unmatched instead.
 				if !r.First {
 					claimed[wi] = true
 					p.Skipped = append(p.Skipped, Skipped{Window: w, Rule: ri + 1, Reason: w.State})

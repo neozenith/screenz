@@ -38,7 +38,7 @@ Flags:
   -h, --help         Show this help.
 `
 
-// titleWidth elides a window title to 8 characters either side of an
+// titleKeep is how many runes elideTitle keeps either side of the
 // ellipsis (ADR-0026). A title no longer than the elided form is left
 // alone: replacing 19 characters with 19 characters gains nothing and
 // loses the ends.
@@ -92,7 +92,7 @@ type statusJSON struct {
 
 func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	// The section is a leading bare word, peeled off before parsing so it
-	// cannot be confused with a flag value (ADR-0025).
+	// cannot be confused with a flag value (ADR-0026).
 	section := "all"
 	if len(args) > 0 && (args[0] == "apps" || args[0] == "displays") {
 		section, args = args[0], args[1:]

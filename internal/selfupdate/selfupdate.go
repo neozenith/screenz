@@ -1,7 +1,8 @@
 // Package selfupdate implements `screenz update`: resolve the latest
 // GitHub release, verify the downloaded artifact against its checksums,
 // and atomically replace the running binary. Everything here is pure over
-// bytes and paths; the network lives behind cli.Deps.Fetch.
+// bytes and paths except Replace, which is the one filesystem write; the
+// network lives behind cli.Deps.Fetch.
 package selfupdate
 
 import (

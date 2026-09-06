@@ -24,7 +24,10 @@ Both tiers must be green before a commit (ADR-0004, `adrs/`):
 - Stdlib `flag` only; no CLI frameworks (ADR-0013).
 - No mocks or fakes standing in for the OS bridge.
   Pure tests feed real recorded values through injected `cli.Deps` functions, and the real seam is covered by `make itest` (ADR-0004).
-- All OS calls live in `internal/mac` and `internal/place` (darwin-only build tags); every other package is a pure transform that must compile on Linux.
+- All OS calls live in `internal/mac`, `internal/place` and `cmd/screenz`, which are darwin-only.
+  Every other package is a pure transform that must compile on Linux.
+  The type files in those packages carry no build tag on purpose.
+  That is what lets the pure pipeline name their types on the Linux release runner.
 - Diagnostics go to stderr so `--json` stdout stays parseable.
   Exit codes: 0 success, 1 runtime error, 2 usage error.
 - Check `adrs/` before re-litigating a design choice; record new binding decisions there.
@@ -32,7 +35,7 @@ Both tiers must be green before a commit (ADR-0004, `adrs/`):
 ## Demos
 
 README GIFs render from VHS tapes in [docs/demos/](docs/demos/README.md) through demo mode (ADR-0018, ADR-0019).
-Re-render after CLI output changes: `cd docs/demos && for t in demo-*.tape; do vhs "$t"; done` (needs `brew install vhs`).
+Re-render them whenever CLI output changes; the command, the tapes and the recorded world live together in [docs/demos/](docs/demos/README.md).
 
 ## Releasing
 
@@ -41,4 +44,4 @@ make release VERSION=vX.Y.Z
 ```
 
 Tags and pushes; the GitHub workflow runs `make check`, cross-compiles both darwin architectures, and uploads the tarballs plus `checksums.txt` to the release (ADR-0001).
-Proof-of-execution transcripts live in `docs/evidence/` with ISO dates in the filenames.
+Proof-of-execution transcripts live in [docs/evidence/](docs/evidence/README.md) with ISO dates in the filenames.

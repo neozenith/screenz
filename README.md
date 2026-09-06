@@ -37,8 +37,9 @@ gh release download --repo neozenith/screenz \
   --pattern '*darwin_arm64.tar.gz' --output - | tar -xz -C ~/.work/bin
 ```
 
+Add `~/.work/bin` to your `PATH` so the commands below resolve: `export PATH=$HOME/.work/bin:$PATH`.
 Intel Macs: use `--pattern '*darwin_amd64.tar.gz'`.
-Pin a version by adding its tag: `gh release download v0.1.0 …`.
+Pin a version by adding its tag: `gh release download vX.Y.Z …`.
 After that first install, `screenz update` self-updates in place (checksum-verified atomic swap; `--check` to just look).
 
 Then grant Accessibility to **your terminal app** (not the binary; TCC attributes a shell-launched tool to the app hosting the shell) and verify:
@@ -72,15 +73,13 @@ Output follows jq's defaults, with one deviation worth knowing: emitted object k
 
 ## How the demos are made
 
-The demos are **code**: each GIF renders from a checked-in [VHS](https://github.com/charmbracelet/vhs) tape in [docs/demos/](docs/demos/), so they regenerate deterministically whenever the CLI changes.
-
-```sh
-brew install vhs
-cd docs/demos && vhs demo-apply.tape   # re-render one demo
-```
+The demos are **code**: each GIF renders from a checked-in [VHS](https://github.com/charmbracelet/vhs) tape in [docs/demos/](docs/demos/README.md), so they regenerate deterministically whenever the CLI changes.
+Re-rendering is one command, documented beside the tapes.
 
 The tapes run in demo mode ([ADR-0018](adrs/0018-demo-mode-replays-a-recorded-world.md)): `SCREENZ_DEMO=demo-world.json` replays a recorded three-display world through the real pipeline with placement simulated.
-Every line except the ACTUAL column is genuinely computed, `screenz doctor` discloses the mode, and no monitors are needed to regenerate.
+Simulated placement reports every frame as landed, so the ACTUAL and RESULT columns and the trailing `exit=0` are fabricated rather than measured.
+Everything upstream of placement is genuinely computed: discovery, matching, the plan and every TARGET frame.
+`screenz doctor` discloses the mode, and no monitors are needed to regenerate.
 
 ## Development
 

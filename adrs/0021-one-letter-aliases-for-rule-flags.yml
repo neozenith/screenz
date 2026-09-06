@@ -39,7 +39,7 @@ decision:
   because: the alias set is small enough to hold in the head, and leaving --force and --check long makes the irreversible commands read deliberately
   unless: a new rule flag has no free letter, in which case it ships long-only rather than displacing an existing letter
   in_practice:
-    - -f is --first, not --force; profile save registers both, and only one of them may own the letter.
+    - -f is --first, not --force; a single command can register both, and only one of them may own the letter.
     - Errors, help text and profile YAML keys always name the long form, so a message never teaches a spelling that is not the canonical one.
     - -h needs no registration; stdlib flag returns ErrHelp for an undefined -h and every subcommand already maps that to its help text.
     - Clustering (-mdr) does not exist under stdlib flag and is not wanted here — every rule flag except --first takes a value, so a cluster could hold at most one of them and would only obscure which value bound to which flag.

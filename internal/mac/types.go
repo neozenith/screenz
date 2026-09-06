@@ -1,7 +1,8 @@
 package mac
 
 // This file is deliberately unconstrained by build tags: the pure packages
-// (discover, layout, plan, rule, profile, cli) compile and test on any OS —
+// (demo, discover, layout, plan, rule, profile, selfupdate, cli) compile
+// and test on any OS —
 // the release workflow runs `make check` on ubuntu-latest — while every
 // function that talks to macOS stays behind //go:build darwin, and
 // cmd/screenz itself refuses to build elsewhere (ADR6.1).

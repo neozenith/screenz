@@ -30,9 +30,17 @@ Where this file states a rule, it is the oracle; anything it leaves unstated fal
 | `docs/CONVENTIONS.md` | This file: how documentation itself is organised | An agent or maintainer filing a doc |
 | `docs/install.md` | Installation and the Accessibility grant runbook | A new user |
 | `docs/demos/` | The VHS tapes and recorded world behind the README GIFs | A maintainer regenerating demos |
+| `docs/evidence/` | Point-in-time transcripts proving a command really ran; ISO-dated, never updated in place | A reader checking a claim |
+| `CLAUDE.md` | A one-line include of `AGENTS.md`; the Claude Code entry point | An agent |
+| `LICENSE` | The MIT licence | Everyone |
+| `examples/profiles/` | Runnable example profiles the install guide links to | A new user writing a first profile |
 | `adrs/*.yml` | One decision each, authored as data | A maintainer recording a decision |
+| `adrs/record.schema.json` | The record contract validation runs against | A maintainer recording a decision |
+| `adrs/render.py`, `adrs/templates/` | The generator and its templates | A maintainer changing how records render |
+| `adrs/NNNN-slug.md` | Generated reading surface for one record | Anyone reading a decision |
 | `adrs/index.md` | Generated listing of every record with its Lens | Anyone routing to a decision |
 | `adrs/graph.md` | Generated view of the typed relation graph | Anyone tracing how decisions relate |
+| `adrs/graph.json` | Generated typed relation graph as data | A tool consuming the decision set |
 | `adrs/graph.html` | Generated browsable graph: click a record to read it | Anyone exploring the decision set |
 
 ## How records are written

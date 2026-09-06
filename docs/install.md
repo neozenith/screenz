@@ -8,7 +8,8 @@ No App Store, no Homebrew, no Apple account. macOS 13 or newer.
 With the GitHub CLI (no quarantine xattr is set):
 
 ```sh
-gh release download --repo neozenith/screenz --pattern '*darwin_arm64*'
+gh release download --repo neozenith/screenz \
+  --pattern '*darwin_arm64*' --pattern checksums.txt
 tar -xzf screenz_*_darwin_arm64.tar.gz
 mkdir -p ~/.work/bin && mv screenz ~/.work/bin/   # any $PATH dir
 screenz --version
@@ -17,10 +18,12 @@ screenz --version
 Or with curl (also quarantine-free): take the URL from the Releases page (asset names embed the tag, so `/latest/download/` cannot be used):
 
 ```sh
-curl -LO https://github.com/neozenith/screenz/releases/download/v0.2.0/screenz_v0.2.0_darwin_arm64.tar.gz
+TAG=v0.6.0   # the release you want; the tag appears twice in the URL
+curl -LO https://github.com/neozenith/screenz/releases/download/$TAG/screenz_${TAG}_darwin_arm64.tar.gz
+curl -LO https://github.com/neozenith/screenz/releases/download/$TAG/checksums.txt
 ```
 
-Intel Macs use the `darwin_amd64` tarball.
+Intel Macs use the `darwin_amd64` tarball; `uname -m` prints `arm64` on Apple Silicon and `x86_64` on Intel.
 Verify against `checksums.txt` from the same release: `shasum -a 256 -c checksums.txt --ignore-missing`.
 
 ### Browser downloads are quarantined

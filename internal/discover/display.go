@@ -11,9 +11,11 @@ import (
 )
 
 // Display joins one CoreGraphics display with its NSScreen. Frames are in
-// AX global points (top-left origin, y down). UUID is the only stable key —
+// AX global points (top-left origin, y down). UUID is the stable key —
 // the CG display ID is a small unstable int, and two identical panels can
-// share the same serial number (spike fact: both LU28R55s report 1129796439).
+// share the same serial number (spike fact: both LU28R55s report
+// 1129796439). A localized name is durable only where macOS suffixes it
+// to tell such panels apart (ADR-0007).
 type Display struct {
 	Index        int        `json:"index"`
 	ID           uint32     `json:"id"`

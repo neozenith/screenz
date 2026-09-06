@@ -28,7 +28,9 @@ Single binary, no daemon.
 - Never print diagnostics to stdout; `--json` output must stay parseable.
 - Never weaken the read-back verification: apply exits 0 only when every frame lands within tolerance.
   The one sanctioned exception is demo mode (`SCREENZ_DEMO`, ADR-0018).
-  It is env-gated, wired only in `cmd/screenz`, disclosed by doctor, and never used in tests or evidence transcripts.
+  It is env-gated, wired only in `cmd/screenz`, disclosed by doctor, and never a stand-in for real behaviour in a test or an evidence transcript.
+  `internal/demo`'s own tests and the doctor-disclosure test are required by the coverage gate.
+  What is forbidden is using demo mode to fake a result some other test should have earned.
 
 ## Decisions and language
 

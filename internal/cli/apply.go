@@ -31,9 +31,10 @@ that name, creating it or replacing its rules in place — the file's
 comments and its displays: alias map survive (ADR-0025). Pair it with
 --dry-run to author a profile without moving anything.
 
-Every flag below has the one-letter alias shown beside it (ADR-0021).
-Each takes its own dash: all but --first carry a value, so there is
-nothing to cluster.
+Every rule flag below has the one-letter alias shown beside it
+(ADR-0021). Each takes its own dash: all but --first carry a value, so
+there is nothing to cluster. --save-profile, --jq and --raw carry no
+alias on purpose: the first writes a file, and -r is already --region.
 
 Example (the office context switch):
   screenz apply \

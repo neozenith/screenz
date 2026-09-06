@@ -86,7 +86,7 @@ func snapshot() (discover.Snapshot, error) {
 }
 
 // displays resolves just the connected displays — no Accessibility needed,
-// so profile status works before the grant exists.
+// so screenz list works before the grant exists.
 func displays() ([]discover.Display, error) {
 	if m := mac.Missing(); len(m) > 0 {
 		return nil, fmt.Errorf("cannot bind macOS symbols: %s", strings.Join(m, ", "))

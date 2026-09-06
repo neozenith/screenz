@@ -1,6 +1,7 @@
 // Package rule is the selector / display / region grammar shared by CLI
 // flags and YAML profiles (ADR4.1): one quoting layer, identical keys, so
-// `profile save` serialises flags losslessly. Pure parsing and matching.
+// `apply --save-profile` serialises flags losslessly. Pure parsing and
+// matching.
 package rule
 
 import (
@@ -25,7 +26,7 @@ type Matcher struct {
 // IsSet reports whether the matcher was provided at all.
 func (m Matcher) IsSet() bool { return m.raw != "" }
 
-// String returns the original literal (lossless for profile save).
+// String returns the original literal (lossless for --save-profile).
 func (m Matcher) String() string { return m.raw }
 
 // Value returns the YAML spelling of the matcher: a regex keeps its

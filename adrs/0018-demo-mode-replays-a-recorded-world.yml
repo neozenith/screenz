@@ -30,7 +30,7 @@ problem:
 decision:
   given: the CLI is a pure pipeline over injected `Deps`, and `status --json` already serialises a complete world
   we_prefer: "`SCREENZ_DEMO=<world.json>` replaying a recorded world through the real pipeline, with placement simulated as read-back-equals-target"
-  because: every demo line except the ACTUAL column is then genuinely computed, and demos render anywhere
+  because: everything upstream of placement - discovery, matching, the plan and every target frame - is then genuinely computed, and demos render anywhere. Simulated placement reports every frame as landed, so the ACTUAL and RESULT columns and the exit code are fabricated, not measured
   unless: the fabricated output starts being mistaken for verification evidence; then demo output must carry an inline marker, not just the doctor disclosure
   in_practice:
     - "`internal/demo` owns `Load` (the `status --json` schema) and the simulated `Place`; `cmd/screenz` wires them only when `SCREENZ_DEMO` is set."

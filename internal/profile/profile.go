@@ -14,7 +14,7 @@ import (
 )
 
 // Profile is one named rule set. The YAML keys map one-to-one onto the CLI
-// rule grammar (ADR4.1) so `profile save` is lossless: match.bundle ↔
+// rule grammar (ADR4.1) so `--save-profile` is lossless: match.bundle ↔
 // --match bundle=, display alias ↔ --display ALIAS, region ↔ --region,
 // gap, tolerance, each: false ↔ --first, order.
 type Profile struct {
