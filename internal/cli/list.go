@@ -70,6 +70,24 @@ func (p profileStatus) fits() bool {
 	return true
 }
 
+// listFlags are the parsed values of list's flags; registerList is what
+// both the parser and the completion generator read (ADR-0030).
+type listFlags struct {
+	jsonOut *bool
+	verbose *bool
+	jq      *jqOpts
+}
+
+func registerList(fs *flag.FlagSet) listFlags {
+	jsonOut := fs.Bool("json", false, "emit JSON")
+	aliasBool(fs, jsonOut, "j", "emit JSON")
+	verbose := fs.Bool("verbose", false, "show every alias")
+	aliasBool(fs, verbose, "v", "show every alias")
+	jq := &jqOpts{}
+	jq.register(fs)
+	return listFlags{jsonOut: jsonOut, verbose: verbose, jq: jq}
+}
+
 func runList(args []string, stdout, stderr io.Writer, d Deps) int {
 	// stdlib flag stops parsing at the first non-flag argument, so a
 	// leading NAME is peeled off before the flags — otherwise `list work
@@ -78,14 +96,9 @@ func runList(args []string, stdout, stderr io.Writer, d Deps) int {
 	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
 		only, args = args[0], args[1:]
 	}
-	fs := flag.NewFlagSet("list", flag.ContinueOnError)
-	fs.SetOutput(io.Discard)
-	jsonOut := fs.Bool("json", false, "emit JSON")
-	aliasBool(fs, jsonOut, "j", "emit JSON")
-	verbose := fs.Bool("verbose", false, "show every alias")
-	aliasBool(fs, verbose, "v", "show every alias")
-	jq := &jqOpts{}
-	jq.register(fs)
+	fs := newFlagSet("list")
+	f := registerList(fs)
+	jsonOut, verbose, jq := f.jsonOut, f.verbose, f.jq
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, listHelp)

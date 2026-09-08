@@ -3,8 +3,12 @@ package cli
 import (
 	"bytes"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/neozenith/screenz/internal/install"
 )
 
 // The real machine facts captured by the 2026-08-22 spike: three displays,
@@ -309,5 +313,52 @@ func TestRunDispatch(t *testing.T) {
 				t.Errorf("stderr not empty: %s", errOut)
 			}
 		})
+	}
+}
+
+// The install is more than the binary (ADR-0029), so doctor reports the
+// rest of it: the sz short link, and which shells have a completion
+// script. An incomplete install is visible from the command that already
+// answers whether screenz can work here.
+func TestDoctorReportsTheInstall(t *testing.T) {
+	dir := t.TempDir()
+	home := t.TempDir()
+	exe := filepath.Join(dir, "screenz")
+	if err := os.WriteFile(exe, []byte("binary"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	d := deps(func(bool) SysInfo {
+		info := officeSys(true)(true)
+		info.ExePath = exe
+		return info
+	})
+	d.Getenv = func(key string) string {
+		if key == "SCREENZ_HOME" {
+			return home
+		}
+		return ""
+	}
+
+	_, out, _ := run(t, []string{"doctor"}, d)
+	if !strings.Contains(out, "sz short link: absent ("+filepath.Join(dir, "sz")+")") ||
+		!strings.Contains(out, "completions: none installed") {
+		t.Fatalf("doctor must report an incomplete install:\n%s", out)
+	}
+
+	if err := os.Symlink("screenz", filepath.Join(dir, "sz")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := install.WriteScript(install.Dir(home), "zsh", "# script"); err != nil {
+		t.Fatal(err)
+	}
+	_, out, _ = run(t, []string{"doctor"}, d)
+	if !strings.Contains(out, "sz short link: linked") || !strings.Contains(out, "completions: zsh (in ") {
+		t.Fatalf("doctor must report a complete install:\n%s", out)
+	}
+	_, jsonOut, _ := run(t, []string{"doctor", "--json"}, d)
+	for _, want := range []string{`"short_link": "linked"`, `"completions": [`, `"zsh"`} {
+		if !strings.Contains(jsonOut, want) {
+			t.Errorf("doctor --json missing %s\n%s", want, jsonOut)
+		}
 	}
 }

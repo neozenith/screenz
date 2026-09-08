@@ -18,7 +18,10 @@ enforced_in:
   - internal/profile (Dir, Path)
   - doctor's profile dir line
 
-relates_to: []
+relates_to:
+  - relation: see_also
+    target: ADR-0029
+    note: completion scripts resolve to the same dotfiles-first directory, in a completions folder beside profiles
 
 problem:
   symptom: Go's os.UserConfigDir on darwin ignores XDG_CONFIG_HOME and returns ~/Library/Application Support, a path containing a space.

@@ -27,6 +27,9 @@ relates_to:
   - relation: extended_by
     target: ADR-0025
     note: changes which commands exist; the initial-as-short-name rule here is unchanged
+  - relation: see_also
+    target: ADR-0030
+    note: the initials shell completion offers are read from the same table dispatch reads
 
 problem:
   symptom: The rule flags shortened to -m, -d and -r while the command in front of them stayed a whole word, so the shortest useful invocation still opened with apply.

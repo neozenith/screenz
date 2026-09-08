@@ -1,6 +1,7 @@
 package layout
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/neozenith/screenz/internal/mac"
@@ -289,5 +290,37 @@ func TestWithin(t *testing.T) {
 				t.Fatalf("Within = %v, want %v", got, tc.want)
 			}
 		})
+	}
+}
+
+// Every word RegionWords offers must parse, and every spelling the
+// catalogue accepts must be offered — shell completion is generated from
+// this list, so a region missing here is a region nobody can tab to.
+func TestRegionWordsAreCompleteAndParseable(t *testing.T) {
+	words := RegionWords()
+	offered := map[string]bool{}
+	for _, w := range words {
+		offered[w] = true
+		if _, err := ParseRegion(w); err != nil {
+			t.Errorf("ParseRegion(%q): %v", w, err)
+		}
+	}
+	for name := range namedRegions {
+		if !offered[name] {
+			t.Errorf("region %q is not offered", name)
+		}
+	}
+	for alias := range regionAliases {
+		if !offered[alias] {
+			t.Errorf("spelling %q is not offered", alias)
+		}
+	}
+	for code := range regionCodes {
+		if !offered[code] {
+			t.Errorf("code %q is not offered", code)
+		}
+	}
+	if !sort.StringsAreSorted(words) {
+		t.Errorf("words are not sorted: %v", words)
 	}
 }

@@ -429,12 +429,48 @@
     },
     {
       "data": {
+        "id": "ADR-0029",
+        "label": "0029",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0029-update-owns-the-whole-install.md",
+        "title": "screenz update maintains the whole install, not only the binary",
+        "description": "The command that upgrades the tool also owns the names and files the tool needs, and writes only where it already lives",
+        "status": "accepted",
+        "tags": "cli, distribution"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0030",
+        "label": "0030",
+        "parent": "group-cli",
+        "colour": "#0891b2",
+        "file": "0030-completions-generated-from-the-parser.md",
+        "title": "Shell completions are generated from the parser's own registrations",
+        "description": "One command table feeds dispatch, help and every completion script, so a renamed flag cannot survive in a shell script nobody reruns",
+        "status": "accepted",
+        "tags": "cli"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0001-split_to-ADR-0017",
         "source": "ADR-0001",
         "target": "ADR-0017",
         "label": "split to",
         "relation": "split_to",
         "note": "the TCC-client decision moved out on 2026-08-29"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0001-extended_by-ADR-0029",
+        "source": "ADR-0001",
+        "target": "ADR-0029",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "adds the parts of an install a release tarball cannot carry - the sz link and the completion scripts"
       }
     },
     {
@@ -589,6 +625,16 @@
     },
     {
       "data": {
+        "id": "ADR-0013-extended_by-ADR-0030",
+        "source": "ADR-0013",
+        "target": "ADR-0030",
+        "label": "extended by",
+        "relation": "extended_by",
+        "note": "makes the hand-rolled table the source shell completion is generated from, so no framework is needed for it either"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0014-depends_on-ADR-0011",
         "source": "ADR-0014",
         "target": "ADR-0011",
@@ -605,6 +651,16 @@
         "label": "extended by",
         "relation": "extended_by",
         "note": "turned the save from an append into a whole-rule-list replace, which narrowed what survives"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0015-see_also-ADR-0029",
+        "source": "ADR-0015",
+        "target": "ADR-0029",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "completion scripts resolve to the same dotfiles-first directory, in a completions folder beside profiles"
       }
     },
     {
@@ -779,6 +835,16 @@
     },
     {
       "data": {
+        "id": "ADR-0024-see_also-ADR-0030",
+        "source": "ADR-0024",
+        "target": "ADR-0030",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the initials shell completion offers are read from the same table dispatch reads"
+      }
+    },
+    {
+      "data": {
         "id": "ADR-0025-see_also-ADR-0016",
         "source": "ADR-0025",
         "target": "ADR-0016",
@@ -865,6 +931,66 @@
         "label": "see also",
         "relation": "see_also",
         "note": "both refuse to call a run successful on evidence the tool does not have"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0029-extends-ADR-0001",
+        "source": "ADR-0029",
+        "target": "ADR-0001",
+        "label": "extends",
+        "relation": "extends",
+        "note": "keeps release download as the install route and adds the parts of an install a tarball cannot carry"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0029-see_also-ADR-0015",
+        "source": "ADR-0029",
+        "target": "ADR-0015",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "completion scripts resolve to the same dotfiles-first config directory profiles do"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0029-see_also-ADR-0030",
+        "source": "ADR-0029",
+        "target": "ADR-0030",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "what update writes for a shell is generated from the parser, never hand-maintained"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0030-extends-ADR-0013",
+        "source": "ADR-0030",
+        "target": "ADR-0013",
+        "label": "extends",
+        "relation": "extends",
+        "note": "keeps stdlib parsing and hand-rolled dispatch, and makes the hand-rolled table the source completion reads"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0030-see_also-ADR-0024",
+        "source": "ADR-0030",
+        "target": "ADR-0024",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "the initials completion offers are the table's, so a new command is completable the moment it dispatches"
+      }
+    },
+    {
+      "data": {
+        "id": "ADR-0030-see_also-ADR-0029",
+        "source": "ADR-0030",
+        "target": "ADR-0029",
+        "label": "see also",
+        "relation": "see_also",
+        "note": "update is what writes the generated scripts to disk"
       }
     }
   ],

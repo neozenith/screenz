@@ -3,6 +3,7 @@ package rule
 import (
 	"flag"
 	"io"
+	"sort"
 	"strings"
 	"testing"
 
@@ -410,5 +411,19 @@ func TestCouldMatchApp(t *testing.T) {
 				t.Errorf("CouldMatchApp(%q, %q) = %v, want %v", tc.app, tc.bundle, got, tc.want)
 			}
 		})
+	}
+}
+
+// The --order values completion offers are exactly the ones the flag
+// accepts, sorted.
+func TestOrderWordsMatchTheAcceptedOrders(t *testing.T) {
+	words := OrderWords()
+	if len(words) != len(Orders) || !sort.StringsAreSorted(words) {
+		t.Fatalf("words = %v, orders = %v", words, Orders)
+	}
+	for _, w := range words {
+		if !Orders[w] {
+			t.Errorf("%q is offered but not accepted", w)
+		}
 	}
 }

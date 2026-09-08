@@ -22,6 +22,7 @@ Both tiers must be green before a commit (ADR-0004, `adrs/`):
 ## House rules
 
 - Stdlib `flag` only; no CLI frameworks (ADR-0013).
+  A new command or flag goes in the command table in `internal/cli/spec.go` and in that command's `registerX` function; shell completion is generated from both (ADR-0030), never hand-written.
 - No mocks or fakes standing in for the OS bridge.
   Pure tests feed real recorded values through injected `cli.Deps` functions, and the real seam is covered by `make itest` (ADR-0004).
 - All OS calls live in `internal/mac`, `internal/place` and `cmd/screenz`, which are darwin-only.

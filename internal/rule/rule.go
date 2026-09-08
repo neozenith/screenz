@@ -7,6 +7,7 @@ package rule
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -449,3 +450,14 @@ type Rule struct {
 
 // Orders are the valid --order values: existing keeps AX order.
 var Orders = map[string]bool{"existing": true, "title": true, "pid": true}
+
+// OrderWords lists the valid --order values, sorted, for shell completion
+// and for anything else that must offer the set rather than restate it.
+func OrderWords() []string {
+	words := make([]string, 0, len(Orders))
+	for name := range Orders {
+		words = append(words, name)
+	}
+	sort.Strings(words)
+	return words
+}

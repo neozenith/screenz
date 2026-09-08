@@ -19,7 +19,11 @@ Single binary, no daemon.
   Impure, covered by itest.
 - `internal/{demo,discover,layout,rule,plan,profile,selfupdate}`: pure transforms, 100% coverage, must compile on Linux.
 - `internal/place`: impure placement engine, covered by itest.
+- `internal/install`: the `sz` short link and the completion scripts (ADR-0029).
+  Two filesystem writes, otherwise pure over paths; 100% coverage, compiles on Linux.
 - `internal/cli`: pure command pipeline over injected `Deps`; `cmd/screenz` only wires real implementations.
+  `spec.go` holds the one command table; dispatch, `--help` and the generated completion scripts all read it (ADR-0030).
+  A new command or flag is registered there and in the command's `registerX` function, never in a hand-written completion script.
 - `adrs/`: sources are `*.yml` plus `record.schema.json`, `templates/` and `render.py`; everything else in there is generated.
 
 ## Hard rules

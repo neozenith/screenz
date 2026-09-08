@@ -30,6 +30,8 @@
 * [ADR-0026: status elides titles and takes a section](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
 * [ADR-0027: Embed a jq engine behind --jq rather than shell out](0027-embed-jq-behind-a-jq-flag.md) - The filter travels in the binary, so --json stays useful where jq is not installed
 * [ADR-0028: An incomplete enumeration blocks only the runs it could have changed](0028-incomplete-enumeration-blocks-only-what-it-could-change.md) - A gap in the world stops the run when a rule could have matched into it, not merely because it exists
+* [ADR-0029: screenz update maintains the whole install, not only the binary](0029-update-owns-the-whole-install.md) - The command that upgrades the tool also owns the names and files the tool needs, and writes only where it already lives
+* [ADR-0030: Shell completions are generated from the parser's own registrations](0030-completions-generated-from-the-parser.md) - One command table feeds dispatch, help and every completion script, so a renamed flag cannot survive in a shell script nobody reruns
 # By group
 
 ## accessibility
@@ -49,6 +51,8 @@
 * [ADR-0026](0026-status-elides-titles-and-takes-sections.md) - A table that holds its shape by default; the whole truth on request, and always in JSON
 * [ADR-0027](0027-embed-jq-behind-a-jq-flag.md) - The filter travels in the binary, so --json stays useful where jq is not installed
 * [ADR-0028](0028-incomplete-enumeration-blocks-only-what-it-could-change.md) - A gap in the world stops the run when a rule could have matched into it, not merely because it exists
+* [ADR-0029](0029-update-owns-the-whole-install.md) - The command that upgrades the tool also owns the names and files the tool needs, and writes only where it already lives
+* [ADR-0030](0030-completions-generated-from-the-parser.md) - One command table feeds dispatch, help and every completion script, so a renamed flag cannot survive in a shell script nobody reruns
 ## demo
 
 * [ADR-0018](0018-demo-mode-replays-a-recorded-world.md) - Fabricated output is a documentation prop: env-gated, cmd-wired, doctor-disclosed, never in tests
@@ -84,6 +88,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 [graph.json](graph.json) for any Cytoscape viewer.
 
 * ADR-0001 --split_to--> ADR-0017
+* ADR-0001 --extended_by--> ADR-0029
 * ADR-0002 --tested_by--> ADR-0004
 * ADR-0003 --extended_by--> ADR-0017
 * ADR-0004 --tests--> ADR-0002
@@ -99,8 +104,10 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0013 --see_also--> ADR-0021
 * ADR-0013 --extended_by--> ADR-0024
 * ADR-0013 --extended_by--> ADR-0027
+* ADR-0013 --extended_by--> ADR-0030
 * ADR-0014 --depends_on--> ADR-0011
 * ADR-0014 --extended_by--> ADR-0025
+* ADR-0015 --see_also--> ADR-0029
 * ADR-0016 --see_also--> ADR-0025
 * ADR-0017 --split_from--> ADR-0001
 * ADR-0017 --extends--> ADR-0003
@@ -118,6 +125,7 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0024 --extends--> ADR-0013
 * ADR-0024 --see_also--> ADR-0021
 * ADR-0024 --extended_by--> ADR-0025
+* ADR-0024 --see_also--> ADR-0030
 * ADR-0025 --see_also--> ADR-0016
 * ADR-0025 --extends--> ADR-0024
 * ADR-0025 --extends--> ADR-0014
@@ -127,3 +135,9 @@ The typed edge set is rendered in [graph.md](graph.md), and generated as
 * ADR-0027 --see_also--> ADR-0002
 * ADR-0028 --extends--> ADR-0006
 * ADR-0028 --see_also--> ADR-0008
+* ADR-0029 --extends--> ADR-0001
+* ADR-0029 --see_also--> ADR-0015
+* ADR-0029 --see_also--> ADR-0030
+* ADR-0030 --extends--> ADR-0013
+* ADR-0030 --see_also--> ADR-0024
+* ADR-0030 --see_also--> ADR-0029

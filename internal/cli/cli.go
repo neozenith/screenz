@@ -47,40 +47,32 @@ type Deps struct {
 // Run dispatches the first positional to its command handler and returns the
 // process exit code: 0 success, 1 runtime failure, 2 usage error. Every
 // command answers to its initial as well as its name (ADR-0024); no two
-// commands share one, and the full name is what help and errors say.
+// commands share one, and the full name is what help and errors say. The
+// table in spec.go is the only list of commands there is, so dispatch,
+// help and the generated completion scripts cannot disagree (ADR-0030).
 func Run(args []string, stdout, stderr io.Writer, d Deps) int {
 	cmd := ""
 	if len(args) > 0 {
 		cmd = args[0]
 	}
 	switch cmd {
-	case "doctor", "d":
-		return runDoctor(args[1:], stdout, stderr, d)
-	case "status", "s":
-		return runStatus(args[1:], stdout, stderr, d)
-	case "apply", "a":
-		return runApply(args[1:], stdout, stderr, d)
-	case "list", "l":
-		return runList(args[1:], stdout, stderr, d)
-	case "init", "i":
-		return runInit(args[1:], stdout, stderr, d)
-	case "update", "u":
-		return runUpdate(args[1:], stdout, stderr, d)
-	case "version", "v", "--version":
+	case "--version":
 		printVersion(stdout)
 		return 0
 	case "-h", "--help", "help", "h":
 		usage(stdout)
 		return 0
-	default:
-		if cmd == "" {
-			fmt.Fprintln(stderr, "screenz: no command given")
-		} else {
-			fmt.Fprintf(stderr, "screenz: unknown command %q\n", cmd)
-		}
-		usage(stderr)
-		return 2
 	}
+	if c := lookup(cmd); c != nil {
+		return c.run(args[1:], stdout, stderr, d)
+	}
+	if cmd == "" {
+		fmt.Fprintln(stderr, "screenz: no command given")
+	} else {
+		fmt.Fprintf(stderr, "screenz: unknown command %q\n", cmd)
+	}
+	usage(stderr)
+	return 2
 }
 
 func newTabwriter(w io.Writer) *tabwriter.Writer {
@@ -112,16 +104,17 @@ func requireTrusted(d Deps, stderr io.Writer) bool {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprint(w, `usage: screenz <command> [flags]
-
-Commands (each also answers to its initial):
-  a, apply     Move groups of windows by rules or a profile, verifying every frame.
-  s, status    Show windows grouped by application and connected displays.
-  l, list      List profiles and whether each fits the connected displays.
-  i, init      Write a commented template profile to hand-edit.
-  d, doctor    Check the Accessibility grant, displays, and symbol bindings.
-  u, update    Self-update from the latest GitHub release (checksum-verified).
-  v, version   Print the release version (also --version).
+	fmt.Fprint(w, "usage: screenz <command> [flags]\n\nCommands (each also answers to its initial):\n")
+	// Rendered from the dispatch table, so a command can never be listed
+	// here without being dispatchable, or the reverse (ADR-0030).
+	for _, c := range commandTable() {
+		fmt.Fprintf(w, "  %s, %-10s%s\n", c.initial, c.name, c.summary)
+	}
+	fmt.Fprint(w, `
+The same binary answers to sz where the short link is installed:
+  screenz update --link             put sz beside the binary
+  screenz update --completions      install this shell's completion script
+  screenz update --all              the release, the link and completions
 
 Profiles are named by flag, not position:
   screenz apply --profile office            replay a saved profile

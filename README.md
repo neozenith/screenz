@@ -42,6 +42,15 @@ Intel Macs: use `--pattern '*darwin_amd64.tar.gz'`.
 Pin a version by adding its tag: `gh release download vX.Y.Z …`.
 After that first install, `screenz update` self-updates in place (checksum-verified atomic swap; `--check` to just look).
 
+Finish the install with the parts a tarball cannot carry ([ADR-0029](adrs/0029-update-owns-the-whole-install.md)):
+
+```sh
+screenz update --all    # the release, the sz short link, and this shell's completions
+```
+
+`--all` puts an `sz` symlink beside the binary, so every command below shortens to `sz apply -p office`, and writes a completion script generated from screenz's own flag definitions ([ADR-0030](adrs/0030-completions-generated-from-the-parser.md)) — commands, flags, region names and your profile names all complete on tab.
+It prints the one line to add to your shell startup file; it never edits one for you.
+
 Then grant Accessibility to **your terminal app** (not the binary; TCC attributes a shell-launched tool to the app hosting the shell) and verify:
 
 ```sh

@@ -174,3 +174,168 @@ func TestUpdateHelpAndBadFlag(t *testing.T) {
 		t.Fatalf("bad flag: exit=%d out=%q err=%q", code, out, errOut)
 	}
 }
+
+// upToDate makes the release check a no-op, so a test can exercise the
+// install parts of update without a version bump getting in the way.
+func upToDate(urls map[string][]byte) map[string][]byte {
+	u := map[string][]byte{}
+	for k, v := range urls {
+		u[k] = v
+	}
+	u[selfupdate.LatestURL] = []byte(`{"tag_name":"dev","assets":[]}`)
+	return u
+}
+
+// installDeps is updateDeps with an environment: $SHELL decides which
+// completion script is written, $SCREENZ_HOME where it goes (ADR-0015).
+func installDeps(t *testing.T, urls map[string][]byte, env map[string]string) Deps {
+	t.Helper()
+	d := updateDeps(t, urls)
+	if _, ok := env["SCREENZ_HOME"]; !ok {
+		env["SCREENZ_HOME"] = t.TempDir()
+	}
+	d.Getenv = func(key string) string { return env[key] }
+	return d
+}
+
+// The sz short link is created beside the binary, is idempotent, and is
+// never taken from something else that holds the name (ADR-0029).
+func TestUpdateLink(t *testing.T) {
+	urls, _ := releaseFixture(t)
+	d := installDeps(t, urls, map[string]string{})
+
+	code, out, errOut := run(t, []string{"update", "--link"}, d)
+	if code != 0 || !strings.Contains(out, "linked ") || !strings.HasSuffix(strings.TrimSpace(out), "-> screenz") {
+		t.Fatalf("link: exit=%d out=%q err=%q", code, out, errOut)
+	}
+	link := filepath.Join(filepath.Dir(d.ExePath), "sz")
+	if target, err := os.Readlink(link); err != nil || target != "screenz" {
+		t.Fatalf("readlink: %q %v", target, err)
+	}
+	if code, out, _ := run(t, []string{"update", "--link"}, d); code != 0 || !strings.Contains(out, "already installed") {
+		t.Errorf("second link: exit=%d out=%q", code, out)
+	}
+	if code, out, _ := run(t, []string{"update", "--check", "--link"}, d); code != 0 || !strings.Contains(out, "sz short link: linked") {
+		t.Errorf("check: exit=%d out=%q", code, out)
+	}
+}
+
+func TestUpdateLinkRefusesAForeignSZ(t *testing.T) {
+	urls, _ := releaseFixture(t)
+	d := installDeps(t, urls, map[string]string{})
+	if err := os.WriteFile(filepath.Join(filepath.Dir(d.ExePath), "sz"), []byte("lrzsz"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	code, _, errOut := run(t, []string{"update", "--link"}, d)
+	if code != 1 || !strings.Contains(errOut, "not replacing it") {
+		t.Fatalf("exit=%d err=%q", code, errOut)
+	}
+	if code, out, _ := run(t, []string{"update", "--check", "--link"}, d); code != 0 || !strings.Contains(out, "sz short link: foreign") {
+		t.Errorf("check: exit=%d out=%q", code, out)
+	}
+}
+
+// Completions are written for the login shell by default, for the shell
+// --shell names otherwise, and the run prints the one line that makes the
+// shell load them — nothing edits a startup file (ADR-0029).
+func TestUpdateCompletions(t *testing.T) {
+	urls, _ := releaseFixture(t)
+	home := t.TempDir()
+	d := installDeps(t, urls, map[string]string{"SHELL": "/bin/zsh", "SCREENZ_HOME": home})
+
+	code, out, errOut := run(t, []string{"update", "--completions"}, d)
+	if code != 0 {
+		t.Fatalf("exit=%d err=%q", code, errOut)
+	}
+	script := filepath.Join(home, "completions", "_screenz")
+	if !strings.Contains(out, "wrote "+script) || !strings.Contains(out, "fpath=(") {
+		t.Fatalf("out = %q", out)
+	}
+	body, err := os.ReadFile(script)
+	if err != nil || !strings.HasPrefix(string(body), "#compdef screenz sz") {
+		t.Fatalf("script = %q err=%v", body, err)
+	}
+
+	// --shell implies --completions, and `all` writes every dialect.
+	code, out, _ = run(t, []string{"update", "--shell", "all"}, d)
+	if code != 0 {
+		t.Fatalf("--shell all: exit=%d", code)
+	}
+	for _, name := range []string{"_screenz", "screenz.bash", "screenz.fish"} {
+		if !strings.Contains(out, name) {
+			t.Errorf("--shell all did not write %s\n%s", name, out)
+		}
+	}
+	code, out, _ = run(t, []string{"update", "--check", "--completions"}, d)
+	if code != 0 || !strings.Contains(out, "zsh completions: installed") {
+		t.Errorf("check: exit=%d out=%q", code, out)
+	}
+}
+
+func TestUpdateCompletionsRefusesAShellItCannotWrite(t *testing.T) {
+	urls, _ := releaseFixture(t)
+	// A --shell value screenz has no script for is a usage error…
+	d := installDeps(t, urls, map[string]string{"SHELL": "/bin/zsh"})
+	if code, _, errOut := run(t, []string{"update", "--shell", "csh"}, d); code != 2 || !strings.Contains(errOut, "want bash, fish, zsh or all") {
+		t.Errorf("bad --shell: exit=%d err=%q", code, errOut)
+	}
+	// …an unreadable $SHELL is the machine's state, not the command's.
+	d = installDeps(t, urls, map[string]string{})
+	if code, _, errOut := run(t, []string{"update", "--completions"}, d); code != 1 || !strings.Contains(errOut, "cannot tell which shell") {
+		t.Errorf("no $SHELL: exit=%d err=%q", code, errOut)
+	}
+	// A directory that cannot be written reports the failure.
+	blocked := filepath.Join(t.TempDir(), "home")
+	if err := os.WriteFile(blocked, []byte("a file, not a directory"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	d = installDeps(t, urls, map[string]string{"SHELL": "/bin/zsh", "SCREENZ_HOME": blocked})
+	if code, _, errOut := run(t, []string{"update", "--completions"}, d); code != 1 || errOut == "" {
+		t.Errorf("unwritable home: exit=%d err=%q", code, errOut)
+	}
+}
+
+// --all does the release, the link and this shell's completions in one go;
+// a bare update does the release and says what the rest of the install is
+// still missing.
+func TestUpdateAllAndTheMissingReport(t *testing.T) {
+	urls, _ := releaseFixture(t)
+	home := t.TempDir()
+	d := installDeps(t, upToDate(urls), map[string]string{"SHELL": "/bin/bash", "SCREENZ_HOME": home})
+
+	code, out, errOut := run(t, []string{"update"}, d)
+	if code != 0 || !strings.Contains(out, "already up to date") {
+		t.Fatalf("bare: exit=%d out=%q", code, out)
+	}
+	if !strings.Contains(errOut, "the sz short link and bash completions not installed") ||
+		!strings.Contains(errOut, "screenz update --all") {
+		t.Fatalf("bare update must name what is missing: %q", errOut)
+	}
+
+	code, out, errOut = run(t, []string{"update", "--all"}, d)
+	if code != 0 {
+		t.Fatalf("--all: exit=%d err=%q", code, errOut)
+	}
+	for _, want := range []string{"already up to date", "linked ", "screenz.bash"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("--all did not report %q\n%s", want, out)
+		}
+	}
+	// With the install complete there is nothing left to nudge about.
+	if _, _, errOut = run(t, []string{"update"}, d); errOut != "" {
+		t.Errorf("stderr = %q, want silence", errOut)
+	}
+}
+
+// A part named on its own is done on its own: no network, and the release
+// is left alone.
+func TestUpdateNarrowsToTheNamedPart(t *testing.T) {
+	d := installDeps(t, map[string][]byte{}, map[string]string{"SHELL": "/bin/zsh"})
+	d.Fetch = func(url string) ([]byte, error) { return nil, fmt.Errorf("network used for %s", url) }
+	if code, out, errOut := run(t, []string{"update", "--link"}, d); code != 0 || !strings.Contains(out, "linked ") || errOut != "" {
+		t.Fatalf("--link: exit=%d out=%q err=%q", code, out, errOut)
+	}
+	if code, _, errOut := run(t, []string{"update", "--completions"}, d); code != 0 || errOut != "" {
+		t.Fatalf("--completions: exit=%d err=%q", code, errOut)
+	}
+}

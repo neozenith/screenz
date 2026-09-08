@@ -145,9 +145,19 @@ type actionResult struct {
 	Err       string     `json:"err,omitempty"`
 }
 
-func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
-	fs := flag.NewFlagSet("apply", flag.ContinueOnError)
-	fs.SetOutput(io.Discard)
+// applyFlags are the parsed values of apply's flags, the rule grammar
+// included; registerApply is what both the parser and the completion
+// generator read (ADR-0030).
+type applyFlags struct {
+	name    *string
+	saveAs  *string
+	dryRun  *bool
+	jsonOut *bool
+	jq      *jqOpts
+	rules   *rule.List
+}
+
+func registerApply(fs *flag.FlagSet) applyFlags {
 	name := fs.String("profile", "", "run this profile's rules first")
 	fs.StringVar(name, "p", "", "run this profile's rules first")
 	// No one-letter alias: it writes a file (ADR-0021).
@@ -161,6 +171,13 @@ func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
 	jq.register(fs)
 	rules := &rule.List{}
 	rules.Register(fs)
+	return applyFlags{name: name, saveAs: saveAs, dryRun: dryRun, jsonOut: jsonOut, jq: jq, rules: rules}
+}
+
+func runApply(args []string, stdout, stderr io.Writer, d Deps) int {
+	fs := newFlagSet("apply")
+	f := registerApply(fs)
+	name, saveAs, dryRun, jsonOut, jq, rules := f.name, f.saveAs, f.dryRun, f.jsonOut, f.jq, f.rules
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, applyHelp)
