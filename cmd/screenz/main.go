@@ -16,6 +16,7 @@ import (
 	"github.com/neozenith/screenz/internal/cli"
 	"github.com/neozenith/screenz/internal/demo"
 	"github.com/neozenith/screenz/internal/discover"
+	"github.com/neozenith/screenz/internal/install"
 	"github.com/neozenith/screenz/internal/mac"
 	"github.com/neozenith/screenz/internal/place"
 	"golang.org/x/sys/unix"
@@ -25,7 +26,11 @@ func main() { os.Exit(run()) }
 
 func run() int {
 	home, _ := os.UserHomeDir()
+	// Run through the sz short link and os.Executable reports the link,
+	// not the binary; resolving here is what makes ExePath mean the same
+	// thing under either name (ADR-0029).
 	exe, _ := os.Executable()
+	exe = install.ResolveBinary(exe)
 	deps := cli.Deps{
 		Fetch:    fetch,
 		ExePath:  exe,
@@ -123,6 +128,7 @@ func sysInfo(full bool) cli.SysInfo {
 	}
 	info.OSVersion, _ = unix.Sysctl("kern.osproductversion")
 	if exe, err := os.Executable(); err == nil {
+		exe = install.ResolveBinary(exe)
 		info.ExePath = exe
 		// Getxattr returns the attribute size when present; ENOATTR when not.
 		if n, err := unix.Getxattr(exe, "com.apple.quarantine", nil); err == nil && n >= 0 {

@@ -30,6 +30,21 @@ const (
 	Unknown = "unknown"
 )
 
+// ResolveBinary follows the short link back to the binary it names.
+// Invoked as sz, os.Executable reports the link rather than its target,
+// and every consumer of that path wants the real binary: linking would
+// compare sz against itself and call it foreign, and a self-update would
+// rename the new release over the link, leaving a stale copy where the
+// link used to be. A path that cannot be resolved is returned unchanged —
+// an unreadable executable is not this function's failure to report.
+func ResolveBinary(exe string) string {
+	resolved, err := filepath.EvalSymlinks(exe)
+	if err != nil {
+		return exe
+	}
+	return resolved
+}
+
 // LinkPath is where the short link belongs for a given binary path, and
 // empty when the binary itself could not be located — naming a bare `sz`
 // relative to the working directory would be a path nobody meant.
