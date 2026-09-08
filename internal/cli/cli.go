@@ -41,7 +41,10 @@ type Deps struct {
 	Displays func() ([]discover.Display, error)
 	Place    func(app, win mac.AXElement, target mac.CGRect, tol layout.Tolerance) place.Result
 	Fetch    func(url string) ([]byte, error)
-	ExePath  string
+	// ExePath is the screenz binary itself, with the sz short link already
+	// resolved (ADR-0029). Both a self-update and the link check act on it,
+	// and neither is correct against a path that is the link.
+	ExePath string
 }
 
 // Run dispatches the first positional to its command handler and returns the

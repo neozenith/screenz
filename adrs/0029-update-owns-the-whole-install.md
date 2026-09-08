@@ -7,9 +7,10 @@ status: accepted
 accepted_on: 2026-09-08
 provenance: The binary is typed dozens of times a day under a seven-letter name and completes to nothing; the short alias and the completion script were hand-written dotfile edits with no home in the install, so nothing regenerated them when the CLI changed under them
 enforced_in:
-  - internal/install (LinkState, CreateLink, Dir, WriteScript, ResolveShells)
+  - internal/install (ResolveBinary, LinkState, CreateLink, Dir, WriteScript, ResolveShells)
   - internal/cli (update.go - task selection, the sz link, completion writing and the missing report)
   - internal/cli (doctor.go - short_link and completions in the report)
+  - cmd/screenz (main.go - resolving os.Executable through the short link)
 generated: { by: human:neozenith, at: 2026-09-08T00:00:00Z }
 ---
 
@@ -48,6 +49,7 @@ There was no command to run and nothing to check. An upgrade silently left a sta
 - Bare update does the release only, and names on stderr what the rest of the install is still missing; --all does everything; naming a part does that part alone and needs no network.
 - --shell implies --completions, as --jq implies --json (ADR-0027).
 - The sz link is created with a relative target, so moving or renaming the install directory keeps the pair intact.
+- Invoked through the link, screenz resolves it back to the binary before doing anything with that path - os.Executable reports the link, and acting on it would compare sz against itself and call it foreign, or rename a new release over the link and leave a stale copy where the link was.
 - An sz that is a regular file, or a symlink to anything else, is never replaced - lrzsz ships an sz - and the refusal names what it found.
 - Completion scripts are written only under the screenz config directory; the run prints the one line to add to a shell startup file and edits nothing itself.
 - A shell screenz has no script for is an error naming the ones it has, never a silent fallback to another dialect.

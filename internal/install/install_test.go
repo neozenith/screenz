@@ -190,3 +190,30 @@ func TestWriteScriptReportsFilesystemFailures(t *testing.T) {
 		}
 	})
 }
+
+// Run as sz, os.Executable reports the link. Resolving it back to the
+// binary is what stops the link being compared against itself and called
+// foreign, and stops a self-update renaming a release over the link.
+func TestResolveBinaryFollowsTheShortLink(t *testing.T) {
+	exe := binary(t)
+	if _, _, err := CreateLink(exe); err != nil {
+		t.Fatal(err)
+	}
+	link := LinkPath(exe)
+	if state, _ := LinkState(link); state != Foreign {
+		t.Fatalf("unresolved link state = %q, want the bug this guards", state)
+	}
+	resolved := ResolveBinary(link)
+	if state, _ := LinkState(resolved); state != Linked {
+		t.Errorf("LinkState(%q) = %q, want linked", resolved, state)
+	}
+	if filepath.Base(resolved) != "screenz" {
+		t.Errorf("resolved = %q, want the binary", resolved)
+	}
+	// A path that resolves to nothing is handed back unchanged rather than
+	// becoming an empty path nobody meant.
+	missing := filepath.Join(t.TempDir(), "gone")
+	if got := ResolveBinary(missing); got != missing {
+		t.Errorf("ResolveBinary(%q) = %q", missing, got)
+	}
+}
