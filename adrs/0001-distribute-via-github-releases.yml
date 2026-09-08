@@ -21,6 +21,9 @@ relates_to:
   - relation: split_to
     target: ADR-0017
     note: the TCC-client decision moved out on 2026-08-29
+  - relation: extended_by
+    target: ADR-0029
+    note: adds the parts of an install a release tarball cannot carry - the sz link and the completion scripts
 
 problem:
   symptom: screenz must install on client laptops that have no App Store access and no Apple developer tooling, the same bar Rectangle clears via a cask.

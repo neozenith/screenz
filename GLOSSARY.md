@@ -11,6 +11,9 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | attempts | How many placement tries one frame took before it verified or was judged clamped: three at most, with a 25 ms pause between them (ADR-0010). Reported per action under `--json`. |
 | bundle id | The application identity windows are grouped by (for example `com.microsoft.VSCode`), never the PID. |
 | clamped | A placement whose read-back frame fell outside the rule's tolerance; the run exits 1. |
+| command table | The single list of verbs, their initials, summaries and flags that dispatch, `screenz --help` and every generated completion script read (ADR-0030). Lives in `internal/cli/spec.go`. |
+| completion script | A shell completion file generated from the command table and written to the completions directory: `_screenz` for zsh, `screenz.bash`, `screenz.fish` (ADR-0030). Installed by `screenz update --completions`. |
+| completions directory | Where completion scripts are written: `completions/` beside `profiles/` under the resolved screenz config directory (ADR-0015). screenz writes there and nowhere else; the rc line that loads them is printed, never applied (ADR-0029). |
 | demo mode | Env-gated replay (`SCREENZ_DEMO=<world file>`) with simulated placement, for curating demonstration text (ADR-0018). Doctor disclosed, never in tests. |
 | display index | The human-friendly display number, ordered by row top-to-bottom then left-to-right. Unstable across layout changes; UUID is the stable key, and a localized name is durable only where macOS suffixes it to disambiguate identical panels (ADR-0007). |
 | display spec | The terms addressing one display: a bare index, an alias, or `index=`, `name=`, `uuid=`, `serial=`, `built-in=`, `main=` ANDed together. |
@@ -32,6 +35,7 @@ Code identifiers, docs and prose use these terms; add new domain terms here in t
 | rule | One selector, display spec and region (plus gap, tolerance, order, first) applied to all matching windows. A window is placed by the first rule it matches. |
 | section | Half of the `status` report, named as a bare word: `apps` (the window table) or `displays`. Narrows the JSON the same way. |
 | selector | The window-matching terms of a rule: `bundle=`, `app=`, `title=` with literal, quoted or `/regex/i` values, ANDed together. |
+| short link | The `sz` symlink screenz maintains beside its own binary, so the same tool answers to two letters wherever screenz is on PATH (ADR-0029). Created by `screenz update --link`, never over a name something else holds; reported by doctor. |
 | skipped | A matched window the rule cannot act on (state not normal): claimed and reported with its state, never silently dropped. Under `--first` it is neither claimed nor recorded, so it stays free for a later rule and counts as unmatched instead. |
 | snapshot | One fully resolved discovery pass: displays, windows and any per-application enumeration errors. |
 | state | A window's actionability: normal, minimized, hidden, sheet, dialog, offscreen (another Space), or unknown (frame read failed). Only normal windows are placed. |

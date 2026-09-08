@@ -26,6 +26,9 @@ relates_to:
   - relation: extended_by
     target: ADR-0027
     note: settles where the no-framework rule stops - a library behind one flag is not a framework
+  - relation: extended_by
+    target: ADR-0030
+    note: makes the hand-rolled table the source shell completion is generated from, so no framework is needed for it either
 
 problem:
   symptom: The CLI needs subcommands, repeated flags and exit-code discipline, which frameworks advertise.

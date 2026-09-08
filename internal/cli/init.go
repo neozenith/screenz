@@ -24,12 +24,24 @@ Inspect what exists with: screenz list
 Apply the result with:    screenz apply --profile NAME
 `
 
-func runInit(args []string, stdout, stderr io.Writer, d Deps) int {
-	fs := flag.NewFlagSet("init", flag.ContinueOnError)
-	fs.SetOutput(io.Discard)
+// initFlags are the parsed values of init's flags; registerInit is what
+// both the parser and the completion generator read (ADR-0030).
+type initFlags struct {
+	name  *string
+	force *bool
+}
+
+func registerInit(fs *flag.FlagSet) initFlags {
 	name := fs.String("profile", "", "the profile to create")
 	fs.StringVar(name, "p", "", "the profile to create")
 	force := fs.Bool("force", false, "overwrite an existing profile")
+	return initFlags{name: name, force: force}
+}
+
+func runInit(args []string, stdout, stderr io.Writer, d Deps) int {
+	fs := newFlagSet("init")
+	f := registerInit(fs)
+	name, force := f.name, f.force
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, initHelp)

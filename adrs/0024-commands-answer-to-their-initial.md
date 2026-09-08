@@ -21,6 +21,7 @@ generated: { by: human:neozenith, at: 2026-09-01T00:00:00Z }
 - Extends [ADR-0013](0013-stdlib-flag-cli.md) (adds a second case label per command to the hand-rolled dispatch table, with no parser change)
 - See also [ADR-0021](0021-one-letter-aliases-for-rule-flags.md) (the same one-letter treatment, applied to the command word rather than to its flags)
 - Extended by [ADR-0025](0025-three-verbs-profiles-named-by-flag.md) (changes which commands exist; the initial-as-short-name rule here is unchanged)
+- See also [ADR-0030](0030-completions-generated-from-the-parser.md) (the initials shell completion offers are read from the same table dispatch reads)
 
 ## Problem
 

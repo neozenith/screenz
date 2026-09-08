@@ -5,7 +5,9 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"strings"
 
+	"github.com/neozenith/screenz/internal/install"
 	"github.com/neozenith/screenz/internal/profile"
 )
 
@@ -21,6 +23,10 @@ type doctorReport struct {
 	Warnings      []string `json:"warnings,omitempty"`
 	Displays      []string `json:"displays"`
 	ProfileDir    string   `json:"profile_dir"`
+	ShortLink     string   `json:"short_link"`
+	ShortLinkPath string   `json:"short_link_path"`
+	CompletionDir string   `json:"completion_dir"`
+	Completions   []string `json:"completions"`
 	Missing       []string `json:"missing_symbols,omitempty"`
 	DemoWorld     string   `json:"demo_world,omitempty"`
 }
@@ -49,8 +55,9 @@ const doctorHelp = `usage: screenz doctor [--json]
 
 Check that screenz can do its job on this machine: the Accessibility grant
 (held by the terminal app that launched screenz, not the binary), the
-connected displays, the resolved profile directory, and that every macOS
-symbol bound. Exits 1 when Accessibility is not granted (ADR1.2).
+connected displays, the resolved profile directory, the sz short link and
+the completion scripts written for it, and that every macOS symbol bound.
+Exits 1 when Accessibility is not granted (ADR1.2).
 
 Flags:
   -j, --json      Emit the report as JSON.
@@ -61,13 +68,26 @@ Flags:
   -h, --help      Show this help.
 `
 
-func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
-	fs := flag.NewFlagSet("doctor", flag.ContinueOnError)
-	fs.SetOutput(io.Discard)
+// doctorFlags are the parsed values of doctor's flags. Registration is a
+// named function so the completion generator can ask the parser itself
+// what doctor accepts (ADR-0030).
+type doctorFlags struct {
+	jsonOut *bool
+	jq      *jqOpts
+}
+
+func registerDoctor(fs *flag.FlagSet) doctorFlags {
 	jsonOut := fs.Bool("json", false, "emit JSON")
 	aliasBool(fs, jsonOut, "j", "emit JSON")
 	jq := &jqOpts{}
 	jq.register(fs)
+	return doctorFlags{jsonOut: jsonOut, jq: jq}
+}
+
+func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
+	fs := newFlagSet("doctor")
+	f := registerDoctor(fs)
+	jsonOut, jq := f.jsonOut, f.jq
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, doctorHelp)
@@ -85,6 +105,11 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 	// Doctor asks with the prompt option so a first run deep-links the
 	// System Settings Accessibility pane (ADR1.2).
 	info := d.Sys(true)
+	// The install is more than the binary (ADR-0029), so doctor reports
+	// the rest of it: the sz short link beside the executable, and which
+	// shells have a completion script written.
+	linkState, _ := install.LinkState(info.ExePath)
+	compDir := install.Dir(profile.Dir(d.Getenv, d.Home))
 	rep := doctorReport{
 		Schema:        1,
 		Version:       version,
@@ -97,6 +122,10 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 		Warnings:      osWarnings(info),
 		Displays:      info.DisplayNames,
 		ProfileDir:    profile.Dir(d.Getenv, d.Home),
+		ShortLink:     linkState,
+		ShortLinkPath: install.LinkPath(info.ExePath),
+		CompletionDir: compDir,
+		Completions:   install.InstalledShells(compDir),
 		Missing:       info.MissingSymbols,
 		DemoWorld:     d.Getenv("SCREENZ_DEMO"),
 	}
@@ -125,6 +154,9 @@ func runDoctor(args []string, stdout, stderr io.Writer, d Deps) int {
 			fmt.Fprintf(stdout, "  - %s\n", name)
 		}
 		fmt.Fprintf(stdout, "profile dir: %s\n", rep.ProfileDir)
+		fmt.Fprintf(stdout, "sz short link: %s (%s)\n", rep.ShortLink, orWord(rep.ShortLinkPath, "path unknown"))
+		fmt.Fprintf(stdout, "completions: %s (in %s)\n",
+			orWord(strings.Join(rep.Completions, ", "), "none installed"), rep.CompletionDir)
 		if len(rep.Missing) == 0 {
 			fmt.Fprintln(stdout, "symbols: ok")
 		} else {

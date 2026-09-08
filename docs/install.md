@@ -81,6 +81,38 @@ screenz apply -p office        # the context switch
 Profiles live in `$SCREENZ_HOME`, `$XDG_CONFIG_HOME/screenz` or `~/.config/screenz` ([ADR-0015](../adrs/0015-profile-dir-resolution.md)), which is dotfiles-friendly.
 Example profiles are in [`examples/profiles/`](../examples/profiles/).
 
+## 4. The short link and shell completions
+
+An install is three things: the binary, a short name to type, and a completion script ([ADR-0029](../adrs/0029-update-owns-the-whole-install.md)).
+`update` maintains all three:
+
+```sh
+screenz update --all           # the release, the sz link, this shell's completions
+screenz update --link          # just the sz symlink beside the binary
+screenz update --completions   # just this shell's script ($SHELL decides which)
+screenz update --shell all     # write zsh, bash and fish scripts
+screenz update --check --all   # report all three, change nothing
+```
+
+Naming a part does that part alone and needs no network.
+
+**The short link.** `--link` creates `sz` as a symlink beside the screenz binary, so `sz apply -p office` works wherever `screenz` is already on `PATH`, with no alias to carry in a dotfiles repo.
+The target is relative, so moving the install directory keeps the pair intact.
+If something else already holds that name — `lrzsz` ships an `sz` — screenz refuses and says what it found rather than replacing it.
+
+**Completions.** Scripts are generated from screenz's own flag definitions ([ADR-0030](../adrs/0030-completions-generated-from-the-parser.md)), so commands, their initials, every flag and its one-letter alias, the region names, and your profile names all complete.
+They are written to `completions/` beside `profiles/` in the screenz config directory, and nowhere else.
+Wiring them up is one line, which the command prints and you paste:
+
+| Shell | Line to add | Where |
+|-------|-------------|-------|
+| zsh   | `fpath=(~/.config/screenz/completions $fpath)` | `~/.zshrc`, before `compinit` |
+| bash  | `source ~/.config/screenz/completions/screenz.bash` | `~/.bashrc` |
+| fish  | `source ~/.config/screenz/completions/screenz.fish` | `~/.config/fish/config.fish` |
+
+Rerun `screenz update --all` after an upgrade to regenerate the scripts against the new binary.
+`screenz doctor` reports the short link and which scripts are installed.
+
 ## Updating
 
 An installed release updates itself:
@@ -88,7 +120,9 @@ An installed release updates itself:
 ```sh
 screenz update --check   # report the latest release
 screenz update           # download, verify checksums, atomic self-replace
+screenz update --all     # and refresh the sz link and completions with it
 ```
 
 The swap writes a sibling file and renames over the binary, so a failed update never leaves a truncated executable.
 A source build (`screenz version` says `dev`) refuses to overwrite itself unless you pass `--force`.
+A bare `screenz update` also names on stderr anything the rest of the install is still missing.

@@ -8,7 +8,7 @@ description: Generated view of the typed relation graph over every decision reco
 
 # Decision relationship graph
 
-28 decision records, 44 typed edges, grouped into
+30 decision records, 54 typed edges, grouped into
 9 groups. Every edge comes from a record's `relates_to`
 block, so this view cannot drift from the records.
 

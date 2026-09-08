@@ -1,0 +1,59 @@
+# Architecture Decision Record - structured form of adrs/0029-update-owns-the-whole-install.md
+id: ADR-0029
+slug: update-owns-the-whole-install
+plan_id: null
+title: screenz update maintains the whole install, not only the binary
+description: The command that upgrades the tool also owns the names and files the tool needs, and writes only where it already lives
+status: accepted
+accepted_on: 2026-09-08
+last_changed_on: 2026-09-08
+tags: [cli, distribution]
+
+lens: |-
+  An install is every artefact a tool needs to be usable, not only its executable; whatever upgrades the executable owns the rest, or the rest goes stale the first time the executable moves.
+  Own those artefacts only inside directories the tool already owns: create a second name beside the binary, write configuration under the tool's own config directory, and hand the user the one line that wires it up rather than editing a file that belongs to something else.
+
+provenance: The binary is typed dozens of times a day under a seven-letter name and completes to nothing; the short alias and the completion script were hand-written dotfile edits with no home in the install, so nothing regenerated them when the CLI changed under them
+enforced_in:
+  - internal/install (LinkState, CreateLink, Dir, WriteScript, ResolveShells)
+  - internal/cli (update.go - task selection, the sz link, completion writing and the missing report)
+  - internal/cli (doctor.go - short_link and completions in the report)
+
+relates_to:
+  - relation: extends
+    target: ADR-0001
+    note: keeps release download as the install route and adds the parts of an install a tarball cannot carry
+  - relation: see_also
+    target: ADR-0015
+    note: completion scripts resolve to the same dotfiles-first config directory profiles do
+  - relation: see_also
+    target: ADR-0030
+    note: what update writes for a shell is generated from the parser, never hand-maintained
+
+problem:
+  symptom: A working install needed three things - the binary, a short name to type, and a completion script - and screenz maintained exactly one of them, so the other two were hand-made and drifted every time the CLI gained a flag.
+  pain_point: There was no command to run and nothing to check. An upgrade silently left a stale completion script in place, and the short name was whatever the user had once aliased, which no longer existed on a new machine and could not be reported by doctor.
+
+decision:
+  given: a second name and a completion script are part of a usable install, but both live outside the tarball and one of them lives in territory the shell owns
+  we_prefer: extending update to create an sz symlink beside the binary and to write completion scripts into the screenz config directory, over shipping them in the tarball where nothing could place them, over an install script that edits the user's rc files, and over leaving both to the user's dotfiles
+  because: update is the one command that already runs on every upgrade and already knows where the binary is, and a symlink beside the binary is on PATH exactly when screenz is
+  unless: something else already holds the name sz or the target directory is not screenz's to write in, in which case the run says so and stops
+  in_practice:
+    - Bare update does the release only, and names on stderr what the rest of the install is still missing; --all does everything; naming a part does that part alone and needs no network.
+    - --shell implies --completions, as --jq implies --json (ADR-0027).
+    - The sz link is created with a relative target, so moving or renaming the install directory keeps the pair intact.
+    - An sz that is a regular file, or a symlink to anything else, is never replaced - lrzsz ships an sz - and the refusal names what it found.
+    - Completion scripts are written only under the screenz config directory; the run prints the one line to add to a shell startup file and edits nothing itself.
+    - A shell screenz has no script for is an error naming the ones it has, never a silent fallback to another dialect.
+    - doctor reports the short link and the installed completion scripts, so an incomplete install is visible from the command that already answers whether screenz can do its job.
+
+consequences:
+  pros:
+    - One command brings a whole install current, and the same command reports what is missing without changing anything.
+    - Nothing screenz writes lands in a directory owned by a shell or another tool, so uninstalling is deleting the config directory and one symlink.
+    - The short name works on a new machine without carrying an alias in a dotfiles repo, and it works in every shell rather than only the interactive one.
+  cons:
+    - Completion still takes one manual rc line, because zsh loads function files off fpath and screenz will not edit a startup file to set it.
+    - update grew from one job to three, and its flag surface with it; the narrowing rule has to be learned rather than guessed.
+    - A user who already aliases sz to something else gets a refusal rather than a working link, which is correct and will still read as friction.

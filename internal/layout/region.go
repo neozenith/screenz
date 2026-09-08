@@ -6,6 +6,7 @@ package layout
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -181,4 +182,23 @@ func (r Region) span(i int) span {
 // like-for-like on read back.
 func edge(origin, size, fraction float64) float64 {
 	return origin + math.Floor(size*fraction+0.0001)
+}
+
+// RegionWords lists every word --region accepts: the catalogue names, the
+// en-GB spellings of those that have one (ADR-0022) and every shorthand
+// code (ADR-0023), sorted. Shell completion offers exactly this set, so a
+// region added to the catalogue is offered without touching a script.
+func RegionWords() []string {
+	words := make([]string, 0, len(namedRegions)+len(regionAliases)+len(regionCodes))
+	for name := range namedRegions {
+		words = append(words, name)
+	}
+	for alias := range regionAliases {
+		words = append(words, alias)
+	}
+	for code := range regionCodes {
+		words = append(words, code)
+	}
+	sort.Strings(words)
+	return words
 }

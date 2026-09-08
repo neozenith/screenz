@@ -22,6 +22,7 @@ generated: { by: human:neozenith, at: 2026-09-02T00:00:00Z }
 - See also [ADR-0021](0021-one-letter-aliases-for-rule-flags.md) (its alias mechanism and the absence of flag clustering both follow from stdlib flag)
 - Extended by [ADR-0024](0024-commands-answer-to-their-initial.md) (gives each command in the dispatch table a second case label, its initial)
 - Extended by [ADR-0027](0027-embed-jq-behind-a-jq-flag.md) (settles where the no-framework rule stops - a library behind one flag is not a framework)
+- Extended by [ADR-0030](0030-completions-generated-from-the-parser.md) (makes the hand-rolled table the source shell completion is generated from, so no framework is needed for it either)
 
 ## Problem
 

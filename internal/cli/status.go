@@ -90,15 +90,16 @@ type statusJSON struct {
 	AppErrs  []discover.AppErr  `json:"app_errors,omitempty"`
 }
 
-func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
-	// The section is a leading bare word, peeled off before parsing so it
-	// cannot be confused with a flag value (ADR-0026).
-	section := "all"
-	if len(args) > 0 && (args[0] == "apps" || args[0] == "displays") {
-		section, args = args[0], args[1:]
-	}
-	fs := flag.NewFlagSet("status", flag.ContinueOnError)
-	fs.SetOutput(io.Discard)
+// statusFlags are the parsed values of status's flags; registerStatus is
+// what both the parser and the completion generator read (ADR-0030).
+type statusFlags struct {
+	jsonOut *bool
+	verbose *bool
+	jq      *jqOpts
+	matches *matchList
+}
+
+func registerStatus(fs *flag.FlagSet) statusFlags {
 	jsonOut := fs.Bool("json", false, "emit JSON")
 	aliasBool(fs, jsonOut, "j", "emit JSON")
 	verbose := fs.Bool("verbose", false, "print full window titles")
@@ -108,6 +109,19 @@ func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
 	matches := &matchList{}
 	fs.Var(matches, "match", "show only windows matching this selector (repeatable)")
 	fs.Var(matches, "m", "show only windows matching this selector (repeatable)")
+	return statusFlags{jsonOut: jsonOut, verbose: verbose, jq: jq, matches: matches}
+}
+
+func runStatus(args []string, stdout, stderr io.Writer, d Deps) int {
+	// The section is a leading bare word, peeled off before parsing so it
+	// cannot be confused with a flag value (ADR-0026).
+	section := "all"
+	if len(args) > 0 && (args[0] == "apps" || args[0] == "displays") {
+		section, args = args[0], args[1:]
+	}
+	fs := newFlagSet("status")
+	f := registerStatus(fs)
+	jsonOut, verbose, jq, matches := f.jsonOut, f.verbose, f.jq, f.matches
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			fmt.Fprint(stdout, statusHelp)

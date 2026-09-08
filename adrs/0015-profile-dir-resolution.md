@@ -18,6 +18,10 @@ generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
 > **Lens**: Config paths are dotfiles-first: an explicit env override, then XDG, then ~/.config;
 > never a path with a space.
 
+## Relates to
+
+- See also [ADR-0029](0029-update-owns-the-whole-install.md) (completion scripts resolve to the same dotfiles-first directory, in a completions folder beside profiles)
+
 ## Problem
 
 ### Symptom

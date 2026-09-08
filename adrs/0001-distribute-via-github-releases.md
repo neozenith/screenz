@@ -21,6 +21,7 @@ generated: { by: human:neozenith, at: 2026-08-28T00:00:00Z }
 ## Relates to
 
 - Split to [ADR-0017](0017-terminal-app-is-the-tcc-client.md) (the TCC-client decision moved out on 2026-08-29)
+- Extended by [ADR-0029](0029-update-owns-the-whole-install.md) (adds the parts of an install a release tarball cannot carry - the sz link and the completion scripts)
 
 ## Problem
 
